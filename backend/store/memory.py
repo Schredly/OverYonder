@@ -10,6 +10,7 @@ from models import (
     ClassificationNodeModel,
     ClassificationSchema,
     GoogleDriveConfig,
+    ServiceNowConfig,
     Tenant,
 )
 from store.interface import (
@@ -17,6 +18,7 @@ from store.interface import (
     EventStore,
     GoogleDriveConfigStore,
     RunStore,
+    ServiceNowConfigStore,
     TenantStore,
 )
 
@@ -93,6 +95,26 @@ class InMemoryGoogleDriveConfigStore(GoogleDriveConfigStore):
             config = GoogleDriveConfig(**data)
         else:
             config = GoogleDriveConfig(tenant_id=tenant_id, **kwargs)
+        self._configs[tenant_id] = config
+        return config
+
+
+class InMemoryServiceNowConfigStore(ServiceNowConfigStore):
+    def __init__(self) -> None:
+        self._configs: dict[str, ServiceNowConfig] = {}
+
+    async def get_by_tenant(self, tenant_id: str) -> Optional[ServiceNowConfig]:
+        return self._configs.get(tenant_id)
+
+    async def upsert(self, tenant_id: str, **kwargs: Any) -> ServiceNowConfig:
+        existing = self._configs.get(tenant_id)
+        if existing is not None:
+            data = existing.model_dump()
+            data.update({k: v for k, v in kwargs.items() if v is not None})
+            data["updated_at"] = datetime.now(timezone.utc)
+            config = ServiceNowConfig(**data)
+        else:
+            config = ServiceNowConfig(tenant_id=tenant_id, **kwargs)
         self._configs[tenant_id] = config
         return config
 

@@ -5,13 +5,15 @@ import uuid
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Request, WebSocket, WebSocketDisconnect
 
-from models import AgentEvent, AgentRun, CreateRunRequest
+from models import AgentEvent, AgentRun, CreateRunRequest, ServiceNowRunRequest, WorkObject
 from services.google_drive import GoogleDriveProvider
 from services.orchestrator import run_orchestrator
+from services.servicenow import ServiceNowProvider
 
 router = APIRouter(prefix="/api/runs", tags=["runs"])
 
 _drive = GoogleDriveProvider()
+_snow = ServiceNowProvider()
 
 # Simple in-memory pubsub for live events per run
 _event_subscribers: dict[str, list[asyncio.Queue]] = {}
@@ -71,6 +73,63 @@ async def create_run(
         drive_config_store=request.app.state.drive_config_store,
         drive_provider=_drive,
         on_event=_publish_event,
+        snow_config_store=request.app.state.snow_config_store,
+        snow_provider=_snow,
+    )
+
+    return {"run_id": run_id}
+
+
+@router.post("/from/servicenow", status_code=201)
+async def create_run_from_servicenow(
+    body: ServiceNowRunRequest,
+    request: Request,
+    background_tasks: BackgroundTasks,
+):
+    # Validate tenant
+    tenant = await request.app.state.tenant_store.get(body.tenant_id)
+    if tenant is None:
+        raise HTTPException(status_code=404, detail="Tenant not found")
+    if tenant.status != "active":
+        raise HTTPException(status_code=403, detail="Tenant is not active")
+
+    # Validate secret
+    if not tenant.shared_secret or tenant.shared_secret != body.tenant_secret:
+        raise HTTPException(status_code=401, detail="Invalid tenant secret")
+
+    work_object = WorkObject(
+        work_id=body.number or body.sys_id,
+        source_system="servicenow",
+        record_type="incident",
+        title=body.short_description,
+        description=body.description,
+        classification=body.classification,
+        metadata={"sys_id": body.sys_id, "number": body.number, **(body.metadata or {})},
+    )
+
+    run_id = f"run_{uuid.uuid4().hex[:12]}"
+    run = AgentRun(
+        run_id=run_id,
+        tenant_id=body.tenant_id,
+        status="queued",
+        work_object=work_object,
+    )
+    await request.app.state.run_store.create_run(run)
+
+    background_tasks.add_task(
+        run_orchestrator,
+        tenant_id=body.tenant_id,
+        access_token=body.access_token or "",
+        work_object=work_object,
+        run_id=run_id,
+        run_store=request.app.state.run_store,
+        event_store=request.app.state.event_store,
+        tenant_store=request.app.state.tenant_store,
+        drive_config_store=request.app.state.drive_config_store,
+        drive_provider=_drive,
+        on_event=_publish_event,
+        snow_config_store=request.app.state.snow_config_store,
+        snow_provider=_snow,
     )
 
     return {"run_id": run_id}
@@ -127,7 +186,9 @@ async def run_events_ws(websocket: WebSocket, run_id: str, tenant_id: str = ""):
             event: AgentEvent = await asyncio.wait_for(queue.get(), timeout=120)
             await websocket.send_json(event.model_dump(mode="json"))
             # Check if run is now terminal
-            if event.event_type in ("complete", "error") and event.skill_id == "RecordOutcome":
+            if event.event_type in ("complete", "error") and event.skill_id in (
+                "RecordOutcome", "Writeback"
+            ):
                 run_now = await websocket.app.state.run_store.get_run(run_id)
                 if run_now and run_now.status in ("completed", "failed"):
                     await websocket.send_json(

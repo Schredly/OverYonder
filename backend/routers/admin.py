@@ -8,9 +8,11 @@ from models import (
     GoogleDriveConfig,
     PutDriveConfigRequest,
     PutSchemaRequest,
+    PutServiceNowConfigRequest,
     ScaffoldApplyRequest,
     ScaffoldApplyResponse,
     ScaffoldResultRequest,
+    ServiceNowConfig,
     TestDriveFolderRequest,
     TestDriveFolderResponse,
 )
@@ -45,6 +47,29 @@ async def put_schema(tenant_id: str, body: PutSchemaRequest, request: Request):
     await _require_tenant(tenant_id, request)
     tree_dicts = [node.model_dump() for node in body.schema_tree]
     return await request.app.state.schema_store.upsert(tenant_id, tree_dicts)
+
+
+# --- ServiceNow Config ---
+
+
+@router.get("/servicenow")
+async def get_snow_config(tenant_id: str, request: Request):
+    await _require_tenant(tenant_id, request)
+    config = await request.app.state.snow_config_store.get_by_tenant(tenant_id)
+    return config  # None serialises to JSON null
+
+
+@router.put("/servicenow", response_model=ServiceNowConfig)
+async def put_snow_config(
+    tenant_id: str, body: PutServiceNowConfigRequest, request: Request
+):
+    await _require_tenant(tenant_id, request)
+    return await request.app.state.snow_config_store.upsert(
+        tenant_id,
+        instance_url=body.instance_url,
+        username=body.username,
+        password=body.password,
+    )
 
 
 # --- Google Drive Config ---

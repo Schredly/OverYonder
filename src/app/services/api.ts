@@ -173,6 +173,34 @@ export function putDriveConfig(
   });
 }
 
+// --- ServiceNow Config ---
+
+export interface ServiceNowConfigResponse {
+  tenant_id: string;
+  instance_url: string;
+  username: string;
+  password: string;
+  updated_at: string;
+}
+
+export function getSnowConfig(
+  tenantId: string,
+): Promise<ServiceNowConfigResponse | null> {
+  return request(`/admin/${tenantId}/servicenow`);
+}
+
+export function putSnowConfig(
+  tenantId: string,
+  instanceUrl: string,
+  username: string,
+  password: string,
+): Promise<ServiceNowConfigResponse> {
+  return request(`/admin/${tenantId}/servicenow`, {
+    method: 'PUT',
+    body: JSON.stringify({ instance_url: instanceUrl, username, password }),
+  });
+}
+
 // --- Activate ---
 
 export function activateTenant(tenantId: string): Promise<ActivateResponse> {

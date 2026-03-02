@@ -7,6 +7,7 @@ from store import (
     InMemoryEventStore,
     InMemoryGoogleDriveConfigStore,
     InMemoryRunStore,
+    InMemoryServiceNowConfigStore,
     InMemoryTenantStore,
 )
 
@@ -24,6 +25,7 @@ app.add_middleware(
 app.state.tenant_store = InMemoryTenantStore()
 app.state.schema_store = InMemoryClassificationSchemaStore()
 app.state.drive_config_store = InMemoryGoogleDriveConfigStore()
+app.state.snow_config_store = InMemoryServiceNowConfigStore()
 app.state.run_store = InMemoryRunStore()
 app.state.event_store = InMemoryEventStore()
 

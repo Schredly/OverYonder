@@ -15,7 +15,7 @@ interface SkillState {
   events: api.AgentEventResponse[];
 }
 
-const SKILL_ORDER = ['ValidateInput', 'RetrieveDocs', 'SynthesizeResolution', 'RecordOutcome'];
+const SKILL_ORDER = ['ValidateInput', 'RetrieveDocs', 'SynthesizeResolution', 'RecordOutcome', 'Writeback'];
 
 function buildSkills(events: api.AgentEventResponse[]): SkillState[] {
   const map = new Map<string, SkillState>();

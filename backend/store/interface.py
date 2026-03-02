@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
-from models import AgentEvent, AgentRun, ClassificationSchema, GoogleDriveConfig, Tenant
+from models import AgentEvent, AgentRun, ClassificationSchema, GoogleDriveConfig, ServiceNowConfig, Tenant
 
 
 class TenantStore(ABC):
@@ -39,6 +39,14 @@ class GoogleDriveConfigStore(ABC):
 
     @abstractmethod
     async def upsert(self, tenant_id: str, **kwargs: Any) -> GoogleDriveConfig: ...
+
+
+class ServiceNowConfigStore(ABC):
+    @abstractmethod
+    async def get_by_tenant(self, tenant_id: str) -> Optional[ServiceNowConfig]: ...
+
+    @abstractmethod
+    async def upsert(self, tenant_id: str, **kwargs: Any) -> ServiceNowConfig: ...
 
 
 class RunStore(ABC):

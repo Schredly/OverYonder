@@ -8,6 +8,7 @@ from typing import Any, Callable, Coroutine
 from models import AgentEvent, AgentRun, WorkObject
 from services.claude_client import ClaudeClientError, synthesize_resolution
 from services.google_drive import GoogleDriveError, GoogleDriveProvider
+from services.servicenow import ServiceNowError, format_work_notes
 from store.interface import EventStore, RunStore
 
 
@@ -22,6 +23,8 @@ async def run_orchestrator(
     drive_config_store: Any,
     drive_provider: GoogleDriveProvider,
     on_event: Callable[[AgentEvent], Coroutine] | None = None,
+    snow_config_store: Any = None,
+    snow_provider: Any = None,
 ) -> None:
     """Execute the skill chain for a run. Updates run status and emits events."""
 
@@ -232,6 +235,12 @@ async def run_orchestrator(
 
         await asyncio.sleep(0.3)
 
+        # Determine if writeback will happen (before RecordOutcome)
+        snow_config = None
+        if work_object.source_system == "servicenow" and snow_config_store is not None:
+            snow_config = await snow_config_store.get_by_tenant(tenant_id)
+        will_writeback = snow_config is not None
+
         # --- Skill D: RecordOutcome ---
         await emit("RecordOutcome", "thinking", "Recording run outcome...")
 
@@ -242,12 +251,16 @@ async def run_orchestrator(
             "confidence": confidence,
         }
 
-        await run_store.update_run(
-            run_id,
-            status="completed",
-            completed_at=datetime.now(timezone.utc),
-            result=result,
-        )
+        if will_writeback:
+            # Store result but defer status — Writeback still needs to run
+            await run_store.update_run(run_id, result=result)
+        else:
+            await run_store.update_run(
+                run_id,
+                status="completed",
+                completed_at=datetime.now(timezone.utc),
+                result=result,
+            )
 
         await emit(
             "RecordOutcome",
@@ -255,6 +268,61 @@ async def run_orchestrator(
             "Run completed and outcome recorded.",
             confidence=confidence,
         )
+
+        # --- Skill E: Writeback (conditional — ServiceNow only) ---
+        if will_writeback:
+            await asyncio.sleep(0.3)
+            await emit("Writeback", "thinking", "Writing resolution back to ServiceNow...")
+
+            writeback_error: str | None = None
+            try:
+                notes = format_work_notes(
+                    summary_text, steps, result_sources, confidence, run_id
+                )
+                sys_id = (work_object.metadata or {}).get("sys_id", "")
+                await emit(
+                    "Writeback",
+                    "tool_call",
+                    f"Patching incident {sys_id} with work notes...",
+                    metadata={"sys_id": sys_id},
+                )
+                await snow_provider.update_work_notes(
+                    instance_url=snow_config.instance_url,
+                    username=snow_config.username,
+                    password=snow_config.password,
+                    sys_id=sys_id,
+                    work_notes=notes,
+                )
+            except ServiceNowError as exc:
+                writeback_error = str(exc)
+            except Exception as exc:
+                writeback_error = str(exc)
+
+            # Set terminal status BEFORE emitting the terminal event
+            await run_store.update_run(
+                run_id,
+                status="completed",
+                completed_at=datetime.now(timezone.utc),
+            )
+
+            if writeback_error is None:
+                await emit(
+                    "Writeback",
+                    "tool_result",
+                    "Work notes updated in ServiceNow.",
+                )
+                await emit(
+                    "Writeback",
+                    "complete",
+                    "Resolution written back to ServiceNow.",
+                    confidence=confidence,
+                )
+            else:
+                await emit(
+                    "Writeback",
+                    "error",
+                    f"ServiceNow writeback failed: {writeback_error}",
+                )
 
     except Exception as exc:
         await emit("Orchestrator", "error", f"Unexpected error: {exc}")

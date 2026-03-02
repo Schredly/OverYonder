@@ -179,10 +179,11 @@ export function SetupWizardPage() {
     if (!id) return;
     const load = async () => {
       try {
-        const [tenant, schema, driveConfig] = await Promise.all([
+        const [tenant, schema, driveConfig, snowConfig] = await Promise.all([
           api.getTenant(id),
           api.getSchema(id).catch(() => null),
           api.getDriveConfig(id).catch(() => null),
+          api.getSnowConfig(id).catch(() => null),
         ]);
         setTenantName(tenant.name);
         setTenantId(tenant.id);
@@ -195,6 +196,11 @@ export function SetupWizardPage() {
           if (driveConfig.folder_name) setFolderName(driveConfig.folder_name);
           if (driveConfig.scaffolded) setScaffoldStatus('done');
         }
+        if (snowConfig) {
+          setInstanceUrl(snowConfig.instance_url);
+          setUsername(snowConfig.username);
+          setPassword(snowConfig.password);
+        }
       } catch {
         toast.error('Failed to load tenant');
         navigate('/tenants');
@@ -203,17 +209,26 @@ export function SetupWizardPage() {
     load();
   }, [id, navigate]);
 
-  const handleTestServiceNow = () => {
+  const handleTestServiceNow = async () => {
+    if (!tenantId) {
+      setSnowStatus('error');
+      setSnowError('Please create a tenant first (Step 1).');
+      return;
+    }
+    if (!instanceUrl || !username || !password) {
+      setSnowStatus('error');
+      setSnowError('Please fill in all ServiceNow fields.');
+      return;
+    }
     setSnowStatus('testing');
     setSnowError('');
-    setTimeout(() => {
-      if (instanceUrl && username && password) {
-        setSnowStatus('success');
-      } else {
-        setSnowStatus('error');
-        setSnowError('Please fill in all ServiceNow fields.');
-      }
-    }, 1500);
+    try {
+      await api.putSnowConfig(tenantId, instanceUrl.trim(), username, password);
+      setSnowStatus('success');
+    } catch (err) {
+      setSnowStatus('error');
+      setSnowError(err instanceof Error ? err.message : 'Failed to save configuration.');
+    }
   };
 
   const handleSignIn = async () => {
@@ -316,6 +331,11 @@ export function SetupWizardPage() {
         await refreshTenants();
         setCurrentTenantId(tenant.id);
         navigate(`/tenants/setup/${tenant.id}`, { replace: true });
+      }
+
+      // Step 1 → 2: persist ServiceNow config (if filled in)
+      if (currentStep === 1 && tenantId && instanceUrl.trim()) {
+        await api.putSnowConfig(tenantId, instanceUrl.trim(), username, password);
       }
 
       // Step 2 → 3: persist classification schema

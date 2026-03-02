@@ -39,6 +39,14 @@ class GoogleDriveConfig(BaseModel):
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
+class ServiceNowConfig(BaseModel):
+    tenant_id: str
+    instance_url: str
+    username: str
+    password: str
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
 # --- Request models ---
 
 
@@ -53,6 +61,12 @@ class PutSchemaRequest(BaseModel):
 class PutDriveConfigRequest(BaseModel):
     root_folder_id: str
     folder_name: Optional[str] = None
+
+
+class PutServiceNowConfigRequest(BaseModel):
+    instance_url: str
+    username: str
+    password: str
 
 
 class ScaffoldResultRequest(BaseModel):
@@ -118,6 +132,18 @@ class CreateRunRequest(BaseModel):
     tenant_id: str
     access_token: str
     work_object: WorkObject
+
+
+class ServiceNowRunRequest(BaseModel):
+    tenant_id: str
+    tenant_secret: str
+    sys_id: str
+    number: str
+    short_description: str
+    description: str = ""
+    classification: list[ClassificationPair] = Field(default_factory=list)
+    metadata: Optional[dict[str, Any]] = None
+    access_token: Optional[str] = None
 
 
 class AgentRun(BaseModel):
