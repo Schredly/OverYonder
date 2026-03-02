@@ -763,4 +763,104 @@ Previously checked only `RecordOutcome` complete/error. Now checks both `RecordO
 - The `ServiceNowRunRequest.access_token` field is optional — it's used for Google Drive document search during the run. If omitted, the run still works but document retrieval may fail.
 - `SKILL_ORDER` in RunsPage now includes Writeback, so it always shows in the timeline (as "pending" for non-ServiceNow runs). A future improvement could hide it dynamically based on source_system.
 
-*Next change will be #009.*
+---
+
+## #009 — 2026-03-02 — Feedback Capture + Minimal Evaluation Metrics
+
+**What happened:**
+Added a lightweight feedback loop: users can mark completed runs as success/fail from the RunsPage, and an admin metrics endpoint aggregates key performance indicators per tenant. This closes the evaluation loop described in the architecture docs (09_EVALUATION_AND_FEEDBACK).
+
+**Files modified:**
+
+- `backend/models.py` — Added 3 models:
+  - `FeedbackEvent(id, tenant_id, run_id, work_id, outcome: "success"|"fail", reason: "resolved"|"partial"|"wrong-doc"|"missing-context"|"other", notes, classification_path, timestamp)` — Stored feedback record, one per run (resubmit overwrites)
+  - `CreateFeedbackRequest(tenant_id, run_id, outcome, reason, notes)` — Request body for feedback submission
+  - `MetricsResponse(total_runs, completed_runs, success_rate, avg_confidence, doc_hit_rate, avg_latency_seconds, writeback_success_rate, feedback_count, breakdown_by_classification_path)` — Aggregated tenant metrics, nullable fields return `None` when insufficient data
+
+- `backend/store/interface.py` — Added `FeedbackStore` ABC:
+  - `append(event: FeedbackEvent) -> FeedbackEvent`
+  - `get_by_run(run_id: str) -> Optional[FeedbackEvent]`
+  - `list_for_tenant(tenant_id: str) -> list[FeedbackEvent]`
+
+- `backend/store/memory.py` — Added `InMemoryFeedbackStore`:
+  - `_feedback: dict[str, FeedbackEvent]` keyed by `run_id` — one feedback per run, resubmit overwrites
+  - `append` stores/overwrites by `run_id`
+  - `get_by_run` is a dict lookup
+  - `list_for_tenant` filters by `tenant_id`
+
+- `backend/store/__init__.py` — Re-exports `FeedbackStore` and `InMemoryFeedbackStore`.
+
+- `backend/main.py` — Added `app.state.feedback_store = InMemoryFeedbackStore()`.
+
+- `backend/routers/runs.py` — Added 2 endpoints:
+  - `POST /api/runs/feedback` — Body: `CreateFeedbackRequest`. Validates run exists and tenant matches. Derives `classification_path` by joining `run.work_object.classification` values with "/". Derives `work_id` from `run.work_object.work_id`. Generates `id` as `fb_{uuid4_hex[:12]}`. Stores via `feedback_store.append()`. Returns the `FeedbackEvent`.
+  - `GET /api/runs/feedback/{run_id}?tenant_id=...` — Returns existing feedback for a run, or `null` if none exists.
+
+- `backend/routers/admin.py` — Added 1 endpoint:
+  - `GET /api/admin/{tenant_id}/metrics` — Computes aggregated metrics from run_store, event_store, and feedback_store:
+    - `total_runs` / `completed_runs`: count from `run_store.list_runs_for_tenant`
+    - `success_rate`: feedback with `outcome=="success"` / total feedback (`None` if no feedback)
+    - `avg_confidence`: mean of `run.result["confidence"]` for completed runs with results (`None` if none)
+    - `doc_hit_rate`: fraction of completed runs where `run.result["sources"]` is non-empty (`None` if none)
+    - `avg_latency_seconds`: mean of `(completed_at - started_at).total_seconds()` for completed runs (`None` if none)
+    - `writeback_success_rate`: runs with a Writeback "complete" event / runs with any Writeback event (`None` if no writeback runs)
+    - `breakdown_by_classification_path`: top 10 classification paths by feedback count, with per-path success_rate and count
+
+- `src/app/services/api.ts` — Added types and functions:
+  - `FeedbackEventResponse` interface — matches backend `FeedbackEvent`
+  - `MetricsResponse` interface — matches backend `MetricsResponse`
+  - `submitFeedback(tenantId, runId, outcome, reason, notes)` → `POST /api/runs/feedback`
+  - `getFeedback(runId, tenantId)` → `GET /api/runs/feedback/{runId}?tenant_id=...`
+  - `getMetrics(tenantId)` → `GET /api/admin/{tenantId}/metrics`
+
+- `src/app/pages/RunsPage.tsx` — Added feedback form and metrics summary:
+  - **Metrics panel** (left column, below runs list header): 2x2 grid showing success rate %, avg confidence %, doc hit rate %, total runs. Fetched on tenant change via `getMetrics()`. Displays "—" when metric is null.
+  - **Feedback form** (right column, after result panel for completed runs):
+    - Two toggle buttons: "Success" (green outline when selected) / "Fail" (red outline when selected)
+    - `<select>` for reason: resolved, partial, wrong-doc, missing-context, other
+    - Optional notes `<textarea>`
+    - Submit button with loading state
+    - Loads existing feedback when selecting a completed run (`getFeedback`)
+    - After submission: shows "Feedback Recorded" with CheckCircle icon, button changes to "Resubmit"
+    - Resubmit overwrites existing feedback and refreshes metrics
+  - New imports: `CheckCircle` from lucide-react
+  - New state: `fbOutcome`, `fbReason`, `fbNotes`, `fbSubmitting`, `fbRecorded`, `metrics`
+
+**Updated project structure:**
+```
+backend/
+├── models.py                      # Added FeedbackEvent, CreateFeedbackRequest, MetricsResponse
+├── store/
+│   ├── __init__.py                # Re-exports FeedbackStore, InMemoryFeedbackStore
+│   ├── interface.py               # Added FeedbackStore ABC
+│   └── memory.py                  # Added InMemoryFeedbackStore
+├── routers/
+│   ├── runs.py                    # Added POST /feedback + GET /feedback/{run_id}
+│   └── admin.py                   # Added GET /metrics
+└── main.py                        # Added feedback_store
+
+src/app/
+├── services/
+│   └── api.ts                     # Added FeedbackEventResponse, MetricsResponse, submitFeedback, getFeedback, getMetrics
+└── pages/
+    └── RunsPage.tsx               # Added feedback form + metrics summary panel
+```
+
+**Key architecture decisions:**
+- **One feedback per run, overwrite on resubmit** — `InMemoryFeedbackStore` is keyed by `run_id`. Resubmitting feedback replaces the previous entry. This keeps the model simple and avoids feedback versioning complexity.
+- **classification_path derived at submit time** — The feedback endpoint joins `work_object.classification` values with "/" to create a path string used for breakdown aggregation. This means the classification is baked into the feedback record, not re-derived at query time.
+- **Nullable metrics** — Each metric returns `None` when there's insufficient data to compute it (e.g., `success_rate` is `None` when no feedback exists). The frontend shows "—" for null values.
+- **Metrics computed on-read** — No pre-aggregation or caching. The metrics endpoint iterates all runs, events, and feedback for the tenant on each request. Acceptable for MVP; would need caching or materialized views at scale.
+- **Writeback success rate from events** — Computed by scanning event_store for Writeback skill events per run, rather than adding a writeback status field to the run model. This avoids model changes and leverages existing event data.
+- **Feedback form always visible for completed runs** — Even runs without a result panel show the feedback form. This ensures feedback can be captured regardless of result display.
+- **Metrics refresh on feedback submit** — After submitting feedback, the frontend immediately re-fetches metrics so the left panel numbers update without a page refresh.
+
+**What GPT should know for next steps:**
+- Feedback capture is live: users can rate any completed run from the RunsPage.
+- The metrics endpoint aggregates across all runs/feedback for a tenant — it's a read-only summary, not a detailed report.
+- `breakdown_by_classification_path` is limited to top 10 by count. For tenants with many classification paths, this provides a useful overview.
+- The feedback store is in-memory — data is lost on server restart. Future sprints should persist to Postgres alongside other stores.
+- No feedback validation against run status — users can technically submit feedback for any run, though the UI only shows the form for completed runs.
+- The metrics panel is minimal (numbers only, no charts). A future sprint could add time-series visualizations or trend indicators.
+
+*Next change will be #010.*
