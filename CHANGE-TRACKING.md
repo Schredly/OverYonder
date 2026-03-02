@@ -575,4 +575,97 @@ vite.config.ts                     # Added ws: true for WebSocket proxy
 
 ---
 
-*Next change will be #007.*
+## #007 — 2026-03-02 — Claude Synthesis (Replace Placeholder with Real LLM)
+
+**What happened:**
+Replaced the deterministic placeholder in SynthesizeResolutionSkill with a real Claude API call. The orchestrator now sends the ticket, classification path, and retrieved document links to Claude with a strict JSON prompt contract, and uses the structured response as the run result. If Claude is unavailable (API key missing, timeout, parse error), the system falls back to the original deterministic placeholder seamlessly. No chain-of-thought leakage — event metadata contains only safe operational metrics.
+
+**New files created:**
+
+- `backend/services/claude_client.py` — Minimal Claude synthesis service:
+  - `synthesize_resolution(title, description, classification, sources, tenant_notes)` — Async function that calls Claude Messages API via httpx.
+  - **Model:** `claude-sonnet-4-20250514` (configurable via constant).
+  - **API key:** Read from `CLAUDE_API_KEY` environment variable. Raises `ClaudeClientError` immediately if unset.
+  - **System prompt:** Strict rules — never invent policies, only reference provided sources, include "questions to clarify" when evidence is insufficient, confidence must reflect evidence strength.
+  - **User message:** Structured with ticket title, description, classification path (ordered pairs), retrieved documents (title + link), and tenant policy notes (stub, empty for now).
+  - **Output contract:** Strict JSON with `{summary, recommended_steps, sources: [{title, url}], confidence: 0..1}`.
+  - **Timeout:** 30 seconds.
+  - **Response parsing:** Extracts text from content blocks, strips markdown code fences if Claude adds them despite instructions, parses JSON, validates required keys, clamps confidence to 0-1.
+  - **Metadata returned:** `_meta: {model, latency_ms, input_tokens, output_tokens}` — attached to result for the caller to include in events.
+  - `ClaudeClientError` exception — Raised on any failure (missing key, HTTP error, empty response, JSON parse failure, missing keys). Caller catches and falls back.
+  - `_build_user_message(...)` helper — Formats the structured prompt from ticket + classification + sources + notes.
+
+**Files modified:**
+
+- `backend/services/orchestrator.py` — SynthesizeResolutionSkill rewritten:
+  - **New event flow:** `thinking` → `tool_call` ("Calling Claude synthesis...") → Claude API call → `tool_result` ("Claude synthesis complete") with confidence → `complete`.
+  - **On Claude success:** Uses `claude_result["summary"]`, `claude_result["recommended_steps"]` (mapped to `steps`), `claude_result["sources"]`, `claude_result["confidence"]` directly as the run result.
+  - **On `ClaudeClientError`:** Emits `error` event with message (e.g. "Claude unavailable, using fallback: CLAUDE_API_KEY not set"), then runs the original deterministic placeholder logic. The `complete` event includes `[fallback]` tag. Run still completes successfully — it does not fail.
+  - **Safe metadata only:** `tool_result` event metadata contains `{model, latency_ms, input_tokens, output_tokens, doc_count}`. No raw prompt, no raw Claude response text, no chain-of-thought.
+  - **`used_fallback` flag:** Tracked and included in the `complete` event metadata as `{"fallback": true/false}`.
+  - Added import of `ClaudeClientError` and `synthesize_resolution` from `services.claude_client`.
+
+**Files NOT modified (verified compatible):**
+
+- `backend/requirements.txt` — `httpx>=0.27.0` already present (added in Sprint 5).
+- `src/app/services/api.ts` — `AgentRunResponse.result` shape `{summary, steps, sources, confidence}` already matches. Claude returns `recommended_steps` which the orchestrator maps to `steps`.
+- `src/app/pages/RunsPage.tsx` — Result panel already renders `result.summary`, `result.steps`, `result.sources`, `result.confidence`. No changes needed.
+
+**Updated project structure:**
+```
+backend/services/
+├── __init__.py
+├── claude_client.py           # NEW — Claude synthesis via httpx
+├── google_drive.py            # (unchanged)
+└── orchestrator.py            # Updated — Claude call + fallback in SynthesizeResolutionSkill
+```
+
+**Prompt contract details:**
+
+System prompt rules:
+1. Never invent policies or steps not supported by provided sources
+2. If evidence insufficient, say so in summary and include "questions to clarify" as steps
+3. Steps must be actionable and concise
+4. Sources must only reference provided doc links — never fabricate URLs
+5. Confidence must reflect evidence strength (lower when docs missing/sparse)
+
+Output schema (strict JSON, no markdown):
+```json
+{
+  "summary": "string — one paragraph recommendation",
+  "recommended_steps": ["string — actionable step", ...],
+  "sources": [{"title": "string", "url": "string"}, ...],
+  "confidence": 0.0-1.0
+}
+```
+
+**Key architecture decisions:**
+- **httpx, not SDK** — Keeps dependencies minimal. Single POST to `/v1/messages` with `x-api-key` header and `anthropic-version: 2023-06-01`.
+- **Graceful fallback, not failure** — Missing API key or Claude errors don't fail the run. The deterministic placeholder produces a valid result so the system always returns something useful.
+- **No chain-of-thought leakage** — The raw prompt and raw Claude response are never stored in events, metadata, or the run result. Only the parsed JSON fields are used.
+- **`tenant_notes` stub** — The prompt accepts tenant policy notes but they're empty for now. Future sprints can populate this from tenant config.
+- **Markdown fence stripping** — Claude sometimes wraps JSON in ```json fences despite explicit instructions. The parser handles this gracefully.
+- **Confidence clamping** — `max(0.0, min(1.0, float(conf)))` ensures the value is always valid even if Claude returns something unexpected.
+
+**Configuration:**
+```bash
+# Set before starting the backend
+export CLAUDE_API_KEY=sk-ant-api03-...
+
+# Then start as usual
+cd backend && uvicorn main:app --reload --port 8000
+```
+
+If `CLAUDE_API_KEY` is not set, runs still work — they use the deterministic fallback and the SynthesizeResolution skill emits an error event followed by the fallback completion.
+
+**What GPT should know for next steps:**
+- Claude synthesis is live when `CLAUDE_API_KEY` is set. Without it, the system falls back transparently.
+- The prompt is a single baseline template in `claude_client.py` — future optimization would involve prompt routing, few-shot examples, or tenant-specific instructions.
+- `tenant_notes` parameter is stubbed empty — can be wired to a tenant config field for per-tenant policy injection.
+- The model is `claude-sonnet-4-20250514` — can be changed by updating the `CLAUDE_MODEL` constant.
+- No streaming from Claude — the full response is awaited. For long responses, this could be changed to streaming with partial event updates.
+- The `recommended_steps` key from Claude is mapped to `steps` in the run result to match the existing frontend contract.
+
+---
+
+*Next change will be #008.*
