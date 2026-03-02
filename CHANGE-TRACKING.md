@@ -136,4 +136,142 @@ Replaced the mock Google Drive integration in the Setup Wizard with a fully func
 
 ---
 
-*Next change will be #003.*
+## #003 — 2026-03-02 — FastAPI Backend Control Plane + Frontend Wiring
+
+**What happened:**
+Added a FastAPI backend that persists tenant records, classification schemas, and Google Drive config in memory (survives across browser refreshes as long as the server runs). Rewired the TenantsPage and SetupWizardPage to use the new API instead of the in-memory mockData functions. Google OAuth stays client-side; the backend stores only config.
+
+**New files created:**
+
+- `backend/requirements.txt` — Dependencies: `fastapi>=0.115.0`, `uvicorn[standard]>=0.30.0`, `pydantic>=2.0.0`.
+
+- `backend/models.py` — Pydantic v2 models:
+  - **Domain:** `Tenant(id, name, status="draft", created_at, updated_at, shared_secret)`, `ClassificationNodeModel(name, children: list[Self])` (recursive), `ClassificationSchema(tenant_id, schema_tree, updated_at, version)`, `GoogleDriveConfig(tenant_id, root_folder_id, folder_name, scaffolded, scaffolded_at, updated_at)`
+  - **Request:** `CreateTenantRequest(name)`, `PutSchemaRequest(schema_tree)`, `PutDriveConfigRequest(root_folder_id, folder_name?)`, `ScaffoldResultRequest(scaffolded, scaffolded_at?, root_folder_id, folder_name?)`
+  - **Response:** `ActivateResponse(tenant_id, shared_secret, instructions_stub)`
+
+- `backend/store/interface.py` — Three ABCs (all methods `async` for future Postgres swap):
+  - `TenantStore`: `create`, `get`, `list`, `delete`, `update`
+  - `ClassificationSchemaStore`: `get_by_tenant`, `upsert` (auto-increments version)
+  - `GoogleDriveConfigStore`: `get_by_tenant`, `upsert` (merges on update)
+
+- `backend/store/memory.py` — Dict-backed in-memory implementations:
+  - `InMemoryTenantStore`: UUID generation on create, timestamp on update
+  - `InMemoryClassificationSchemaStore`: version counter per tenant
+  - `InMemoryGoogleDriveConfigStore`: merge-on-upsert preserving existing fields
+
+- `backend/store/__init__.py` — Re-exports all store interfaces and implementations.
+
+- `backend/routers/tenants.py` — `/api/tenants` routes:
+  - `POST /api/tenants` — Create tenant (draft status), returns 201
+  - `GET /api/tenants` — List all tenants
+  - `GET /api/tenants/{tenant_id}` — Get one, 404 if missing
+  - `DELETE /api/tenants/{tenant_id}` — Delete, 204 on success, 404 if missing
+
+- `backend/routers/admin.py` — `/api/admin/{tenant_id}/...` routes (all validate tenant exists first):
+  - `GET .../classification-schema` — Returns schema or `{schema_tree:[], version:0}` default
+  - `PUT .../classification-schema` — Upsert with auto-increment version
+  - `GET .../google-drive` — Returns config or JSON null
+  - `PUT .../google-drive` — Upsert root_folder_id + folder_name
+  - `POST .../activate` — Generates `secrets.token_urlsafe(32)` shared secret, sets status="active"
+  - `POST .../scaffold-result` — Persists scaffold outcome to drive config
+
+- `backend/routers/__init__.py` — Re-exports both routers.
+
+- `backend/main.py` — FastAPI app creation: CORS for `localhost:5173`, instantiates 3 in-memory stores on `app.state`, includes both routers.
+
+- `src/app/services/api.ts` — Typed frontend API client:
+  - `request<T>(path, options)` helper with JSON headers and error extraction from `detail`
+  - Response types: `TenantResponse`, `ClassificationSchemaResponse`, `GoogleDriveConfigResponse`, `ActivateResponse` (all snake_case matching backend)
+  - Functions: `createTenant`, `getTenants`, `getTenant`, `deleteTenant`, `getSchema`, `putSchema`, `getDriveConfig`, `putDriveConfig`, `activateTenant`, `postScaffoldResult`
+
+**Files modified:**
+
+- `vite.config.ts` — Added `server.proxy` config: `/api` → `http://localhost:8000` with `changeOrigin: true`.
+
+- `src/app/pages/TenantsPage.tsx` — Replaced mockData imports with `../services/api`. Added `useEffect` for async tenant fetch on mount, `loading` state with spinner, empty-state row when no tenants. `handleDelete` is now async and refetches after delete. Status display maps lowercase backend values (`"active"` → `"Active"`). Uses `tenant.created_at` (snake_case) instead of `tenant.createdAt`.
+
+- `src/app/pages/SetupWizardPage.tsx` — Major changes:
+  - Added `tenantId` state — set from URL param or after create
+  - Added `activationResult` state — shown after activation with shared_secret and instructions
+  - Added `saving` boolean — guards double-clicks on Next
+  - **Step 0 → Next (create mode):** Calls `api.createTenant(name)` → sets tenantId → `navigate(/tenants/setup/${id}, {replace: true})`
+  - **Edit mode load:** `Promise.all([getTenant, getSchema.catch(null), getDriveConfig.catch(null)])` → populates form
+  - **Step 2 → Next:** `api.putSchema(tenantId, classificationNodes)` to persist schema
+  - **Step 3 after testDriveFolder succeeds:** `api.putDriveConfig(tenantId, folderId, folderName)`
+  - **Step 4 after scaffold succeeds:** `api.postScaffoldResult(tenantId, {scaffolded: true, ...})`
+  - **Step 5 Activate:** `api.activateTenant(tenantId)` → shows shared_secret + instructions_stub in panel → "Done" button navigates to /tenants
+  - Removed imports of `addTenant`, `getTenantById`, `updateTenant` from mockData. Kept `ClassificationNode` type import.
+
+- `src/app/data/mockData.ts` — Removed: `ClassificationLevel` interface, `getTenants`, `getTenantById`, `addTenant`, `updateTenant`, `deleteTenant`, `nextId`. Kept: `Tenant`, `ClassificationNode`, `mockTenants` (TopBar still uses), `getCurrentTenant`, `setCurrentTenant`, `Run`, `Skill`, `RunResult`, `mockRuns`.
+
+**Files NOT modified (intentionally out of scope):**
+- `TopBar.tsx` — Still uses `mockTenants` directly (known inconsistency, acceptable for this sprint)
+- `RunsPage.tsx` — Still uses mock runs data
+- `GoogleAuthContext.tsx`, `google-auth.ts`, `google-drive.ts` — Unchanged (OAuth stays client-side)
+- `App.tsx`, `DashboardLayout.tsx`, `routes.tsx` — Unchanged
+
+**Updated project structure:**
+```
+context-agents/
+├── ai-context/                    # (unchanged)
+├── backend/
+│   ├── requirements.txt           # fastapi, uvicorn, pydantic
+│   ├── main.py                    # FastAPI app, CORS, store init, router includes
+│   ├── models.py                  # Pydantic v2 domain + request/response models
+│   ├── store/
+│   │   ├── __init__.py            # Re-exports
+│   │   ├── interface.py           # ABCs: TenantStore, SchemaStore, DriveConfigStore
+│   │   └── memory.py              # Dict-backed in-memory implementations
+│   └── routers/
+│       ├── __init__.py            # Re-exports
+│       ├── tenants.py             # POST/GET/DELETE /api/tenants
+│       └── admin.py               # Schema, drive config, activate, scaffold-result
+├── src/
+│   ├── app/
+│   │   ├── services/
+│   │   │   ├── api.ts             # NEW — Typed API client for all backend endpoints
+│   │   │   └── google-drive.ts    # (unchanged)
+│   │   ├── data/
+│   │   │   └── mockData.ts        # Cleaned up — removed CRUD functions, kept types + mock arrays
+│   │   ├── pages/
+│   │   │   ├── TenantsPage.tsx    # Rewired to async API
+│   │   │   ├── SetupWizardPage.tsx # Rewired to async API with per-step persistence
+│   │   │   └── RunsPage.tsx       # (unchanged — still uses mock data)
+│   │   └── ...                    # (rest unchanged)
+│   └── ...
+├── vite.config.ts                 # Added /api proxy → localhost:8000
+└── CHANGE-TRACKING.md
+```
+
+**Key architecture decisions:**
+- **In-memory stores with ABC interfaces** — Swap to Postgres-backed implementations later without changing routers
+- **Tenant created on Step 1 "Next"** — All subsequent wizard steps have a `tenant_id` to persist against
+- **URL updates with UUID** — `navigate(/tenants/setup/${id}, {replace: true})` after create so refresh works
+- **Backend stores snake_case, frontend maps for display** — `status: "active"` → displayed as `"Active"`
+- **Google OAuth stays entirely client-side** — Backend stores only config (folder ID, folder name, scaffold status), not tokens
+- **`shared_secret` generated on activate** — `secrets.token_urlsafe(32)`, shown to user once with usage instructions
+- **CORS restricted to `localhost:5173`** — Only the Vite dev server can call the API
+- **Vite proxy in dev** — `/api` requests proxied to `localhost:8000`, no CORS issues in dev
+
+**How to run:**
+```bash
+# Terminal 1: Backend
+cd backend && source .venv/bin/activate && uvicorn main:app --reload --port 8000
+
+# Terminal 2: Frontend
+npm run dev
+```
+
+**What GPT should know for next steps:**
+- Tenant data now persists across browser refreshes (as long as backend is running)
+- Data is still in-memory — a server restart loses all data. Next step would be adding Postgres via the ABC interface swap.
+- TopBar tenant selector still reads from `mockTenants` — it doesn't reflect backend-created tenants yet (known gap)
+- RunsPage still uses mock data — no backend runs API yet
+- The `ClassificationLevel` interface has been removed from mockData.ts
+- The backend venv lives at `backend/.venv/` (not committed to git)
+- All 10 API endpoints are tested and working
+
+---
+
+*Next change will be #004.*
