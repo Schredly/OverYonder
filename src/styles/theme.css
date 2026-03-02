@@ -179,3 +179,15 @@
     line-height: 1.5;
   }
 }
+
+/* Details/summary chevron rotation */
+details[open] > summary .details-open-rotate {
+  transform: rotate(90deg);
+}
+details > summary .details-open-rotate {
+  transition: transform 150ms ease;
+}
+details > summary::-webkit-details-marker,
+details > summary::marker {
+  display: none;
+}

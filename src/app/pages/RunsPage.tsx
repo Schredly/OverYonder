@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { CheckCircle, ChevronDown, ChevronRight, ExternalLink, Plus, Loader2 } from 'lucide-react';
+import { Check, CheckCircle, ChevronDown, ChevronRight, ExternalLink, Plus, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { useTenants } from '../context/TenantContext';
@@ -204,7 +204,7 @@ export function RunsPage() {
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'completed': return 'Completed';
+      case 'completed': return 'Resolution Ready';
       case 'running': return 'Running';
       case 'queued': return 'Queued';
       case 'failed': return 'Failed';
@@ -215,11 +215,11 @@ export function RunsPage() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'running': return 'bg-blue-100 text-blue-800';
-      case 'queued': return 'bg-yellow-100 text-yellow-800';
-      case 'failed': case 'error': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'completed': return 'bg-blue-50 text-blue-700 border border-blue-200 font-semibold text-[14px] rounded-full px-3 py-0.5';
+      case 'running': return 'bg-blue-100 text-blue-800 border border-blue-200 rounded-full px-3 py-0.5';
+      case 'queued': return 'bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-full px-3 py-0.5';
+      case 'failed': case 'error': return 'bg-red-50 text-red-700 border border-red-200 rounded-full px-3 py-0.5';
+      default: return 'bg-gray-100 text-gray-800 rounded-full px-3 py-0.5';
     }
   };
 
@@ -369,7 +369,7 @@ export function RunsPage() {
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-xl">{selectedRun.work_object.title}</h1>
-                <span className={`px-2 py-0.5 rounded text-xs ${getStatusBadge(selectedRun.status)}`}>
+                <span className={`inline-flex items-center text-xs ${getStatusBadge(selectedRun.status)}`}>
                   {getStatusText(selectedRun.status)}
                 </span>
               </div>
@@ -377,122 +377,163 @@ export function RunsPage() {
               <p className="text-sm text-muted-foreground">
                 {format(new Date(selectedRun.started_at), 'MMMM d, yyyy at h:mm:ss a')}
               </p>
-              {selectedRun.work_object.description && (
-                <p className="text-sm text-muted-foreground mt-2">{selectedRun.work_object.description}</p>
-              )}
             </div>
+
+            {/* Incident Context — collapsed by default */}
+            {selectedRun.work_object.description && (
+              <details className="mb-8 border border-border rounded-lg overflow-hidden">
+                <summary className="px-4 py-3 text-sm font-medium cursor-pointer hover:bg-gray-50 transition-colors select-none flex items-center gap-2">
+                  <ChevronRight className="w-4 h-4 text-muted-foreground details-open-rotate" />
+                  Incident Context
+                </summary>
+                <div className="px-4 pb-4 pt-1 border-t border-border bg-gray-50/50">
+                  <p className="text-sm text-gray-500 leading-relaxed">{selectedRun.work_object.description}</p>
+                  {selectedRun.work_object.classification.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {selectedRun.work_object.classification.map((cp, i) => (
+                        <span key={i} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-600 border border-gray-200">
+                          {cp.name}: {cp.value}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </details>
+            )}
 
             {/* Skills Timeline */}
             <div className="mb-8">
               <h2 className="text-lg mb-4">Skills Timeline</h2>
-              <div className="space-y-3">
-                {skills.map((skill) => (
-                  <div key={skill.skill_id} className="border border-border rounded-lg overflow-hidden">
-                    <button
-                      onClick={() => toggleSkill(skill.skill_id)}
-                      className="w-full p-4 flex items-start gap-3 hover:bg-gray-50 transition-colors"
+              <div className="space-y-2">
+                {skills.map((skill) => {
+                  const isActive = skill.status === 'running';
+                  return (
+                    <div
+                      key={skill.skill_id}
+                      className={`border rounded-lg overflow-hidden transition-shadow ${
+                        isActive
+                          ? 'border-l-[3px] border-l-blue-500 border-t-border border-r-border border-b-border shadow-sm'
+                          : 'border-border'
+                      }`}
                     >
-                      <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${getStatusColor(skill.status)}`} />
-                      <div className="flex-1 text-left">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm">{skill.skill_id}</span>
-                          {skill.status === 'running' && <Loader2 className="w-3 h-3 animate-spin text-blue-500" />}
-                          {expandedSkills.has(skill.skill_id)
-                            ? <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                            : <ChevronRight className="w-4 h-4 text-muted-foreground" />
-                          }
+                      <button
+                        onClick={() => toggleSkill(skill.skill_id)}
+                        className={`w-full p-3.5 flex items-start gap-3 transition-colors ${
+                          isActive ? 'bg-blue-50/40' : 'hover:bg-gray-50'
+                        }`}
+                      >
+                        <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${getStatusColor(skill.status)}`} />
+                        <div className="flex-1 text-left">
+                          <div className="flex items-center justify-between mb-0.5">
+                            <span className={`text-sm ${isActive ? 'font-medium' : ''}`}>{skill.skill_id}</span>
+                            <div className="flex items-center gap-1.5">
+                              {isActive && <Loader2 className="w-3 h-3 animate-spin text-blue-500" />}
+                              {expandedSkills.has(skill.skill_id)
+                                ? <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                                : <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                              }
+                            </div>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{skill.summary || 'Waiting...'}</p>
                         </div>
-                        <p className="text-sm text-muted-foreground">{skill.summary || 'Waiting...'}</p>
-                      </div>
-                    </button>
+                      </button>
 
-                    {expandedSkills.has(skill.skill_id) && skill.events.length > 0 && (
-                      <div className="px-4 pb-4 pl-9 bg-gray-50">
-                        <div className="text-xs text-muted-foreground mb-2">Events:</div>
-                        <ul className="space-y-1">
-                          {skill.events.map((ev, i) => (
-                            <li key={i} className="text-sm text-muted-foreground flex">
-                              <span className={`mr-2 text-xs font-mono shrink-0 w-20 ${
-                                ev.event_type === 'complete' ? 'text-green-600'
-                                : ev.event_type === 'error' ? 'text-red-600'
-                                : 'text-gray-400'
-                              }`}>{ev.event_type}</span>
-                              <span>{ev.summary}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                      {expandedSkills.has(skill.skill_id) && skill.events.length > 0 && (
+                        <div className="px-4 pb-3 pl-9 bg-gray-50">
+                          <div className="text-xs text-muted-foreground mb-2">Events:</div>
+                          <ul className="space-y-1">
+                            {skill.events.map((ev, i) => (
+                              <li key={i} className="text-sm text-muted-foreground flex">
+                                <span className={`mr-2 text-xs font-mono shrink-0 w-20 ${
+                                  ev.event_type === 'complete' ? 'text-green-600'
+                                  : ev.event_type === 'error' ? 'text-red-600'
+                                  : 'text-gray-400'
+                                }`}>{ev.event_type}</span>
+                                <span>{ev.summary}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
             {/* Result Panel */}
             {selectedRun.status === 'completed' && selectedRun.result && (
               <div className="border border-border rounded-lg p-6 bg-white">
-                <h2 className="text-lg mb-4">Result</h2>
+                <div className="mb-1">
+                  <h2 className="text-lg font-medium">Recommended Resolution</h2>
+                  {selectedRun.result.sources.length > 0 && (
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      Based on {selectedRun.result.sources.length} knowledge source{selectedRun.result.sources.length !== 1 ? 's' : ''}
+                    </p>
+                  )}
+                </div>
 
                 {/* Summary */}
-                <div className="mb-6">
-                  <div className="text-sm text-muted-foreground mb-2">Summary</div>
-                  <p className="text-sm leading-relaxed">{selectedRun.result.summary}</p>
+                <div className="mb-5 mt-4">
+                  <p className="text-sm leading-relaxed text-gray-500">{selectedRun.result.summary}</p>
+                </div>
+
+                {/* Confidence Score */}
+                <div className="flex items-center justify-between mb-5 pb-4 border-b border-border">
+                  <div className="text-sm text-muted-foreground">Confidence</div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-32 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-blue-500 rounded-full transition-all"
+                        style={{ width: `${selectedRun.result.confidence * 100}%` }}
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-gray-700">{Math.round(selectedRun.result.confidence * 100)}%</span>
+                  </div>
                 </div>
 
                 {/* Steps */}
                 {selectedRun.result.steps.length > 0 && (
-                  <div className="mb-6">
-                    <div className="text-sm text-muted-foreground mb-2">Recommended Steps</div>
-                    <ul className="space-y-2">
+                  <div className="mb-5">
+                    <div className="text-sm font-medium text-gray-700 mb-2">Resolution Steps</div>
+                    <ol className="space-y-0.5">
                       {selectedRun.result.steps.map((step, index) => (
-                        <li key={index} className="text-sm flex">
-                          <span className="mr-2 text-muted-foreground">{index + 1}.</span>
-                          <span>{step}</span>
+                        <li key={index} className="flex gap-3 py-2 px-2 rounded-md hover:bg-gray-50 transition-colors">
+                          <span className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-medium">
+                            {index + 1}
+                          </span>
+                          <span className="text-sm text-gray-600 flex-1">{step}</span>
                         </li>
                       ))}
-                    </ul>
+                    </ol>
                   </div>
                 )}
 
                 {/* Sources */}
                 {selectedRun.result.sources.length > 0 && (
-                  <div className="mb-6">
-                    <div className="text-sm text-muted-foreground mb-2">Sources</div>
-                    <div className="space-y-2">
+                  <div className="mb-5">
+                    <div className="text-sm font-medium text-gray-700 mb-2">Knowledge Sources</div>
+                    <div className="space-y-1">
                       {selectedRun.result.sources.map((source, index) => (
                         <a
                           key={index}
                           href={source.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700"
+                          className="flex items-center justify-between p-2 rounded-md hover:bg-gray-50 transition-colors group"
                         >
-                          <span>{source.title}</span>
-                          <ExternalLink className="w-3 h-3" />
+                          <span className="text-sm text-gray-500 group-hover:text-gray-800 transition-colors">{source.title}</span>
+                          <ExternalLink className="w-3 h-3 text-gray-400 group-hover:text-blue-500 transition-colors" />
                         </a>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* Confidence Score */}
-                <div className="flex items-center justify-between pt-4 border-t border-border">
-                  <div className="text-sm text-muted-foreground">Confidence Score</div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-blue-600 rounded-full"
-                        style={{ width: `${selectedRun.result.confidence * 100}%` }}
-                      />
-                    </div>
-                    <span className="text-sm">{Math.round(selectedRun.result.confidence * 100)}%</span>
-                  </div>
-                </div>
-
                 {/* Run ID */}
-                <div className="flex items-center justify-between pt-4 border-t border-border mt-4">
+                <div className="flex items-center justify-between pt-4 border-t border-border">
                   <div className="text-sm text-muted-foreground">Run ID</div>
-                  <div className="text-sm font-mono">{selectedRun.run_id}</div>
+                  <div className="text-sm font-mono text-gray-500">{selectedRun.run_id}</div>
                 </div>
               </div>
             )}
@@ -514,7 +555,7 @@ export function RunsPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => { setFbOutcome('success'); setFbRecorded(false); }}
-                      className={`px-4 py-2 rounded-md text-sm border transition-colors ${
+                      className={`px-4 py-1.5 rounded-md text-sm border transition-colors ${
                         fbOutcome === 'success'
                           ? 'border-green-500 bg-green-50 text-green-700'
                           : 'border-border hover:bg-gray-50'
@@ -524,7 +565,7 @@ export function RunsPage() {
                     </button>
                     <button
                       onClick={() => { setFbOutcome('fail'); setFbRecorded(false); }}
-                      className={`px-4 py-2 rounded-md text-sm border transition-colors ${
+                      className={`px-4 py-1.5 rounded-md text-sm border transition-colors ${
                         fbOutcome === 'fail'
                           ? 'border-red-500 bg-red-50 text-red-700'
                           : 'border-border hover:bg-gray-50'
@@ -540,7 +581,7 @@ export function RunsPage() {
                     <select
                       value={fbReason}
                       onChange={e => { setFbReason(e.target.value); setFbRecorded(false); }}
-                      className="w-full px-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-1.5 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="resolved">Resolved</option>
                       <option value="partial">Partial</option>
@@ -558,17 +599,21 @@ export function RunsPage() {
                       onChange={e => { setFbNotes(e.target.value); setFbRecorded(false); }}
                       rows={2}
                       placeholder="Any additional comments..."
-                      className="w-full px-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                      className="w-full px-3 py-1.5 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                     />
                   </div>
 
-                  {/* Submit */}
+                  {/* Submit — enterprise green with check icon */}
                   <button
                     onClick={handleSubmitFeedback}
                     disabled={!fbOutcome || fbSubmitting}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm disabled:opacity-50"
+                    className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-700 text-white rounded-md hover:bg-emerald-800 active:bg-emerald-900 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {fbSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
+                    {fbSubmitting ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Check className="w-4 h-4" />
+                    )}
                     {fbRecorded ? 'Resubmit' : 'Submit Feedback'}
                   </button>
                 </div>
