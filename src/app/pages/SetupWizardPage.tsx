@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { ChevronLeft, ChevronRight, Plus, Trash2, CheckCircle, XCircle, Loader2, LogOut, FolderOpen } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Trash2, CheckCircle, XCircle, Loader2, LogOut, FolderOpen, CornerDownRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { SetupStepper } from '../components/SetupStepper';
-import { addTenant, getTenantById, updateTenant, type ClassificationLevel } from '../data/mockData';
+import { addTenant, getTenantById, updateTenant, type ClassificationNode } from '../data/mockData';
 import { useGoogleAuth } from '../auth/GoogleAuthContext';
 import { testDriveFolder, scaffoldDrive, uploadSchemaFile, type ScaffoldProgress } from '../services/google-drive';
 
@@ -18,6 +18,118 @@ const steps = [
 
 type ConnectionStatus = 'idle' | 'testing' | 'success' | 'error';
 
+// --- Classification tree helpers ---
+
+function TreeEditor({
+  nodes,
+  onChange,
+  depth = 0,
+  maxDepth = 4,
+}: {
+  nodes: ClassificationNode[];
+  onChange: (nodes: ClassificationNode[]) => void;
+  depth?: number;
+  maxDepth?: number;
+}) {
+  const updateName = (index: number, name: string) => {
+    const updated = [...nodes];
+    updated[index] = { ...updated[index], name };
+    onChange(updated);
+  };
+
+  const updateChildren = (index: number, children: ClassificationNode[]) => {
+    const updated = [...nodes];
+    updated[index] = { ...updated[index], children };
+    onChange(updated);
+  };
+
+  const addNode = () => {
+    onChange([...nodes, { name: '', children: [] }]);
+  };
+
+  const removeNode = (index: number) => {
+    onChange(nodes.filter((_, i) => i !== index));
+  };
+
+  const addChild = (index: number) => {
+    const updated = [...nodes];
+    updated[index] = {
+      ...updated[index],
+      children: [...updated[index].children, { name: '', children: [] }],
+    };
+    onChange(updated);
+  };
+
+  return (
+    <div className={depth > 0 ? 'ml-6 border-l border-border pl-3 mt-1' : ''}>
+      {nodes.map((node, index) => (
+        <div key={index} className="mb-1.5">
+          <div className="flex items-center gap-2">
+            {depth > 0 && <CornerDownRight className="w-3 h-3 text-muted-foreground shrink-0" />}
+            <input
+              type="text"
+              value={node.name}
+              onChange={(e) => updateName(index, e.target.value)}
+              placeholder={depth === 0 ? 'e.g., Software' : 'e.g., Email'}
+              className="flex-1 px-2 py-1 border border-border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {depth < maxDepth - 1 && (
+              <button
+                onClick={() => addChild(index)}
+                title="Add child"
+                className="p-1 hover:bg-blue-50 rounded transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5 text-blue-600" />
+              </button>
+            )}
+            <button
+              onClick={() => removeNode(index)}
+              title="Remove"
+              className="p-1 hover:bg-red-50 rounded transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-red-600" />
+            </button>
+          </div>
+          {node.children.length > 0 && (
+            <TreeEditor
+              nodes={node.children}
+              onChange={(children) => updateChildren(index, children)}
+              depth={depth + 1}
+              maxDepth={maxDepth}
+            />
+          )}
+        </div>
+      ))}
+      <button
+        onClick={addNode}
+        className="flex items-center gap-1.5 px-2 py-1 text-xs text-muted-foreground hover:text-foreground hover:bg-gray-100 rounded transition-colors mt-1"
+      >
+        <Plus className="w-3 h-3" />
+        Add {depth === 0 ? 'category' : 'item'}
+      </button>
+    </div>
+  );
+}
+
+function renderTreePreview(nodes: ClassificationNode[], indent: number): React.ReactElement[] {
+  const pad = '\u00A0'.repeat(indent);
+  const elements: React.ReactElement[] = [];
+  for (const node of nodes) {
+    if (!node.name) continue;
+    elements.push(<div key={`${indent}-${node.name}`}>{pad}{node.name}/</div>);
+    if (node.children.length > 0) {
+      elements.push(...renderTreePreview(node.children, indent + 2));
+    }
+  }
+  return elements;
+}
+
+function countClassificationNodes(nodes: ClassificationNode[]): number {
+  return nodes.reduce((_sum, n) => (n.name ? 1 + countClassificationNodes(n.children) : countClassificationNodes(n.children)), 0);
+}
+
+// --- Main component ---
+
 export function SetupWizardPage() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -28,14 +140,16 @@ export function SetupWizardPage() {
   const [instanceUrl, setInstanceUrl] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [classificationLevels, setClassificationLevels] = useState<ClassificationLevel[]>([
-    { levelKey: 'department', displayName: 'Department', required: true },
+  const [classificationNodes, setClassificationNodes] = useState<ClassificationNode[]>([
+    { name: '', children: [] },
   ]);
   const [folderId, setFolderId] = useState('');
   const [folderName, setFolderName] = useState('');
 
   // Google Auth
-  const { isAuthenticated, accessToken, userEmail, signIn, signOut: googleSignOut, isInitialized, initError } = useGoogleAuth();
+  const { isAuthenticated, accessToken, userEmail, signIn, signOut: googleSignOut, isInitialized, initError, configureClientId, needsClientId } = useGoogleAuth();
+  const [clientIdInput, setClientIdInput] = useState('');
+  const [clientIdLoading, setClientIdLoading] = useState(false);
 
   // Connection test state
   const [snowStatus, setSnowStatus] = useState<ConnectionStatus>('idle');
@@ -59,7 +173,7 @@ export function SetupWizardPage() {
           setUsername(existing.servicenow.username);
         }
         if (existing.classificationSchema?.length) {
-          setClassificationLevels(existing.classificationSchema);
+          setClassificationNodes(existing.classificationSchema);
         }
         if (existing.googleDrive) {
           setFolderId(existing.googleDrive.folderId);
@@ -132,13 +246,13 @@ export function SetupWizardPage() {
         accessToken,
         folderId.trim(),
         tenantIdForScaffold,
-        classificationLevels.filter((l) => l.displayName),
+        classificationNodes,
         (progress) => setScaffoldProgress(progress),
       );
 
       // Upload classification schema
       setScaffoldProgress((prev) => prev ? { ...prev, message: 'Uploading classification_schema.json...' } : prev);
-      await uploadSchemaFile(accessToken, schemaFolderId, classificationLevels.filter((l) => l.levelKey));
+      await uploadSchemaFile(accessToken, schemaFolderId, classificationNodes);
 
       setScaffoldStatus('done');
       toast.success('Drive scaffold applied successfully');
@@ -154,7 +268,7 @@ export function SetupWizardPage() {
       name: tenantName || 'Untitled Tenant',
       status: 'Active' as const,
       servicenow: instanceUrl ? { instanceUrl, username } : undefined,
-      classificationSchema: classificationLevels.filter((l) => l.levelKey),
+      classificationSchema: classificationNodes.filter((n) => n.name),
       googleDrive: folderId ? { folderId, folderName: folderName || undefined, scaffolded: scaffoldStatus === 'done' } : undefined,
     };
 
@@ -178,51 +292,6 @@ export function SetupWizardPage() {
   const handleBack = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const addLevel = () => {
-    setClassificationLevels([
-      ...classificationLevels,
-      { levelKey: '', displayName: '', required: false },
-    ]);
-  };
-
-  const removeLevel = (index: number) => {
-    setClassificationLevels(classificationLevels.filter((_, i) => i !== index));
-  };
-
-  const updateLevel = (index: number, field: keyof ClassificationLevel, value: string | boolean) => {
-    const updated = [...classificationLevels];
-    updated[index] = { ...updated[index], [field]: value };
-    setClassificationLevels(updated);
-  };
-
-  const renderConnectionStatus = (status: ConnectionStatus, error: string) => {
-    switch (status) {
-      case 'testing':
-        return (
-          <span className="flex items-center gap-2 text-sm text-blue-600">
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Testing connection...
-          </span>
-        );
-      case 'success':
-        return (
-          <span className="flex items-center gap-2 text-sm text-green-600">
-            <CheckCircle className="w-4 h-4" />
-            Connection successful
-          </span>
-        );
-      case 'error':
-        return (
-          <span className="flex items-center gap-2 text-sm text-red-600">
-            <XCircle className="w-4 h-4" />
-            {error || 'Connection failed'}
-          </span>
-        );
-      default:
-        return null;
     }
   };
 
@@ -289,7 +358,24 @@ export function SetupWizardPage() {
               >
                 Test Connection
               </button>
-              {renderConnectionStatus(snowStatus, snowError)}
+              {snowStatus === 'testing' && (
+                <span className="flex items-center gap-2 text-sm text-blue-600">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Testing connection...
+                </span>
+              )}
+              {snowStatus === 'success' && (
+                <span className="flex items-center gap-2 text-sm text-green-600">
+                  <CheckCircle className="w-4 h-4" />
+                  Connection successful
+                </span>
+              )}
+              {snowStatus === 'error' && (
+                <span className="flex items-center gap-2 text-sm text-red-600">
+                  <XCircle className="w-4 h-4" />
+                  {snowError || 'Connection failed'}
+                </span>
+              )}
             </div>
           </div>
         );
@@ -297,87 +383,61 @@ export function SetupWizardPage() {
       case 2:
         return (
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground mb-4">
-              Define the hierarchical classification schema for organizing documents.
+            <p className="text-sm text-muted-foreground mb-2">
+              Define the classification hierarchy for organizing documents. You can nest categories up to 4 levels deep.
             </p>
-            <div className="border border-border rounded-lg overflow-hidden">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b border-border">
-                  <tr>
-                    <th className="text-left px-4 py-2 text-xs text-muted-foreground uppercase">
-                      Level Key
-                    </th>
-                    <th className="text-left px-4 py-2 text-xs text-muted-foreground uppercase">
-                      Display Name
-                    </th>
-                    <th className="text-center px-4 py-2 text-xs text-muted-foreground uppercase">
-                      Required
-                    </th>
-                    <th className="w-16"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {classificationLevels.map((level, index) => (
-                    <tr key={index}>
-                      <td className="px-4 py-2">
-                        <input
-                          type="text"
-                          value={level.levelKey}
-                          onChange={(e) =>
-                            updateLevel(index, 'levelKey', e.target.value)
-                          }
-                          placeholder="e.g., department"
-                          className="w-full px-2 py-1 border border-border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </td>
-                      <td className="px-4 py-2">
-                        <input
-                          type="text"
-                          value={level.displayName}
-                          onChange={(e) =>
-                            updateLevel(index, 'displayName', e.target.value)
-                          }
-                          placeholder="e.g., Department"
-                          className="w-full px-2 py-1 border border-border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </td>
-                      <td className="px-4 py-2 text-center">
-                        <input
-                          type="checkbox"
-                          checked={level.required}
-                          onChange={(e) =>
-                            updateLevel(index, 'required', e.target.checked)
-                          }
-                          className="w-4 h-4 accent-blue-600"
-                        />
-                      </td>
-                      <td className="px-4 py-2">
-                        <button
-                          onClick={() => removeLevel(index)}
-                          className="p-1 hover:bg-red-50 rounded transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4 text-red-600" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="border border-border rounded-lg p-4">
+              <TreeEditor
+                nodes={classificationNodes}
+                onChange={setClassificationNodes}
+                maxDepth={4}
+              />
             </div>
-            <button
-              onClick={addLevel}
-              className="flex items-center gap-2 px-3 py-2 bg-white border border-border rounded-md hover:bg-gray-50 transition-colors text-sm"
-            >
-              <Plus className="w-4 h-4" />
-              Add Level
-            </button>
+            <p className="text-xs text-muted-foreground">
+              Example: Software → Email, Database &nbsp;|&nbsp; Network → Access, VPN
+            </p>
           </div>
         );
 
       case 3:
         return (
           <div className="space-y-4">
-            {/* Auth error / not initialized */}
+            {/* Client ID input when env var is not set */}
+            {needsClientId && !isInitialized && (
+              <div className="border border-border rounded-lg p-4 bg-gray-50 space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Enter your Google Cloud OAuth Client ID to enable Google Drive integration.
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={clientIdInput}
+                    onChange={(e) => setClientIdInput(e.target.value)}
+                    placeholder="123456789-abc.apps.googleusercontent.com"
+                    className="flex-1 px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  />
+                  <button
+                    onClick={async () => {
+                      if (!clientIdInput.trim()) return;
+                      setClientIdLoading(true);
+                      try {
+                        await configureClientId(clientIdInput.trim());
+                      } catch {
+                        toast.error('Failed to initialize Google Auth');
+                      } finally {
+                        setClientIdLoading(false);
+                      }
+                    }}
+                    disabled={!clientIdInput.trim() || clientIdLoading}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm disabled:opacity-50 whitespace-nowrap"
+                  >
+                    {clientIdLoading ? 'Connecting...' : 'Connect'}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Init error (e.g. GIS script failed to load) */}
             {initError && (
               <div className="border border-yellow-300 bg-yellow-50 rounded-lg p-4 text-sm text-yellow-800">
                 {initError}
@@ -386,18 +446,19 @@ export function SetupWizardPage() {
 
             {/* Sign-in section */}
             {!isAuthenticated ? (
-              <div className="space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  Sign in with your Google account to connect to Google Drive.
-                </p>
-                <button
-                  onClick={handleSignIn}
-                  disabled={!isInitialized}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm disabled:opacity-50"
-                >
-                  Sign in with Google
-                </button>
-              </div>
+              isInitialized ? (
+                <div className="space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    Sign in with your Google account to connect to Google Drive.
+                  </p>
+                  <button
+                    onClick={handleSignIn}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    Sign in with Google
+                  </button>
+                </div>
+              ) : null
             ) : (
               <div className="space-y-4">
                 {/* Authenticated user info */}
@@ -449,7 +510,7 @@ export function SetupWizardPage() {
                   {driveStatus === 'success' && (
                     <span className="flex items-center gap-2 text-sm text-green-600">
                       <FolderOpen className="w-4 h-4" />
-                      Connected to "{folderName}"
+                      Connected to &ldquo;{folderName}&rdquo;
                     </span>
                   )}
                   {driveStatus === 'error' && (
@@ -466,18 +527,18 @@ export function SetupWizardPage() {
 
       case 4: {
         const canScaffold = isAuthenticated && driveStatus === 'success' && folderId.trim();
-        const levels = classificationLevels.filter((l) => l.displayName);
         const tenantIdForPreview = id || tenantName || 'default';
+        const nodeCount = countClassificationNodes(classificationNodes);
         return (
           <div className="space-y-4">
             {!canScaffold ? (
               <div className="border border-yellow-300 bg-yellow-50 rounded-lg p-4 text-sm text-yellow-800">
-                Please complete Step 3 first: sign in with Google and test your folder connection.
+                Please complete Step 4 first: sign in with Google and test your folder connection.
               </div>
             ) : (
               <>
                 <p className="text-sm text-muted-foreground mb-2">
-                  The following folder structure will be created in "{folderName}":
+                  The following folder structure will be created in &ldquo;{folderName}&rdquo;:
                 </p>
 
                 {/* Tree preview */}
@@ -488,12 +549,10 @@ export function SetupWizardPage() {
                   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_schema/</div>
                   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;classification_schema.json</div>
                   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dimensions/</div>
-                  {levels.map((l, i) => (
-                    <div key={i}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{l.displayName}/</div>
-                  ))}
-                  {levels.length === 0 && (
-                    <div className="italic">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(no classification levels defined)</div>
-                  )}
+                  {nodeCount > 0
+                    ? renderTreePreview(classificationNodes, 8)
+                    : <div className="italic">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(no classification defined)</div>
+                  }
                   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;documents/</div>
                 </div>
 
@@ -550,7 +609,7 @@ export function SetupWizardPage() {
             <div className="border border-border rounded-lg p-6 bg-green-50">
               <h3 className="text-sm mb-2">Ready to Activate</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                All configuration steps are complete. Click "Activate" to enable this
+                All configuration steps are complete. Click &ldquo;Activate&rdquo; to enable this
                 tenant.
               </p>
               <div className="space-y-2 text-sm">
@@ -564,7 +623,7 @@ export function SetupWizardPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Classification:</span>
-                  <span>{classificationLevels.length} levels</span>
+                  <span>{countClassificationNodes(classificationNodes)} categories</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Google Drive:</span>

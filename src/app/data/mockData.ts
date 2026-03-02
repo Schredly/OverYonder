@@ -7,7 +7,7 @@ export interface Tenant {
     instanceUrl: string;
     username: string;
   };
-  classificationSchema?: ClassificationLevel[];
+  classificationSchema?: ClassificationNode[];
   googleDrive?: {
     folderId: string;
     folderName?: string;
@@ -19,6 +19,11 @@ export interface ClassificationLevel {
   levelKey: string;
   displayName: string;
   required: boolean;
+}
+
+export interface ClassificationNode {
+  name: string;
+  children: ClassificationNode[];
 }
 
 export interface Run {
@@ -56,8 +61,14 @@ export const mockTenants: Tenant[] = [
       username: 'admin@acme.com',
     },
     classificationSchema: [
-      { levelKey: 'department', displayName: 'Department', required: true },
-      { levelKey: 'team', displayName: 'Team', required: false },
+      { name: 'Software', children: [
+        { name: 'Email', children: [] },
+        { name: 'Database', children: [] },
+      ]},
+      { name: 'Network', children: [
+        { name: 'Access', children: [] },
+        { name: 'VPN', children: [] },
+      ]},
     ],
     googleDrive: {
       folderId: '1abc123def456',

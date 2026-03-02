@@ -86,6 +86,35 @@ export async function ensureFolder(
   return { id: created.id, name: created.name, created: true };
 }
 
+export interface ClassificationNode {
+  name: string;
+  children: ClassificationNode[];
+}
+
+function countNodes(nodes: ClassificationNode[]): number {
+  return nodes.reduce((_sum, n) => (n.name ? 1 + countNodes(n.children) : countNodes(n.children)), 0);
+}
+
+/**
+ * Recursively create folders for a classification tree.
+ */
+async function createFolderTree(
+  accessToken: string,
+  parentId: string,
+  nodes: ClassificationNode[],
+  pathPrefix: string,
+  report: (message: string) => void,
+): Promise<void> {
+  for (const node of nodes) {
+    if (!node.name) continue;
+    const folder = await ensureFolder(accessToken, node.name, parentId);
+    report(`${folder.created ? 'Created' : 'Found'} ${pathPrefix}${node.name}/`);
+    if (node.children.length > 0) {
+      await createFolderTree(accessToken, folder.id, node.children, `${pathPrefix}${node.name}/`, report);
+    }
+  }
+}
+
 /**
  * Creates the full scaffold tree under the root folder:
  *   rootFolder/
@@ -93,20 +122,18 @@ export async function ensureFolder(
  *       {tenantId}/
  *         _schema/
  *         dimensions/
- *           {Level1DisplayName}/
- *           {Level2DisplayName}/
+ *           {recursive classification tree}
  *         documents/
  */
 export async function scaffoldDrive(
   accessToken: string,
   rootFolderId: string,
   tenantId: string,
-  classificationLevels: { displayName: string }[],
+  classificationNodes: ClassificationNode[],
   onProgress?: (progress: ScaffoldProgress) => void,
 ): Promise<{ schemaFolderId: string }> {
-  const levels = classificationLevels.filter((l) => l.displayName);
-  // Total folders: AgenticKnowledge + tenantId + _schema + dimensions + each level + documents
-  const total = 4 + levels.length;
+  // Total: AgenticKnowledge + tenantId + _schema + dimensions + tree nodes + documents
+  const total = 5 + countNodes(classificationNodes);
   let current = 0;
 
   const report = (message: string) => {
@@ -130,11 +157,8 @@ export async function scaffoldDrive(
   const dims = await ensureFolder(accessToken, 'dimensions', tenant.id);
   report(`${dims.created ? 'Created' : 'Found'} dimensions/`);
 
-  // Each classification level folder
-  for (const level of levels) {
-    const folder = await ensureFolder(accessToken, level.displayName, dims.id);
-    report(`${folder.created ? 'Created' : 'Found'} dimensions/${level.displayName}/`);
-  }
+  // Recursive classification tree
+  await createFolderTree(accessToken, dims.id, classificationNodes, 'dimensions/', report);
 
   // documents
   const docs = await ensureFolder(accessToken, 'documents', tenant.id);

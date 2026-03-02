@@ -9,11 +9,14 @@ interface GoogleAuthContextValue {
   signOut: () => Promise<void>;
   isInitialized: boolean;
   initError: string | null;
+  /** Manually provide a client ID at runtime (when env var is not set) */
+  configureClientId: (clientId: string) => Promise<void>;
+  needsClientId: boolean;
 }
 
 const GoogleAuthContext = createContext<GoogleAuthContextValue | null>(null);
 
-function waitForGis(timeoutMs = 10_000): Promise<void> {
+function waitForGis(signal: AbortSignal, timeoutMs = 10_000): Promise<void> {
   return new Promise((resolve, reject) => {
     if (typeof google !== 'undefined' && google.accounts?.oauth2) {
       resolve();
@@ -21,6 +24,11 @@ function waitForGis(timeoutMs = 10_000): Promise<void> {
     }
     const start = Date.now();
     const interval = setInterval(() => {
+      if (signal.aborted) {
+        clearInterval(interval);
+        reject(new Error('Aborted'));
+        return;
+      }
       if (typeof google !== 'undefined' && google.accounts?.oauth2) {
         clearInterval(interval);
         resolve();
@@ -39,21 +47,44 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
+  const [needsClientId, setNeedsClientId] = useState(false);
+
+  const initWithClientId = useCallback(async (clientId: string) => {
+    setInitError(null);
+    const controller = new AbortController();
+    try {
+      await waitForGis(controller.signal);
+      initGoogleAuth(clientId);
+      setIsInitialized(true);
+      setNeedsClientId(false);
+    } catch (err) {
+      if (!controller.signal.aborted) {
+        setInitError(err instanceof Error ? err.message : 'Failed to initialize');
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     if (!clientId) {
-      setInitError('VITE_GOOGLE_CLIENT_ID is not set. Add it to your .env file.');
+      setNeedsClientId(true);
       return;
     }
 
-    waitForGis()
+    const controller = new AbortController();
+    waitForGis(controller.signal)
       .then(() => {
-        initGoogleAuth(clientId);
-        setIsInitialized(true);
+        if (!controller.signal.aborted) {
+          initGoogleAuth(clientId);
+          setIsInitialized(true);
+        }
       })
       .catch((err) => {
-        setInitError(err.message);
+        if (!controller.signal.aborted) {
+          setInitError(err.message);
+        }
       });
+    return () => controller.abort();
   }, []);
 
   const signIn = useCallback(async () => {
@@ -106,6 +137,8 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
         signOut,
         isInitialized,
         initError,
+        configureClientId: initWithClientId,
+        needsClientId,
       }}
     >
       {children}
@@ -113,10 +146,19 @@ export function GoogleAuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+const FALLBACK: GoogleAuthContextValue = {
+  isAuthenticated: false,
+  accessToken: null,
+  userEmail: null,
+  signIn: async () => {},
+  signOut: async () => {},
+  isInitialized: false,
+  initError: 'GoogleAuthProvider not found',
+  configureClientId: async () => {},
+  needsClientId: true,
+};
+
 export function useGoogleAuth(): GoogleAuthContextValue {
   const ctx = useContext(GoogleAuthContext);
-  if (!ctx) {
-    throw new Error('useGoogleAuth must be used within a GoogleAuthProvider');
-  }
-  return ctx;
+  return ctx ?? FALLBACK;
 }
