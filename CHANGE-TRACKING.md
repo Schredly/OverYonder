@@ -357,4 +357,91 @@ src/app/
 
 ---
 
-*Next change will be #005.*
+## #005 — 2026-03-02 — Server-Side Google Drive Provider (Token Passthrough)
+
+**What happened:**
+Moved all Google Drive API calls from the browser (`google-drive.ts`) to a backend service (`GoogleDriveProvider`). The frontend still uses GIS for OAuth and passes the access token in request bodies — the backend uses it for the duration of the request and never stores it. This consolidates what were previously multi-step client workflows (test folder + save config, scaffold + upload schema + save result) into single backend calls, and enables future backend agents to reuse the same Drive provider.
+
+**New files created:**
+
+- `backend/services/__init__.py` — Empty package file.
+
+- `backend/services/google_drive.py` — Stateless `GoogleDriveProvider` class (every method receives `access_token`, no storage):
+  - `test_folder(access_token, folder_id)` — GET `/drive/v3/files/{id}`, validates mimeType is folder, returns `{id, name}`
+  - `ensure_folder(access_token, name, parent_id)` — Search by name+parent+mimeType+not-trashed; create if missing. Returns `{id, name, created}`. Uses `supportsAllDrives=true` + `includeItemsFromAllDrives=true`
+  - `scaffold(access_token, root_folder_id, tenant_id, schema_tree)` — Creates `AgenticKnowledge/{tenant_id}/_schema/`, `dimensions/{recursive tree}/`, `documents/`. Returns `{schema_folder_id, progress_log, created_count}`
+  - `upload_schema(access_token, schema_folder_id, schema_tree)` — Multipart/related upload of `classification_schema.json`, idempotent (search then create/PATCH). Constructs raw `multipart/related` body (Google requires this, not `multipart/form-data`)
+  - `_create_folder_tree(...)` — Recursive helper for classification nodes
+  - `GoogleDriveError(status_code, message)` — Custom exception, caught by endpoints and mapped to HTTPException
+  - Uses `httpx.AsyncClient()` as context manager per call
+
+**Files modified:**
+
+- `backend/requirements.txt` — Added `httpx>=0.27.0`.
+
+- `backend/models.py` — Added 4 new Pydantic models:
+  - `TestDriveFolderRequest(access_token, folder_id)` — Request body for test endpoint
+  - `ScaffoldApplyRequest(access_token, root_folder_id, schema_tree: list[ClassificationNodeModel])` — Request body for scaffold endpoint
+  - `TestDriveFolderResponse(folder_id, folder_name)` — Response from test endpoint
+  - `ScaffoldApplyResponse(schema_folder_id, progress_log: list[str], created_count: int)` — Response from scaffold endpoint
+
+- `backend/routers/admin.py` — Added 2 new endpoints + module-level `_drive = GoogleDriveProvider()`:
+  - `POST /api/admin/{tenant_id}/google-drive/test` — Calls `_drive.test_folder()`, persists drive config via `drive_config_store.upsert()` in one shot (combines what was previously two separate client-side calls). Returns `TestDriveFolderResponse`. Catches `GoogleDriveError` → `HTTPException`.
+  - `POST /api/admin/{tenant_id}/scaffold-apply` — Calls `_drive.scaffold()` then `_drive.upload_schema()`, persists scaffold result via `drive_config_store.upsert(scaffolded=True, ...)`. Returns `ScaffoldApplyResponse`. Catches `GoogleDriveError` → `HTTPException`.
+
+- `src/app/services/api.ts` — Added 2 new functions + 2 response types:
+  - `TestDriveFolderResponse { folder_id, folder_name }` interface
+  - `ScaffoldApplyResponse { schema_folder_id, progress_log: string[], created_count }` interface
+  - `testDriveFolder(tenantId, accessToken, folderId)` — POST to `/admin/{tenantId}/google-drive/test`
+  - `scaffoldApply(tenantId, accessToken, rootFolderId, schemaTree)` — POST to `/admin/{tenantId}/scaffold-apply`
+
+- `src/app/pages/SetupWizardPage.tsx` — Major rewrite of Drive-related logic:
+  - **Removed import:** `testDriveFolder, scaffoldDrive, uploadSchemaFile, type ScaffoldProgress` from `../services/google-drive`
+  - **Replaced state:** `scaffoldProgress: ScaffoldProgress | null` → `scaffoldLog: string[]` + `scaffoldCreatedCount: number`
+  - **`handleTestGoogleDrive`:** Was two calls (client-side `testDriveFolder()` → `api.putDriveConfig()`). Now single call: `api.testDriveFolder(tenantId, accessToken, folderId)`. Backend tests the folder and persists config. Added `tenantId` null guard.
+  - **`handleApplyScaffold`:** Was three calls (client-side `scaffoldDrive()` → `uploadSchemaFile()` → `api.postScaffoldResult()`). Now single call: `api.scaffoldApply(tenantId, accessToken, folderId, classificationNodes)`. Backend does scaffold + upload + persist.
+  - **Scaffold UI (case 4):** Running state shows indeterminate spinner with `<Loader2>` (no real-time progress since it's a single request). Done state shows success message with `created_count`, plus collapsible `<details>` log with `Created` entries in green, `Found` entries in gray.
+
+**Files deleted:**
+
+- `src/app/services/google-drive.ts` — All functions (`testDriveFolder`, `ensureFolder`, `scaffoldDrive`, `uploadSchemaFile`) moved to `backend/services/google_drive.py`. `ScaffoldProgress` type no longer needed (replaced by server-returned `progress_log`). `ClassificationNode` type still exists in `mockData.ts`.
+
+**Updated project structure:**
+```
+backend/
+├── services/
+│   ├── __init__.py                # NEW — Empty package
+│   └── google_drive.py            # NEW — GoogleDriveProvider (httpx-based)
+├── models.py                      # Added 4 Drive request/response models
+├── routers/
+│   └── admin.py                   # Added google-drive/test + scaffold-apply endpoints
+└── requirements.txt               # Added httpx>=0.27.0
+
+src/app/
+├── services/
+│   ├── api.ts                     # Added testDriveFolder() + scaffoldApply()
+│   └── (google-drive.ts DELETED)  # All logic moved to backend
+├── pages/
+│   └── SetupWizardPage.tsx        # Rewired to backend API calls
+└── ...
+```
+
+**Key architecture decisions:**
+- **Token passthrough, not storage** — Backend receives `access_token` in each request body, uses it for the duration of that request, never persists it
+- **Module-level stateless provider** — `_drive = GoogleDriveProvider()` at module level is safe because the class holds no state
+- **Consolidated persistence** — Test+save and scaffold+upload+save are each a single backend call now, reducing frontend complexity and eliminating partial-failure states
+- **Raw multipart/related for upload** — Google's upload API requires `multipart/related` (not `multipart/form-data`), so the backend constructs the body manually with a UUID boundary
+- **httpx.AsyncClient per call** — Each method creates and closes its own client as a context manager, no connection pooling needed for wizard-frequency calls
+- **Progress log replaces real-time progress** — Since scaffold is now a single HTTP request, the client can't get incremental updates. Instead the backend returns a `progress_log` array shown in a collapsible `<details>` element after completion.
+
+**What GPT should know for next steps:**
+- `google-drive.ts` no longer exists — all Drive logic is server-side in `backend/services/google_drive.py`
+- The `GoogleDriveProvider` is stateless and reusable — future agent orchestration can import and use it directly
+- The frontend still handles Google OAuth via GIS (`GoogleAuthContext.tsx` + `google-auth.ts`) — only the access token is sent to the backend
+- `putDriveConfig` and `postScaffoldResult` API functions still exist in `api.ts` (the old endpoints still work) but are no longer called by the wizard — the new endpoints handle persistence internally
+- The `ScaffoldProgress` type is gone — replaced by `ScaffoldApplyResponse.progress_log: string[]`
+- `ClassificationNode` type is still imported from `mockData.ts` by `SetupWizardPage.tsx`
+
+---
+
+*Next change will be #006.*
