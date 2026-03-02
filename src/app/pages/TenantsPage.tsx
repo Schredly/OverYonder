@@ -1,33 +1,17 @@
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Plus, Trash2, Settings, Loader2 } from 'lucide-react';
-import { getTenants, deleteTenant, type TenantResponse } from '../services/api';
+import { deleteTenant } from '../services/api';
+import { useTenants } from '../context/TenantContext';
 import { format } from 'date-fns';
 
 export function TenantsPage() {
   const navigate = useNavigate();
-  const [tenants, setTenants] = useState<TenantResponse[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchTenants = async () => {
-    try {
-      const data = await getTenants();
-      setTenants(data);
-    } catch {
-      // silently handle — list will be empty
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchTenants();
-  }, []);
+  const { tenants, loading, refreshTenants } = useTenants();
 
   const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this tenant?')) {
       await deleteTenant(id);
-      await fetchTenants();
+      await refreshTenants();
     }
   };
 

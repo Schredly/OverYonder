@@ -1,20 +1,3 @@
-export interface Tenant {
-  id: string;
-  name: string;
-  status: 'Draft' | 'Active';
-  createdAt: string;
-  servicenow?: {
-    instanceUrl: string;
-    username: string;
-  };
-  classificationSchema?: ClassificationNode[];
-  googleDrive?: {
-    folderId: string;
-    folderName?: string;
-    scaffolded?: boolean;
-  };
-}
-
 export interface ClassificationNode {
   name: string;
   children: ClassificationNode[];
@@ -42,45 +25,6 @@ export interface RunResult {
   sources: { title: string; url: string }[];
   confidence: number;
 }
-
-// Mock data
-export const mockTenants: Tenant[] = [
-  {
-    id: '1',
-    name: 'Acme Corp',
-    status: 'Active',
-    createdAt: '2026-02-15T10:30:00Z',
-    servicenow: {
-      instanceUrl: 'https://acme.service-now.com',
-      username: 'admin@acme.com',
-    },
-    classificationSchema: [
-      { name: 'Software', children: [
-        { name: 'Email', children: [] },
-        { name: 'Database', children: [] },
-      ]},
-      { name: 'Network', children: [
-        { name: 'Access', children: [] },
-        { name: 'VPN', children: [] },
-      ]},
-    ],
-    googleDrive: {
-      folderId: '1abc123def456',
-    },
-  },
-  {
-    id: '2',
-    name: 'TechStart Inc',
-    status: 'Active',
-    createdAt: '2026-02-20T14:15:00Z',
-  },
-  {
-    id: '3',
-    name: 'Global Dynamics',
-    status: 'Draft',
-    createdAt: '2026-02-28T09:00:00Z',
-  },
-];
 
 export const mockRuns: Run[] = [
   {
@@ -279,13 +223,4 @@ export const mockRuns: Run[] = [
   },
 ];
 
-let currentTenantId: string | null = mockTenants[0]?.id || null;
-
-export const getCurrentTenant = (): Tenant | null => {
-  return mockTenants.find((t) => t.id === currentTenantId) || null;
-};
-
-export const setCurrentTenant = (id: string) => {
-  currentTenantId = id;
-};
 

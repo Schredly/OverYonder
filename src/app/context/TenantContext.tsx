@@ -1,0 +1,83 @@
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import { getTenants, type TenantResponse } from '../services/api';
+
+interface TenantContextValue {
+  tenants: TenantResponse[];
+  loading: boolean;
+  error: string | null;
+  refreshTenants: () => Promise<void>;
+  currentTenantId: string | null;
+  setCurrentTenantId: (id: string | null) => void;
+  currentTenant: TenantResponse | null;
+}
+
+const TenantContext = createContext<TenantContextValue | null>(null);
+
+export function TenantProvider({ children }: { children: ReactNode }) {
+  const [tenants, setTenants] = useState<TenantResponse[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentTenantId, setCurrentTenantId] = useState<string | null>(null);
+
+  const currentTenant = tenants.find((t) => t.id === currentTenantId) ?? null;
+
+  const refreshTenants = useCallback(async () => {
+    setError(null);
+    try {
+      const data = await getTenants();
+      setTenants(data);
+      // If current selection is no longer valid, reset to first tenant
+      setCurrentTenantId((prev) => {
+        if (prev && data.some((t) => t.id === prev)) return prev;
+        return data[0]?.id ?? null;
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load tenants');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Fetch on mount
+  useEffect(() => {
+    refreshTenants();
+  }, [refreshTenants]);
+
+  // Auto-select first tenant when tenants load and nothing is selected
+  useEffect(() => {
+    if (currentTenantId === null && tenants.length > 0) {
+      setCurrentTenantId(tenants[0].id);
+    }
+  }, [currentTenantId, tenants]);
+
+  return (
+    <TenantContext.Provider
+      value={{
+        tenants,
+        loading,
+        error,
+        refreshTenants,
+        currentTenantId,
+        setCurrentTenantId,
+        currentTenant,
+      }}
+    >
+      {children}
+    </TenantContext.Provider>
+  );
+}
+
+const FALLBACK: TenantContextValue = {
+  tenants: [],
+  loading: false,
+  error: 'TenantProvider not found',
+  refreshTenants: async () => {},
+  currentTenantId: null,
+  setCurrentTenantId: () => {},
+  currentTenant: null,
+};
+
+export function useTenants(): TenantContextValue {
+  const ctx = useContext(TenantContext);
+  return ctx ?? FALLBACK;
+}

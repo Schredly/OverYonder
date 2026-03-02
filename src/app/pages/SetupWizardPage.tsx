@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { SetupStepper } from '../components/SetupStepper';
 import { type ClassificationNode } from '../data/mockData';
 import { useGoogleAuth } from '../auth/GoogleAuthContext';
+import { useTenants } from '../context/TenantContext';
 import { testDriveFolder, scaffoldDrive, uploadSchemaFile, type ScaffoldProgress } from '../services/google-drive';
 import * as api from '../services/api';
 
@@ -134,6 +135,7 @@ function countClassificationNodes(nodes: ClassificationNode[]): number {
 export function SetupWizardPage() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { setCurrentTenantId, refreshTenants } = useTenants();
   const [currentStep, setCurrentStep] = useState(0);
 
   // Tenant ID — set from URL param or after create
@@ -184,6 +186,7 @@ export function SetupWizardPage() {
         ]);
         setTenantName(tenant.name);
         setTenantId(tenant.id);
+        setCurrentTenantId(tenant.id);
         if (schema && schema.schema_tree.length > 0) {
           setClassificationNodes(schema.schema_tree);
         }
@@ -302,6 +305,7 @@ export function SetupWizardPage() {
     try {
       const result = await api.activateTenant(tenantId);
       setActivationResult(result);
+      await refreshTenants();
       toast.success('Tenant activated');
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Activation failed');
@@ -323,6 +327,8 @@ export function SetupWizardPage() {
         }
         const tenant = await api.createTenant(tenantName.trim());
         setTenantId(tenant.id);
+        await refreshTenants();
+        setCurrentTenantId(tenant.id);
         navigate(`/tenants/setup/${tenant.id}`, { replace: true });
       }
 
