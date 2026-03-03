@@ -41,6 +41,103 @@ function buildSkills(events: api.AgentEventResponse[]): SkillState[] {
   return Array.from(map.values());
 }
 
+// --- Structured Trace Renderer ---
+
+function SkillTrace({ events }: { events: api.AgentEventResponse[] }) {
+  if (events.length === 0) return null;
+
+  const thinking = events.find(e => e.event_type === 'thinking');
+  const toolCall = events.find(e => e.event_type === 'tool_call');
+  const toolResult = events.find(e => e.event_type === 'tool_result');
+  const errorEv = events.find(e => e.event_type === 'error');
+  const completeEv = events.find(e => e.event_type === 'complete');
+
+  // Duration calculation
+  let durationMs: number | null = null;
+  if (events.length >= 2) {
+    const first = new Date(events[0].timestamp).getTime();
+    const last = new Date(events[events.length - 1].timestamp).getTime();
+    const diff = last - first;
+    if (!isNaN(diff) && diff > 0) {
+      durationMs = diff;
+    }
+  }
+
+  const m = (obj: Record<string, unknown> | null | undefined, key: string): string | undefined => {
+    const v = obj?.[key];
+    return v != null ? String(v) : undefined;
+  };
+
+  const tcMeta = toolCall?.metadata;
+  const trMeta = toolResult?.metadata;
+  const cMeta = completeEv?.metadata;
+
+  return (
+    <div className="space-y-2">
+      {/* Intent */}
+      {thinking && (
+        <div>
+          <div className="text-xs font-medium text-gray-400 mb-0.5">Intent</div>
+          <p className="text-sm text-gray-500">{thinking.summary}</p>
+        </div>
+      )}
+
+      {/* Tool Call */}
+      {toolCall && (
+        <div className="rounded-md bg-gray-50 border border-gray-200 p-3">
+          <div className="text-xs font-medium text-gray-400 mb-1">Tool Call</div>
+          <p className="text-sm text-gray-600">{toolCall.summary}</p>
+          {tcMeta && (
+            <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5">
+              {m(tcMeta, 'model') && <span className="text-xs text-gray-400">Model: {m(tcMeta, 'model')}</span>}
+              {m(tcMeta, 'latency_ms') && <span className="text-xs text-gray-400">{m(tcMeta, 'latency_ms')}ms</span>}
+              {m(tcMeta, 'tool_name') && <span className="text-xs text-gray-400">Tool: {m(tcMeta, 'tool_name')}</span>}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Result */}
+      {toolResult && (
+        <div>
+          <div className="text-xs font-medium text-gray-400 mb-0.5">Result</div>
+          <p className="text-sm text-gray-600">{toolResult.summary}</p>
+          {(toolResult.confidence != null || m(trMeta, 'doc_count') || m(trMeta, 'model') || m(trMeta, 'latency_ms')) && (
+            <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
+              {toolResult.confidence != null && (
+                <span className="text-xs text-gray-400">Confidence: {Math.round(toolResult.confidence * 100)}%</span>
+              )}
+              {m(trMeta, 'doc_count') && <span className="text-xs text-gray-400">Docs: {m(trMeta, 'doc_count')}</span>}
+              {m(trMeta, 'model') && <span className="text-xs text-gray-400">Model: {m(trMeta, 'model')}</span>}
+              {m(trMeta, 'latency_ms') && <span className="text-xs text-gray-400">{m(trMeta, 'latency_ms')}ms</span>}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Error */}
+      {errorEv && (
+        <div className="rounded-md bg-red-50 border border-red-200 p-3">
+          <div className="text-xs font-medium text-red-400 mb-0.5">Error</div>
+          <p className="text-sm text-red-600">{errorEv.summary}</p>
+        </div>
+      )}
+
+      {/* Completion */}
+      {completeEv && (
+        <div className="flex items-center gap-3">
+          {cMeta?.fallback === true && (
+            <span className="text-xs text-amber-600">Fallback used</span>
+          )}
+          {durationMs != null && (
+            <span className="text-xs text-gray-400">Completed in {durationMs}ms</span>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // --- Component ---
 
 export function RunsPage() {
@@ -439,20 +536,10 @@ export function RunsPage() {
                       </button>
 
                       {expandedSkills.has(skill.skill_id) && skill.events.length > 0 && (
-                        <div className="px-4 pb-3 pl-9 bg-gray-50">
-                          <div className="text-xs text-muted-foreground mb-2">Events:</div>
-                          <ul className="space-y-1">
-                            {skill.events.map((ev, i) => (
-                              <li key={i} className="text-sm text-muted-foreground flex">
-                                <span className={`mr-2 text-xs font-mono shrink-0 w-20 ${
-                                  ev.event_type === 'complete' ? 'text-green-600'
-                                  : ev.event_type === 'error' ? 'text-red-600'
-                                  : 'text-gray-400'
-                                }`}>{ev.event_type}</span>
-                                <span>{ev.summary}</span>
-                              </li>
-                            ))}
-                          </ul>
+                        <div className="px-4 pb-3 pl-9 bg-gray-50 border-t border-gray-100">
+                          <div className="pt-2">
+                            <SkillTrace events={skill.events} />
+                          </div>
                         </div>
                       )}
                     </div>
