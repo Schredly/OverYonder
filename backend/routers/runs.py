@@ -1,14 +1,17 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import uuid
+from datetime import datetime, timezone
+from typing import Any
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Request, WebSocket, WebSocketDisconnect
 
-from models import AgentEvent, AgentRun, CreateFeedbackRequest, CreateRunRequest, FeedbackEvent, MetricsEvent, ServiceNowRunRequest, WorkObject
+from models import AgentEvent, AgentRun, CreateFeedbackRequest, CreateRunRequest, FeedbackEvent, MetricsEvent, ServiceNowRunRequest, WorkObject, WritebackApproveRequest
 from services.google_drive import GoogleDriveProvider
 from services.orchestrator import run_orchestrator
-from services.servicenow import ServiceNowProvider
+from services.servicenow import ServiceNowError, ServiceNowProvider, format_work_notes
 
 router = APIRouter(prefix="/api/runs", tags=["runs"])
 
@@ -153,6 +156,213 @@ async def create_run_from_servicenow(
     )
 
     return {"run_id": run_id}
+
+
+@router.post("/from/servicenow/preview", status_code=201)
+async def create_run_from_servicenow_preview(
+    body: ServiceNowRunRequest,
+    request: Request,
+    background_tasks: BackgroundTasks,
+):
+    """Create a ServiceNow-sourced run WITHOUT writeback (preview mode)."""
+    # Validate tenant
+    tenant = await request.app.state.tenant_store.get(body.tenant_id)
+    if tenant is None:
+        raise HTTPException(status_code=404, detail="Tenant not found")
+    if tenant.status != "active":
+        raise HTTPException(status_code=403, detail="Tenant is not active")
+
+    # Validate secret
+    if not tenant.shared_secret or tenant.shared_secret != body.tenant_secret:
+        raise HTTPException(status_code=401, detail="Invalid tenant secret")
+
+    work_object = WorkObject(
+        work_id=body.number or body.sys_id,
+        source_system="servicenow",
+        record_type="incident",
+        title=body.short_description,
+        description=body.description,
+        classification=body.classification,
+        metadata={"sys_id": body.sys_id, "number": body.number, **(body.metadata or {})},
+    )
+
+    run_id = f"run_{uuid.uuid4().hex[:12]}"
+    run = AgentRun(
+        run_id=run_id,
+        tenant_id=body.tenant_id,
+        status="queued",
+        work_object=work_object,
+    )
+    await request.app.state.run_store.create_run(run)
+
+    # Emit run_started metrics event
+    await request.app.state.metrics_event_store.append(MetricsEvent(
+        id=f"me_{uuid.uuid4().hex[:12]}",
+        tenant_id=body.tenant_id,
+        run_id=run_id,
+        event_type="run_started",
+        metadata={"source_system": "servicenow", "work_id": work_object.work_id, "preview": True},
+    ))
+
+    background_tasks.add_task(
+        run_orchestrator,
+        tenant_id=body.tenant_id,
+        access_token=body.access_token or "",
+        work_object=work_object,
+        run_id=run_id,
+        run_store=request.app.state.run_store,
+        event_store=request.app.state.event_store,
+        tenant_store=request.app.state.tenant_store,
+        drive_config_store=request.app.state.drive_config_store,
+        drive_provider=_drive,
+        on_event=_publish_event,
+        snow_config_store=request.app.state.snow_config_store,
+        snow_provider=_snow,
+        metrics_event_store=request.app.state.metrics_event_store,
+        allow_writeback=False,
+    )
+
+    return {"run_id": run_id}
+
+
+@router.post("/{run_id}/writeback/approve")
+async def approve_writeback(
+    run_id: str,
+    body: WritebackApproveRequest,
+    tenant_id: str,
+    request: Request,
+):
+    """Perform writeback to ServiceNow after a completed preview run."""
+    # Validate tenant
+    tenant = await request.app.state.tenant_store.get(tenant_id)
+    if tenant is None:
+        raise HTTPException(status_code=404, detail="Tenant not found")
+    if tenant.status != "active":
+        raise HTTPException(status_code=403, detail="Tenant is not active")
+
+    # Validate secret
+    if not tenant.shared_secret or tenant.shared_secret != body.tenant_secret:
+        raise HTTPException(status_code=401, detail="Invalid tenant secret")
+
+    # Validate run
+    run = await request.app.state.run_store.get_run(run_id)
+    if run is None or run.tenant_id != tenant_id:
+        raise HTTPException(status_code=404, detail="Run not found")
+
+    if run.status not in ("completed", "fallback_completed"):
+        raise HTTPException(
+            status_code=409,
+            detail=f"Run is '{run.status}' — must be 'completed' or 'fallback_completed' to approve writeback",
+        )
+
+    if run.work_object.source_system != "servicenow":
+        raise HTTPException(
+            status_code=400,
+            detail="Run source_system is not 'servicenow'",
+        )
+
+    if run.result is None:
+        raise HTTPException(status_code=409, detail="Run has no result to write back")
+
+    # Load ServiceNow config
+    snow_config = await request.app.state.snow_config_store.get_by_tenant(tenant_id)
+    if snow_config is None:
+        raise HTTPException(status_code=400, detail="No ServiceNow config found for tenant")
+
+    # Format work notes
+    summary_text = run.result.get("summary", "")
+    steps = run.result.get("steps", [])
+    result_sources = run.result.get("sources", [])
+    confidence = float(run.result.get("confidence", 0))
+
+    notes = format_work_notes(summary_text, steps, result_sources, confidence, run_id)
+
+    # Prepend optional note_prefix
+    if body.note_prefix:
+        notes = f"{body.note_prefix}\n\n{notes}"
+
+    # Perform writeback
+    sys_id = body.sys_id
+    metrics_event_store = request.app.state.metrics_event_store
+
+    try:
+        await _snow.update_work_notes(
+            instance_url=snow_config.instance_url,
+            username=snow_config.username,
+            password=snow_config.password,
+            sys_id=sys_id,
+            work_notes=notes,
+            tenant_id=tenant_id,
+        )
+    except ServiceNowError as exc:
+        injected = getattr(exc, "injected", False)
+        wb_failed_meta: dict[str, Any] = {
+            "sys_id": sys_id,
+            "tenant_id": tenant_id,
+            "http_status": exc.status_code,
+            "error_message": str(exc),
+            "approved_writeback": True,
+        }
+        if injected:
+            wb_failed_meta["injected"] = True
+        await metrics_event_store.append(MetricsEvent(
+            id=f"me_{uuid.uuid4().hex[:12]}",
+            tenant_id=tenant_id,
+            run_id=run_id,
+            event_type="writeback_failed",
+            skill_name="Writeback",
+            metadata=wb_failed_meta,
+        ))
+        # Mark run as failed
+        await request.app.state.run_store.update_run(run_id, status="failed")
+        raise HTTPException(
+            status_code=502,
+            detail=f"ServiceNow writeback failed: {exc}",
+        )
+    except Exception as exc:
+        await metrics_event_store.append(MetricsEvent(
+            id=f"me_{uuid.uuid4().hex[:12]}",
+            tenant_id=tenant_id,
+            run_id=run_id,
+            event_type="writeback_failed",
+            skill_name="Writeback",
+            metadata={
+                "sys_id": sys_id,
+                "tenant_id": tenant_id,
+                "error_message": str(exc),
+                "approved_writeback": True,
+            },
+        ))
+        await request.app.state.run_store.update_run(run_id, status="failed")
+        raise HTTPException(
+            status_code=502,
+            detail=f"ServiceNow writeback failed: {exc}",
+        )
+
+    # Writeback succeeded
+    await metrics_event_store.append(MetricsEvent(
+        id=f"me_{uuid.uuid4().hex[:12]}",
+        tenant_id=tenant_id,
+        run_id=run_id,
+        event_type="writeback_success",
+        skill_name="Writeback",
+        metadata={
+            "sys_id": sys_id,
+            "tenant_id": tenant_id,
+            "approved_writeback": True,
+        },
+    ))
+
+    # If run was previously failed due to a prior writeback attempt, restore to correct status
+    # (run.status is already completed/fallback_completed per the gate above, so this is a no-op
+    # for first-time approvals — but we re-confirm the status to be safe)
+    run_fresh = await request.app.state.run_store.get_run(run_id)
+    if run_fresh and run_fresh.status == "failed":
+        # Restore based on whether fallback was used (check result confidence heuristic
+        # or just set to completed since user explicitly approved)
+        await request.app.state.run_store.update_run(run_id, status="completed")
+
+    return {"ok": True}
 
 
 @router.get("")

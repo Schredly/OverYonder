@@ -28,6 +28,7 @@ async def run_orchestrator(
     snow_config_store: Any = None,
     snow_provider: Any = None,
     metrics_event_store: Any = None,
+    allow_writeback: bool = True,
 ) -> None:
     """Execute the skill chain for a run. Updates run status and emits events."""
 
@@ -292,7 +293,7 @@ async def run_orchestrator(
 
         # Determine if writeback will happen (before RecordOutcome)
         snow_config = None
-        if work_object.source_system == "servicenow" and snow_config_store is not None:
+        if allow_writeback and work_object.source_system == "servicenow" and snow_config_store is not None:
             snow_config = await snow_config_store.get_by_tenant(tenant_id)
         will_writeback = snow_config is not None
 

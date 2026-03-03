@@ -146,6 +146,12 @@ class ServiceNowRunRequest(BaseModel):
     access_token: Optional[str] = None
 
 
+class WritebackApproveRequest(BaseModel):
+    tenant_secret: str
+    sys_id: str
+    note_prefix: Optional[str] = None
+
+
 class AgentRun(BaseModel):
     run_id: str
     tenant_id: str
