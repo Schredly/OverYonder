@@ -1272,4 +1272,68 @@ Added environment-based controlled failure injection for integration testing, a 
 - SLOW_DOWN_MS affects all skills uniformly — use it to simulate slow processing for frontend/WebSocket testing.
 - The `injected` attribute on exception classes is backward compatible — existing code that catches these exceptions without checking `.injected` will work unchanged.
 
-*Next change will be #017.*
+---
+
+## #017 — 2026-03-03 — ServiceNow Preview + Approve Writeback (Backend)
+
+**What happened:**
+Added a two-step ServiceNow worker flow: preview a run without writeback, then explicitly approve writeback after reviewing the result. This enables a safe UI pattern where a ServiceNow UI Action opens a compact Agent modal, the user reviews the AI resolution, and only then clicks "Update Task" to write back to ServiceNow.
+
+**New request model:**
+
+- `WritebackApproveRequest(tenant_secret, sys_id, note_prefix?)` — Request body for the writeback approve endpoint. `note_prefix` is optional and prepended to the formatted work notes.
+
+**New endpoints:**
+
+- `POST /api/runs/from/servicenow/preview` — Same body as `ServiceNowRunRequest`. Validates tenant + secret (same as existing endpoint). Creates `WorkObject` with `source_system="servicenow"`. Calls orchestrator with `allow_writeback=False` so writeback is skipped even if ServiceNow config exists. Returns `{run_id}`. MetricsEvent metadata includes `"preview": true`.
+
+- `POST /api/runs/{run_id}/writeback/approve?tenant_id=...` — Body: `WritebackApproveRequest`. Validation chain:
+  1. Tenant exists and is active
+  2. `tenant_secret` matches
+  3. Run exists and belongs to tenant
+  4. Run status is `completed` or `fallback_completed`
+  5. `work_object.source_system == "servicenow"`
+  6. Run has a result
+  7. ServiceNow config exists for tenant
+  - Formats work notes using existing `format_work_notes()`, prepends optional `note_prefix`
+  - PATCHes ServiceNow incident via `ServiceNowProvider.update_work_notes()`
+  - Emits `writeback_success` or `writeback_failed` MetricsEvent with `"approved_writeback": true` metadata
+  - On success: returns `{"ok": true}`
+  - On failure: sets run status to `"failed"`, returns HTTP 502 with detail
+  - If run was previously failed from a prior writeback attempt and is retried successfully, restores status to `"completed"`
+
+**Files modified:**
+
+- `backend/models.py` — Added `WritebackApproveRequest` model with 3 fields: `tenant_secret: str`, `sys_id: str`, `note_prefix: Optional[str] = None`.
+
+- `backend/services/orchestrator.py` — Added `allow_writeback: bool = True` parameter to `run_orchestrator()`. When `False`, the writeback pre-flight check (`snow_config` lookup) is skipped, so `will_writeback` is always `False` and Skill E never runs. Default is `True` so all existing callers are unaffected.
+
+- `backend/routers/runs.py` — Added 2 new endpoints (described above). Added imports: `os`, `datetime`, `timezone`, `Any`, `ServiceNowError`, `format_work_notes`, `WritebackApproveRequest`.
+
+**Files NOT modified:**
+- `backend/main.py` — No new stores or wiring needed
+- `backend/store/` — No new store interfaces or implementations
+- `backend/services/servicenow.py` — Reuses existing `format_work_notes()` and `ServiceNowProvider` as-is
+- `backend/routers/admin.py` — No changes
+- All frontend files — Backend-only sprint
+- Observability response schemas — Unchanged
+
+**Existing endpoint behavior preserved:**
+- `POST /api/runs/from/servicenow` — Unchanged. Still calls orchestrator with `allow_writeback=True` (the default), so writeback proceeds automatically when ServiceNow config exists.
+
+**Key architecture decisions:**
+- **`allow_writeback` flag on orchestrator** — Simplest possible change: a single boolean that gates the existing writeback pre-flight check. No new skill states, no conditional skip logic. The orchestrator either checks for ServiceNow config or doesn't.
+- **Approve endpoint is synchronous** — Unlike the orchestrator-driven writeback (which runs in a background task), the approve endpoint performs writeback inline and returns the result directly. This is appropriate because the user is actively waiting for confirmation.
+- **`approved_writeback: true` in MetricsEvent metadata** — Distinguishes user-approved writebacks from orchestrator-driven writebacks in telemetry and diagnostics, without changing the MetricsEvent schema.
+- **`note_prefix` prepended, not injected** — The optional prefix is added before the standard `format_work_notes()` output with a blank line separator. This keeps the formatted work notes structure intact.
+- **Failure injection respected** — The approve endpoint uses the same `_snow` provider instance, so `FAIL_SERVICENOW_WRITEBACK=true` injection works for approved writebacks too. The `injected` flag propagates into MetricsEvent metadata.
+- **Status restoration on retry** — If a run was previously failed due to writeback failure and the user retries via approve, the endpoint restores status to `completed`. The gate check (`completed`/`fallback_completed`) means this only applies to runs that were re-attempted after a status fix.
+
+**What GPT should know for next steps:**
+- The preview endpoint creates runs identical to the existing ServiceNow endpoint — same `WorkObject`, same skill chain (A→B→C→D) — just without Skill E (Writeback).
+- The approve endpoint can be called multiple times on the same run (idempotent from ServiceNow's perspective — work_notes append, not replace).
+- The frontend needs a compact Agent UI (browser modal) that: (1) calls `/from/servicenow/preview`, (2) connects to WebSocket for live events, (3) displays the result, (4) has an "Update Task" button that calls `/writeback/approve`.
+- The `tenant_secret` is required on both endpoints — the compact UI will need it passed from the ServiceNow UI Action context.
+- No changes to WebSocket protocol — preview runs terminate at RecordOutcome (Skill D) and emit `stream_end` normally.
+
+*Next change will be #018.*
