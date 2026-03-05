@@ -5,8 +5,11 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 
 from models import (
+    Action,
     AgentEvent,
     AgentRun,
+    AgentUIRun,
+    AgentUIRunEvent,
     ClassificationNodeModel,
     ClassificationSchema,
     FeedbackEvent,
@@ -23,6 +26,9 @@ from models import (
     UseCaseRun,
 )
 from store.interface import (
+    ActionStore,
+    AgentUIRunEventStore,
+    AgentUIRunStore,
     ClassificationSchemaStore,
     EventStore,
     FeedbackStore,
@@ -408,3 +414,72 @@ class InMemoryUseCaseRunStore(UseCaseRunStore):
         updated = UseCaseRun(**data)
         self._runs[run_id] = updated
         return updated
+
+
+class InMemoryAgentUIRunStore(AgentUIRunStore):
+    def __init__(self) -> None:
+        self._runs: dict[str, AgentUIRun] = {}
+
+    async def create(self, run: AgentUIRun) -> AgentUIRun:
+        self._runs[run.id] = run
+        return run
+
+    async def get(self, run_id: str) -> Optional[AgentUIRun]:
+        return self._runs.get(run_id)
+
+    async def list_for_tenant(self, tenant_id: str) -> list[AgentUIRun]:
+        return [r for r in self._runs.values() if r.tenant_id == tenant_id]
+
+    async def update(self, run_id: str, **kwargs: Any) -> Optional[AgentUIRun]:
+        existing = self._runs.get(run_id)
+        if existing is None:
+            return None
+        data = existing.model_dump()
+        data.update({k: v for k, v in kwargs.items() if v is not None})
+        updated = AgentUIRun(**data)
+        self._runs[run_id] = updated
+        return updated
+
+
+class InMemoryAgentUIRunEventStore(AgentUIRunEventStore):
+    def __init__(self) -> None:
+        self._events: dict[str, AgentUIRunEvent] = {}
+
+    async def create(self, event: AgentUIRunEvent) -> AgentUIRunEvent:
+        self._events[event.id] = event
+        return event
+
+    async def list_for_run(self, run_id: str) -> list[AgentUIRunEvent]:
+        return sorted(
+            [e for e in self._events.values() if e.run_id == run_id],
+            key=lambda e: e.timestamp,
+        )
+
+
+class InMemoryActionStore(ActionStore):
+    def __init__(self) -> None:
+        self._actions: dict[str, Action] = {}
+
+    async def create(self, action: Action) -> Action:
+        self._actions[action.id] = action
+        return action
+
+    async def get(self, action_id: str) -> Optional[Action]:
+        return self._actions.get(action_id)
+
+    async def list_for_tenant(self, tenant_id: str) -> list[Action]:
+        return [a for a in self._actions.values() if a.tenant_id == tenant_id]
+
+    async def update(self, action_id: str, **kwargs: Any) -> Optional[Action]:
+        existing = self._actions.get(action_id)
+        if existing is None:
+            return None
+        data = existing.model_dump()
+        data.update({k: v for k, v in kwargs.items() if v is not None})
+        data["updated_at"] = datetime.now(timezone.utc)
+        updated = Action(**data)
+        self._actions[action_id] = updated
+        return updated
+
+    async def delete(self, action_id: str) -> bool:
+        return self._actions.pop(action_id, None) is not None

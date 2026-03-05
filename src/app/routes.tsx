@@ -15,6 +15,10 @@ import AgentConsolePage from './pages/AgentConsolePage';
 import RunDetailPage from './pages/RunDetailPage';
 import CreateTenantPage from './pages/CreateTenantPage';
 import AgentUIPage from './pages/AgentUIPage';
+import ActionsCatalogPage from './pages/ActionsCatalogPage';
+import CreateEditActionPage from './pages/CreateEditActionPage';
+import ActionVisibilityRulesPage from './pages/ActionVisibilityRulesPage';
+import AgentUIActionsPage from './pages/AgentUIActionsPage';
 
 export const router = createBrowserRouter([
   {
@@ -52,6 +56,26 @@ export const router = createBrowserRouter([
       {
         path: 'skills/:id',
         Component: SkillEditorPage,
+      },
+      {
+        path: 'actions',
+        Component: ActionsCatalogPage,
+      },
+      {
+        path: 'actions/create',
+        Component: CreateEditActionPage,
+      },
+      {
+        path: 'actions/:id',
+        Component: CreateEditActionPage,
+      },
+      {
+        path: 'actions/:id/visibility',
+        Component: ActionVisibilityRulesPage,
+      },
+      {
+        path: 'actions/preview',
+        Component: AgentUIActionsPage,
       },
       {
         path: 'use-cases',

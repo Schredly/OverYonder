@@ -2103,3 +2103,253 @@ POST   /api/admin/{tenant_id}/uc-runs/{rid}/cancel       → Cancel a running us
 - Demo data auto-seeds on startup.
 
 *Next change will be #026.*
+
+---
+
+## #026 — 2026-03-05 — Blank Page Bugfix: Named vs Default Export Mismatch
+
+**What happened:**
+Fixed a critical bug where the entire app rendered as a blank white page. The root cause was a named-import / default-export mismatch in `routes.tsx`: `RunsPage` and `ObservabilityPage` were changed to `export default` in Sprint #024 rewrites, but `routes.tsx` still used named imports (`import { RunsPage }`). Vite dev mode is lenient about this (no compile error, `tsc --noEmit` passes), but it causes a silent runtime crash in the browser — the imported binding is `undefined`, which crashes `createBrowserRouter` before React mounts, resulting in a completely blank page with no visible error. Also added a top-level React ErrorBoundary to `main.tsx` so future runtime errors display on screen instead of silently failing.
+
+**Files modified:**
+
+- `src/app/routes.tsx` — Changed `import { RunsPage } from './pages/RunsPage'` to `import RunsPage from './pages/RunsPage'`. Changed `import { ObservabilityPage } from './pages/ObservabilityPage'` to `import ObservabilityPage from './pages/ObservabilityPage'`. Both pages use `export default function` but were imported with named-export destructuring syntax.
+
+- `src/main.tsx` — Added `ErrorBoundary` class component wrapping `<App />`. On uncaught render error, displays error message and stack trace in red monospace text instead of a blank page. Imports `Component` and `ReactNode` from React.
+
+**Diagnosis method:**
+- Browser showed blank white page with no visible error
+- `tsc --noEmit` passed clean (TypeScript doesn't distinguish named vs default at this level)
+- `vite build` (Rollup) caught the error: `"RunsPage" is not exported by "src/app/pages/RunsPage.tsx"`
+- Vite dev mode uses esbuild which is more permissive than Rollup for this case
+
+**Key lesson:**
+When all routes are defined in a single `createBrowserRouter()` call, a single broken import kills the entire app — not just the affected route. The error happens at module evaluation time, before React mounts, so React error boundaries don't help. The fix is to always verify import style matches export style, and to use `vite build` as a stricter check than `tsc --noEmit`.
+
+**Verification:**
+- `vite build` passes clean (1951 modules, 574KB JS bundle)
+- All routes render correctly in browser
+- `/agentui` page displays dark-theme Agent UI as designed
+
+*Next change will be #027.*
+
+---
+
+## #027 — 2026-03-05 — Agent SSE Streaming Endpoint
+
+**What happened:**
+Added a new `POST /api/admin/{tenant_id}/agent/stream` endpoint that returns a Server-Sent Event stream, enabling the Agent UI to show reasoning and tool execution live instead of waiting for a single response. The existing `/ask` endpoint is unchanged for backward compatibility.
+
+**SSE event sequence:**
+```
+event: reasoning        → {"message": "Analyzing request: \"...\""}
+event: reasoning        → {"message": "Evaluating N active use case(s)"}
+event: reasoning        → {"message": "Best match: \"...\" (score: NN%)"}
+event: use_case_selected → {"name": "...", "description": "...", "confidence": 0.XX}
+event: skill_started    → {"skill": "Incident Lookup"}
+event: tool_called      → {"tool": "servicenow.search_incidents", "skill": "..."}
+event: tool_result      → {"tool": "...", "skill": "...", "summary": "...", "status": "ok|error"}
+event: skill_completed  → {"skill": "Incident Lookup"}
+  ... (repeats for each skill/tool) ...
+event: final_result     → {"result": "...resolution text...", "confidence": 0.XX}
+```
+
+**Files modified:**
+
+- `backend/routers/agent.py` — Added imports: `asyncio`, `json`, `AsyncGenerator`, `StreamingResponse`. Added `_sse_event()` helper to format SSE events. Added `_summarize_tool_result()` helper (extracted from inline logic in `/ask`). Added `POST /stream` endpoint using `StreamingResponse` with `text/event-stream` media type. The generator: parses prompt, scores use cases, yields reasoning events, yields use case selection, executes skills sequentially (emitting `skill_started` / `tool_called` / `tool_result` / `skill_completed` for each), then emits `final_result`. Early-exits with `final_result` if no active use cases or score below threshold. Includes `Cache-Control: no-cache`, `Connection: keep-alive`, `X-Accel-Buffering: no` headers.
+
+**Files NOT modified:**
+- `backend/routers/__init__.py`, `backend/main.py` — No changes needed; the agent router was already registered and the new endpoint is on the same router.
+- `src/app/pages/AgentUIPage.tsx` — Not yet wired to the stream endpoint (still uses `/ask`).
+
+**Current backend endpoint map (new):**
+```
+POST   /api/admin/{tenant_id}/agent/stream  → SSE stream of reasoning + tool execution events
+```
+
+**Verification:**
+- `curl -sN` test confirms correct SSE event format and ordering
+- Agent router now has 2 routes (`/ask` + `/stream`)
+- Backend boots cleanly with 75 routes
+
+*Next change will be #028.*
+
+---
+
+## #028 — 2026-03-05 — Agent SSE Streaming Client
+
+**What happened:**
+Created a frontend streaming client for the agent SSE endpoint. The client uses `fetch()` with `ReadableStream` to consume SSE events from `POST /api/admin/{tenant_id}/agent/stream` and dispatches parsed events to typed callback handlers. Returns a cancel function backed by `AbortController` for aborting in-flight streams.
+
+**Files created:**
+
+- `src/app/services/agentStream.ts` — Exports `streamAgent(tenantId, prompt, handlers)` function and `StreamHandlers` interface. Implementation: POSTs to `/api/admin/{tenantId}/agent/stream` with `{prompt}` body, reads the response body as a `ReadableStream`, buffers chunks via `TextDecoder`, splits on double-newline SSE boundaries, parses `event:` and `data:` lines, JSON-parses the data payload, and dispatches to the matching handler callback (`onReasoning`, `onUseCase`, `onSkillStarted`, `onToolCalled`, `onToolResult`, `onSkillCompleted`, `onFinalResult`, `onError`). Suppresses `AbortError` when cancelled. Returns `() => void` cancel function.
+
+**Verification:**
+- `npx tsc --noEmit` passes clean.
+
+*Next change will be #029.*
+
+---
+
+## #029 — 2026-03-05 — Wire Agent UI to SSE Streaming Endpoint
+
+**What happened:**
+Updated `AgentUIPage` to use the `streamAgent()` SSE client instead of the batch `askAgent()` call. The execution trace panel now updates live as events arrive — reasoning steps appear one by one, skills show "running" then flip to "completed", tools appear as they're called and update with results. Layout and styling are unchanged; only the data wiring was modified.
+
+**Files modified:**
+
+- `src/app/pages/AgentUIPage.tsx` — Replaced `askAgent` import with `streamAgent` from `../services/agentStream`. Removed `AgentAskResponse` type import. Changed `handleSendMessage` from `async` to synchronous (stream is fire-and-forget). Added `cancelRef` (`useRef`) to store the cancel function from `streamAgent` — called on new submissions to abort any in-flight stream. Added `reasoningCountRef`, `skillCountRef`, `toolCountRef` refs for incrementing IDs across handler callbacks. Handler wiring:
+  - `onReasoning` → appends to `reasoningSteps` with `status: "completed"` and rotating icons
+  - `onUseCase` → sets `selectedUseCase` with confidence converted from decimal to percentage
+  - `onSkillStarted` → appends to `skillExecutions` with `status: "running"`
+  - `onToolCalled` → appends to `toolCalls` with `status: "running"`, derives `targetSystem` from tool ID prefix
+  - `onToolResult` → updates matching tool call's status (`"success"` or `"error"`), responseTime, statusCode
+  - `onSkillCompleted` → updates matching skill's status to `"completed"`
+  - `onFinalResult` → calculates execution time, sets recommendation, adds agent message to chat, sets `isLoading(false)`
+  - `onError` → appends error reasoning step, sets `isLoading(false)`
+  - Changed `Message` interface: replaced `response?: AgentResponse` with `result?: string` since we no longer receive the full batch response object
+
+**Verification:**
+- `npx tsc --noEmit` passes clean.
+
+*Next change will be #030.*
+
+---
+
+## #030 — 2026-03-05 — Live Tool Execution Display in ToolsUsed Component
+
+**What happened:**
+Updated the `ToolsUsed` component and its integration in `AgentUIPage` so that tool execution is visible live during streaming. Tools now appear with `"running"` status when `tool_called` arrives and update to `"success"` or `"error"` with a summary line when `tool_result` arrives.
+
+**Files modified:**
+
+- `src/app/components/agentui/ToolsUsed.tsx` — Added optional `summary?: string` field to `ToolCall` interface. Added a `<p>` element below the system/metadata row that renders `tool.summary` as truncated gray text when present.
+
+- `src/app/pages/AgentUIPage.tsx` — Updated `onToolResult` handler: now uses `findLastIndex` to locate the last matching tool with `status: "running"` (handles duplicate tool names correctly). Sets `status`, `statusCode`, and `summary` on the matched entry. Removed the old `responseTime`-based summary which was overloading that field.
+
+**Verification:**
+- `npx tsc --noEmit` passes clean.
+
+*Next change will be #031.*
+
+---
+
+## #031 — 2026-03-05 — Persist Agent UI Runs
+
+**What happened:**
+Added `AgentUIRun` and `AgentUIRunEvent` models with corresponding store ABCs and in-memory implementations so that every `/agent/stream` SSE session is persisted and can be replayed later.
+
+**Files modified:**
+
+- `backend/models.py` — Added `AgentUIRun` (id, tenant_id, prompt, selected_use_case, result, confidence, status, created_at) and `AgentUIRunEvent` (id, run_id, event_type, payload, timestamp) models.
+
+- `backend/store/interface.py` — Added `AgentUIRunStore` ABC (create, get, list_for_tenant, update) and `AgentUIRunEventStore` ABC (create, list_for_run).
+
+- `backend/store/memory.py` — Added `InMemoryAgentUIRunStore` (dict keyed by id, update uses model_dump merge) and `InMemoryAgentUIRunEventStore` (dict keyed by id, list_for_run returns sorted by timestamp).
+
+- `backend/store/__init__.py` — Exported all 4 new classes.
+
+- `backend/main.py` — Registered `app.state.agent_ui_run_store` and `app.state.agent_ui_run_event_store`.
+
+- `backend/routers/agent.py` — Updated `stream_agent` → `generate()`: creates `AgentUIRun` at start, persists each SSE event as `AgentUIRunEvent` via `_emit()` helper, updates run with result/confidence/status on `final_result`, sets `status="error"` on exception. ID format: `arun_<hex12>` / `arevt_<hex12>`.
+
+**Note:** Named `AgentUIRun`/`AgentUIRunEvent` (not `AgentRun`/`AgentRunEvent`) to avoid collision with existing execution-plane `AgentRun`/`AgentEvent` models.
+
+**Verification:**
+- All new imports resolve cleanly (`python -c` smoke test).
+- SSE streaming behavior unchanged — `_emit()` wraps `_sse_event()` transparently.
+
+*Next change will be #032.*
+
+---
+
+## #032 — 2026-03-05 — Actions Module (Admin CRUD + Agent UI Dynamic Loading)
+
+**What happened:**
+Added a full Actions module — backend model, CRUD API, admin catalog UI, and dynamic action loading in the Agent UI. Actions represent integration-agnostic operations (create incident, send Slack message, generate PDF, etc.) that the agent can execute after analyzing a request.
+
+**Backend files:**
+
+- `backend/models.py` — Added `Action`, `ActionParameter`, `ActionRule`, `CreateActionRequest`, `UpdateActionRequest`, `ExecuteActionRequest` models.
+
+- `backend/store/interface.py` — Added `ActionStore` ABC (create, get, list_for_tenant, update, delete).
+
+- `backend/store/memory.py` — Added `InMemoryActionStore` implementation.
+
+- `backend/store/__init__.py` — Exported `ActionStore` and `InMemoryActionStore`.
+
+- `backend/main.py` — Registered `app.state.action_store = InMemoryActionStore()` and `actions_router`.
+
+- `backend/routers/actions.py` — New router with CRUD endpoints (`GET/POST/PUT/DELETE /api/admin/{tenant_id}/actions`), `POST /{action_id}/execute` (placeholder), and `get_available_actions_for_run()` context filter placeholder.
+
+- `backend/routers/__init__.py` — Exported `actions_router`.
+
+- `backend/bootstrap/demo_setup.py` — Seeds 5 demo actions (Create Incident, Create Jira Issue, Generate PDF Report, Send Slack Notification, Create Google Doc).
+
+**Frontend files:**
+
+- `src/app/pages/ActionsCatalogPage.tsx` — Admin catalog page wired to `GET/PUT/DELETE` API endpoints (replaced mock data).
+
+- `src/app/pages/CreateEditActionPage.tsx` — Create/edit form wired to `POST/PUT` API (loads existing action on edit, submits parameters).
+
+- `src/app/pages/ActionVisibilityRulesPage.tsx` — Visibility rules UI (copied from design, uses local state for now).
+
+- `src/app/pages/AgentUIActionsPage.tsx` — Agent UI actions preview page (copied from design).
+
+- `src/app/components/Layout.tsx` — Added "Actions" nav item with Zap icon between Skills and Use Cases.
+
+- `src/app/routes.tsx` — Added 5 routes: `/actions`, `/actions/create`, `/actions/:id`, `/actions/:id/visibility`, `/actions/preview`.
+
+- `src/app/components/agentui/AgentActions.tsx` — Replaced hard-coded actions with dynamic loading from `GET /api/admin/acme/actions`. Falls back to prop-provided actions. Calls `POST /actions/{id}/execute` on click. Shows executing/completed states.
+
+**Also in this changeset:**
+
+- `backend/services/servicenow_tools.py` — Fixed auth to use explicit `Authorization: Basic` header (resolves `!` in password). Added non-JSON response handling for hibernating instances. Fixed response keys to `incidents`/`articles`.
+
+**Verification:**
+- `npx tsc --noEmit` passes clean.
+- All backend imports resolve (`python -c` smoke test).
+- Actions CRUD API functional, demo data seeded on startup.
+
+*Next change will be #033.*
+
+---
+
+## #033 — 2026-03-05 — Context-Aware Action Recommendation System
+
+**What happened:**
+Transformed agent actions from static buttons into context-aware recommendations. Actions now only appear when they are relevant to the user's question and the agent's analysis, scored by a recommendation engine that evaluates use case match, keyword overlap, skill usage, and confidence threshold.
+
+**Scoring algorithm (in `action_recommendation.py`):**
+- `+3` — use_case rule matches the selected use case
+- `+2` — keyword rule matches prompt tokens
+- `+2` — skill rule matches skills_used in the run
+- `+1` — confidence threshold is satisfied
+- Actions scoring ≥ 2 are "recommended"; the rest are "available"
+
+**Backend changes:**
+
+- `backend/models.py` — Added `skills_used: list[str]` to `AgentUIRun` model to track which skills were executed during a run.
+
+- `backend/services/action_recommendation.py` — **NEW.** Recommendation scoring service with `recommend_actions(run, actions)` → `(recommended, available)`. Scores each action's `rules` list against the run context (selected_use_case, prompt, skills_used, confidence).
+
+- `backend/routers/actions.py` — Replaced placeholder `get_available_actions_for_run()` with `GET /recommendations/{run_id}` endpoint. Returns `{recommended: [...], available: [...]}` with scores on recommended items.
+
+- `backend/routers/agent.py` — Emits new `run_started` SSE event with `{run_id}` so the frontend knows the run ID. Tracks `skills_used` list during skill execution and persists it on the `AgentUIRun` record at completion.
+
+- `backend/bootstrap/demo_setup.py` — Enriched demo action rules: "Create Incident" now has use_case + keyword + skill + confidence rules. Other actions have keyword and skill-based rules for contextual matching.
+
+**Frontend changes:**
+
+- `src/app/services/agentStream.ts` — Added `onRunStarted` handler to `StreamHandlers` interface. Parses new `run_started` SSE event.
+
+- `src/app/pages/AgentUIPage.tsx` — Tracks `runId` state from `onRunStarted` callback. Passes `runId` prop to `AgentActions` component.
+
+- `src/app/components/agentui/AgentActions.tsx` — Accepts `runId` prop. When `runId` is present, fetches from `GET /api/admin/acme/actions/recommendations/{runId}` instead of listing all actions. Renders two sections: "Recommended" (with star icon and enhanced styling) and "Other Actions". Falls back to loading all active actions when no `runId` is available. Extracted `ActionButton` into its own component for reuse across sections.
+
+**Verification:**
+- Backend: `GET /api/admin/acme/actions/recommendations/{run_id}` returns scored recommendations after a stream completes.
+- Frontend: After submitting a prompt in the Agent UI, actions panel shows contextually relevant actions under "Recommended" with a star badge, and remaining actions under "Other Actions".
+
+*Next change will be #034.*

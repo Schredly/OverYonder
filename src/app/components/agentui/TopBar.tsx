@@ -8,9 +8,9 @@ interface TopBarProps {
 
 export function TopBar({ agentName, tenant, status }: TopBarProps) {
   const statusColors = {
-    connected: "bg-green-500",
+    connected: "bg-emerald-500",
     disconnected: "bg-red-500",
-    processing: "bg-blue-500",
+    processing: "bg-indigo-500",
   };
 
   const statusLabels = {
@@ -20,32 +20,32 @@ export function TopBar({ agentName, tenant, status }: TopBarProps) {
   };
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-gray-950">
+    <div className="flex items-center justify-between px-4 py-3 border-b border-[#262626] bg-[#0a0a0a]">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-            <Activity className="w-5 h-5 text-white" />
+          <div className="w-8 h-8 rounded-lg bg-[#161616] border border-[#262626] flex items-center justify-center">
+            <Activity className="w-4 h-4 text-[#fafafa]" />
           </div>
           <div>
-            <h1 className="text-white">{agentName}</h1>
-            <p className="text-xs text-gray-400">{tenant}</p>
+            <h1 className="text-[#fafafa] text-sm font-medium">{agentName}</h1>
+            <p className="text-xs text-[#71717a]">{tenant}</p>
           </div>
         </div>
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-900 border border-gray-800">
-          <div className={`w-2 h-2 rounded-full ${statusColors[status]}`} />
-          <span className="text-xs text-gray-300">{statusLabels[status]}</span>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#262626]">
+          <div className={`w-1.5 h-1.5 rounded-full ${statusColors[status]}`} />
+          <span className="text-xs text-[#a1a1aa]">{statusLabels[status]}</span>
         </div>
 
-        <button className="p-2 rounded-lg hover:bg-gray-900 text-gray-400 hover:text-white transition-colors">
+        <button className="p-2 rounded-lg hover:bg-[#161616] text-[#71717a] hover:text-[#fafafa] transition-colors">
           <HelpCircle className="w-4 h-4" />
         </button>
-        <button className="p-2 rounded-lg hover:bg-gray-900 text-gray-400 hover:text-white transition-colors">
+        <button className="p-2 rounded-lg hover:bg-[#161616] text-[#71717a] hover:text-[#fafafa] transition-colors">
           <Settings className="w-4 h-4" />
         </button>
-        <button className="p-2 rounded-lg hover:bg-gray-900 text-gray-400 hover:text-white transition-colors">
+        <button className="p-2 rounded-lg hover:bg-[#161616] text-[#71717a] hover:text-[#fafafa] transition-colors">
           <Maximize2 className="w-4 h-4" />
         </button>
       </div>

@@ -558,3 +558,80 @@ class UseCaseRun(BaseModel):
     final_result: str = ""
     started_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     completed_at: Optional[datetime] = None
+
+
+# --- Agent UI Run persistence ---
+
+
+class AgentUIRun(BaseModel):
+    id: str                          # "arun_" + uuid hex[:12]
+    tenant_id: str
+    prompt: str
+    selected_use_case: str | None = None
+    result: str | None = None
+    confidence: float | None = None
+    skills_used: list[str] = Field(default_factory=list)
+    status: Literal["running", "completed", "error"] = "running"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class AgentUIRunEvent(BaseModel):
+    id: str                          # "arevt_" + uuid hex[:12]
+    run_id: str
+    event_type: str                  # reasoning | use_case_selected | skill_started | etc.
+    payload: dict[str, Any] = Field(default_factory=dict)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+# --- Actions ---
+
+
+class ActionParameter(BaseModel):
+    name: str
+    source: str = "static"           # static | user_prompt | agent_result | agent_metadata | user_input
+    value: str | None = None
+
+
+class ActionRule(BaseModel):
+    type: str                        # use_case | confidence | skill | keyword | tag
+    operator: str = "equals"         # equals | not_equals | greater_than | less_than | contains | not_contains
+    value: str = ""
+
+
+class Action(BaseModel):
+    id: str
+    tenant_id: str
+    name: str
+    description: str = ""
+    integration_id: str = ""         # e.g. "servicenow", "jira", "slack", etc.
+    operation: str = ""              # e.g. "incident.create", "message.post"
+    parameters: list[ActionParameter] = Field(default_factory=list)
+    rules: list[ActionRule] = Field(default_factory=list)
+    status: Literal["active", "disabled"] = "active"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class CreateActionRequest(BaseModel):
+    name: str
+    description: str = ""
+    integration_id: str = ""
+    operation: str = ""
+    parameters: list[ActionParameter] = Field(default_factory=list)
+    rules: list[ActionRule] = Field(default_factory=list)
+    status: Literal["active", "disabled"] = "active"
+
+
+class UpdateActionRequest(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    integration_id: Optional[str] = None
+    operation: Optional[str] = None
+    parameters: Optional[list[ActionParameter]] = None
+    rules: Optional[list[ActionRule]] = None
+    status: Optional[Literal["active", "disabled"]] = None
+
+
+class ExecuteActionRequest(BaseModel):
+    run_id: str = ""
+    input: dict[str, Any] = Field(default_factory=dict)

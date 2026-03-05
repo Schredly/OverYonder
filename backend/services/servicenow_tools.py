@@ -5,6 +5,8 @@ from __future__ import annotations
 import logging
 import time
 
+import base64
+
 import httpx
 
 logger = logging.getLogger(__name__)
@@ -17,10 +19,10 @@ async def _get_snow_config(tenant_id: str, app) -> dict:
     cfg = await app.state.snow_config_store.get_by_tenant(tenant_id)
     if cfg is None:
         raise RuntimeError(f"ServiceNow not configured for tenant {tenant_id}")
+    token = base64.b64encode(f"{cfg.username}:{cfg.password}".encode()).decode()
     return {
         "instance_url": cfg.instance_url.rstrip("/"),
-        "username": cfg.username,
-        "password": cfg.password,
+        "auth_header": f"Basic {token}",
     }
 
 
@@ -45,8 +47,7 @@ async def search_incidents(tenant_id: str, payload: dict, app) -> dict:
         res = await client.get(
             url,
             params=params,
-            auth=(cfg["username"], cfg["password"]),
-            headers={"Accept": "application/json"},
+            headers={"Accept": "application/json", "Authorization": cfg["auth_header"]},
         )
     latency_ms = int((time.monotonic() - t0) * 1000)
 
@@ -54,9 +55,12 @@ async def search_incidents(tenant_id: str, payload: dict, app) -> dict:
         logger.error("ServiceNow search_incidents failed: %d", res.status_code)
         return {"status": "error", "error": f"HTTP {res.status_code}", "latency_ms": latency_ms}
 
-    records = res.json().get("result", [])
+    try:
+        records = res.json().get("result", [])
+    except Exception:
+        return {"status": "error", "error": "Instance unavailable (non-JSON response — may be hibernating)", "latency_ms": latency_ms}
     return {
-        "records": records,
+        "incidents": records,
         "count": len(records),
         "latency_ms": latency_ms,
     }
@@ -76,8 +80,7 @@ async def get_incident_details(tenant_id: str, payload: dict, app) -> dict:
     async with httpx.AsyncClient(timeout=SNOW_TIMEOUT) as client:
         res = await client.get(
             url,
-            auth=(cfg["username"], cfg["password"]),
-            headers={"Accept": "application/json"},
+            headers={"Accept": "application/json", "Authorization": cfg["auth_header"]},
         )
     latency_ms = int((time.monotonic() - t0) * 1000)
 
@@ -85,7 +88,10 @@ async def get_incident_details(tenant_id: str, payload: dict, app) -> dict:
         logger.error("ServiceNow get_incident_details failed: %d", res.status_code)
         return {"status": "error", "error": f"HTTP {res.status_code}", "latency_ms": latency_ms}
 
-    record = res.json().get("result", {})
+    try:
+        record = res.json().get("result", {})
+    except Exception:
+        return {"status": "error", "error": "Instance unavailable (non-JSON response — may be hibernating)", "latency_ms": latency_ms}
     return {
         "record": record,
         "latency_ms": latency_ms,
@@ -113,8 +119,7 @@ async def search_kb(tenant_id: str, payload: dict, app) -> dict:
         res = await client.get(
             url,
             params=params,
-            auth=(cfg["username"], cfg["password"]),
-            headers={"Accept": "application/json"},
+            headers={"Accept": "application/json", "Authorization": cfg["auth_header"]},
         )
     latency_ms = int((time.monotonic() - t0) * 1000)
 
@@ -122,10 +127,56 @@ async def search_kb(tenant_id: str, payload: dict, app) -> dict:
         logger.error("ServiceNow search_kb failed: %d", res.status_code)
         return {"status": "error", "error": f"HTTP {res.status_code}", "latency_ms": latency_ms}
 
-    records = res.json().get("result", [])
+    try:
+        records = res.json().get("result", [])
+    except Exception:
+        return {"status": "error", "error": "Instance unavailable (non-JSON response — may be hibernating)", "latency_ms": latency_ms}
     return {
-        "records": records,
+        "articles": records,
         "count": len(records),
+        "latency_ms": latency_ms,
+    }
+
+
+async def create_incident(tenant_id: str, payload: dict, app) -> dict:
+    """Create a new ServiceNow incident.
+
+    payload keys: title (str), description (str), priority (str, default "3")
+    """
+    cfg = await _get_snow_config(tenant_id, app)
+    title = payload.get("title", "")
+    description = payload.get("description", "")
+    priority = payload.get("priority", "3")
+
+    url = f"{cfg['instance_url']}/api/now/table/incident"
+
+    t0 = time.monotonic()
+    async with httpx.AsyncClient(timeout=SNOW_TIMEOUT) as client:
+        res = await client.post(
+            url,
+            headers={"Content-Type": "application/json", "Accept": "application/json", "Authorization": cfg["auth_header"]},
+            json={
+                "short_description": title,
+                "description": description,
+                "priority": priority,
+            },
+        )
+    latency_ms = int((time.monotonic() - t0) * 1000)
+
+    if not res.is_success:
+        logger.error("ServiceNow create_incident failed: %d", res.status_code)
+        return {"status": "error", "error": f"HTTP {res.status_code}", "latency_ms": latency_ms}
+
+    try:
+        record = res.json().get("result", {})
+    except Exception:
+        return {"status": "error", "error": "Instance unavailable (non-JSON response — may be hibernating)", "latency_ms": latency_ms}
+
+    return {
+        "status": "ok",
+        "sys_id": record.get("sys_id", ""),
+        "number": record.get("number", ""),
+        "short_description": record.get("short_description", ""),
         "latency_ms": latency_ms,
     }
 
@@ -145,8 +196,7 @@ async def add_work_note(tenant_id: str, payload: dict, app) -> dict:
     async with httpx.AsyncClient(timeout=SNOW_TIMEOUT) as client:
         res = await client.patch(
             url,
-            auth=(cfg["username"], cfg["password"]),
-            headers={"Content-Type": "application/json", "Accept": "application/json"},
+            headers={"Content-Type": "application/json", "Accept": "application/json", "Authorization": cfg["auth_header"]},
             json={"work_notes": note},
         )
     latency_ms = int((time.monotonic() - t0) * 1000)
@@ -154,6 +204,11 @@ async def add_work_note(tenant_id: str, payload: dict, app) -> dict:
     if not res.is_success:
         logger.error("ServiceNow add_work_note failed: %d", res.status_code)
         return {"status": "error", "error": f"HTTP {res.status_code}", "latency_ms": latency_ms}
+
+    try:
+        res.json()
+    except Exception:
+        return {"status": "error", "error": "Instance unavailable (non-JSON response — may be hibernating)", "latency_ms": latency_ms}
 
     return {
         "ok": True,

@@ -1,6 +1,7 @@
-import { ExternalLink, Play, BookOpen, RefreshCw, Zap } from "lucide-react";
+import { ExternalLink, Play, BookOpen, RefreshCw, Zap, Loader2, CheckCircle2, Star, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
 
-export type ActionType = "servicenow" | "automation" | "knowledge" | "refine";
+export type ActionType = string;
 
 export interface AgentAction {
   id: string;
@@ -8,187 +9,358 @@ export interface AgentAction {
   label: string;
   description?: string;
   enabled?: boolean;
+  integration_id?: string;
+  operation?: string;
+  score?: number;
+}
+
+interface ExecutionResult {
+  status: string;
+  message?: string;
+  number?: string;
+  error?: string;
 }
 
 interface AgentActionsProps {
   actions?: AgentAction[];
   onAction?: (type: ActionType) => void;
   title?: string;
+  runId?: string | null;
 }
 
-const defaultActions: AgentAction[] = [
-  {
-    id: "1",
-    type: "servicenow",
-    label: "Update ServiceNow",
-    description: "Create incident ticket with findings",
-    enabled: true,
-  },
-  {
-    id: "2",
-    type: "automation",
-    label: "Run Automation",
-    description: "Execute remediation workflow",
-    enabled: true,
-  },
-  {
-    id: "3",
-    type: "knowledge",
-    label: "Open Knowledge Article",
-    description: "View related documentation",
-    enabled: true,
-  },
-  {
-    id: "4",
-    type: "refine",
-    label: "Refine Question",
-    description: "Adjust query parameters",
-    enabled: true,
-  },
-];
+const API_BASE = "http://localhost:8000/api/admin/acme/actions";
 
-export function AgentActions({
-  actions = defaultActions,
-  onAction,
-  title = "Agent Actions",
-}: AgentActionsProps) {
-  const getActionIcon = (type: ActionType) => {
-    switch (type) {
-      case "servicenow":
-        return <ExternalLink className="w-4 h-4" />;
-      case "automation":
-        return <Play className="w-4 h-4" />;
-      case "knowledge":
-        return <BookOpen className="w-4 h-4" />;
-      case "refine":
-        return <RefreshCw className="w-4 h-4" />;
-    }
-  };
+function getActionIcon(integration: string) {
+  switch (integration) {
+    case "servicenow":
+      return <ExternalLink className="w-4 h-4" />;
+    case "jira":
+    case "github":
+      return <Play className="w-4 h-4" />;
+    case "google-drive":
+      return <BookOpen className="w-4 h-4" />;
+    case "slack":
+      return <RefreshCw className="w-4 h-4" />;
+    default:
+      return <Zap className="w-4 h-4" />;
+  }
+}
 
-  const getActionStyles = (type: ActionType) => {
-    switch (type) {
-      case "servicenow":
-        return {
-          button:
-            "bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 border-emerald-500/50",
-          glow: "shadow-emerald-500/30 hover:shadow-emerald-500/50",
-          text: "text-white",
-        };
-      case "automation":
-        return {
-          button:
-            "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 border-blue-500/50",
-          glow: "shadow-blue-500/30 hover:shadow-blue-500/50",
-          text: "text-white",
-        };
-      case "knowledge":
-        return {
-          button:
-            "bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-500 hover:to-violet-500 border-purple-500/50",
-          glow: "shadow-purple-500/30 hover:shadow-purple-500/50",
-          text: "text-white",
-        };
-      case "refine":
-        return {
-          button:
-            "bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 border-gray-500/50",
-          glow: "shadow-gray-500/20 hover:shadow-gray-500/40",
-          text: "text-white",
-        };
-    }
-  };
+function getIndicatorColor(integration: string) {
+  switch (integration) {
+    case "servicenow":
+      return "bg-emerald-500";
+    case "jira":
+    case "github":
+      return "bg-indigo-500";
+    case "google-drive":
+      return "bg-violet-500";
+    case "slack":
+      return "bg-orange-500";
+    default:
+      return "bg-amber-500";
+  }
+}
 
-  const handleClick = (type: ActionType) => {
-    if (onAction) {
-      onAction(type);
-    }
-  };
+function ActionButton({
+  action,
+  isRecommended,
+  executingId,
+  completedIds,
+  resultMap,
+  onClick,
+}: {
+  action: AgentAction;
+  isRecommended?: boolean;
+  executingId: string | null;
+  completedIds: Set<string>;
+  resultMap: Map<string, ExecutionResult>;
+  onClick: (action: AgentAction) => void;
+}) {
+  const integration = action.integration_id || action.type;
+  const disabled = action.enabled === false;
+  const isExecuting = executingId === action.id;
+  const isCompleted = completedIds.has(action.id);
+  const result = resultMap.get(action.id);
+  const isError = result?.status === "error" || result?.status === "not_implemented";
+  const indicatorColor = getIndicatorColor(integration);
+
+  function resultMessage(): string {
+    if (!result) return "Completed";
+    if (result.number) return `Created ${result.number}`;
+    if (result.status === "not_implemented") return result.message || "Not connected";
+    if (result.error) return `Error: ${result.error}`;
+    if (result.status === "ok") return "Completed successfully";
+    return "Completed";
+  }
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow-xl">
+    <button
+      onClick={() => onClick(action)}
+      disabled={disabled || isExecuting}
+      className={`group relative flex items-center gap-3 px-4 py-3 rounded-[10px] border transition-colors duration-150 ${
+        isError
+          ? "bg-[#161616] border-red-500/40"
+          : isCompleted
+          ? "bg-[#161616] border-emerald-500/40"
+          : "bg-[#161616] border-[#262626] hover:bg-[#1c1c1c] hover:border-[#333]"
+      } ${
+        disabled || isExecuting
+          ? "opacity-50 cursor-not-allowed"
+          : ""
+      }`}
+    >
+      {/* Indicator dot */}
+      <div className="flex items-center gap-2.5 flex-shrink-0">
+        <div className={`w-2 h-2 rounded-full ${
+          isError ? "bg-red-500" : isCompleted ? "bg-emerald-500" : indicatorColor
+        }`} />
+        <div className="text-[#a1a1aa]">
+          {isExecuting ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : isError ? (
+            <AlertCircle className="w-4 h-4 text-red-400" />
+          ) : isCompleted ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          ) : (
+            getActionIcon(integration)
+          )}
+        </div>
+      </div>
+
+      {/* Text content */}
+      <div className="flex-1 text-left">
+        <div className="text-sm text-[#fafafa] flex items-center gap-1.5">
+          {action.label}
+          {isRecommended && !isCompleted && !isError && (
+            <Star className="w-3 h-3 text-[#a1a1aa]" />
+          )}
+        </div>
+        <div className="text-xs text-[#71717a] mt-0.5">
+          {isExecuting
+            ? "Executing..."
+            : isCompleted || isError
+            ? resultMessage()
+            : action.description}
+        </div>
+      </div>
+    </button>
+  );
+}
+
+export function AgentActions({
+  actions: propActions,
+  onAction,
+  title = "Agent Actions",
+  runId,
+}: AgentActionsProps) {
+  const [recommendedActions, setRecommendedActions] = useState<AgentAction[]>([]);
+  const [availableActions, setAvailableActions] = useState<AgentAction[]>([]);
+  const [fallbackActions, setFallbackActions] = useState<AgentAction[]>([]);
+  const [executingId, setExecutingId] = useState<string | null>(null);
+  const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
+  const [resultMap, setResultMap] = useState<Map<string, ExecutionResult>>(new Map());
+
+  useEffect(() => {
+    if (propActions) return;
+
+    if (runId) {
+      fetch(`${API_BASE}/recommendations/${runId}`)
+        .then((r) => r.json())
+        .then((data: { recommended: any[]; available: any[] }) => {
+          setRecommendedActions(
+            data.recommended.map((a) => ({
+              id: a.id,
+              type: a.integration_id || "internal",
+              label: a.name,
+              description: a.description,
+              enabled: true,
+              integration_id: a.integration_id,
+              operation: a.operation,
+              score: a.score,
+            }))
+          );
+          setAvailableActions(
+            data.available.map((a) => ({
+              id: a.id,
+              type: a.integration_id || "internal",
+              label: a.name,
+              description: a.description,
+              enabled: true,
+              integration_id: a.integration_id,
+              operation: a.operation,
+            }))
+          );
+          setFallbackActions([]);
+        })
+        .catch(() => {
+          fetchAllActions();
+        });
+    } else {
+      fetchAllActions();
+    }
+  }, [propActions, runId]);
+
+  const fetchAllActions = () => {
+    fetch(API_BASE)
+      .then((r) => r.json())
+      .then((data: any[]) => {
+        setFallbackActions(
+          data
+            .filter((a) => a.status === "active")
+            .map((a) => ({
+              id: a.id,
+              type: a.integration_id || "internal",
+              label: a.name,
+              description: a.description,
+              enabled: true,
+              integration_id: a.integration_id,
+              operation: a.operation,
+            }))
+        );
+        setRecommendedActions([]);
+        setAvailableActions([]);
+      })
+      .catch(console.error);
+  };
+
+  const allActions = propActions ?? (
+    recommendedActions.length > 0 || availableActions.length > 0
+      ? [...recommendedActions, ...availableActions]
+      : fallbackActions
+  );
+
+  const handleClick = async (action: AgentAction) => {
+    if (onAction) onAction(action.type);
+    setExecutingId(action.id);
+    try {
+      const res = await fetch(`${API_BASE}/${action.id}/execute`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ run_id: runId || "", input: {} }),
+      });
+      const data = await res.json();
+      setResultMap((prev) => new Map(prev).set(action.id, data));
+    } catch (err) {
+      setResultMap((prev) => new Map(prev).set(action.id, {
+        status: "error",
+        error: err instanceof Error ? err.message : "Network error",
+      }));
+    }
+    setExecutingId(null);
+    setCompletedIds((prev) => new Set(prev).add(action.id));
+  };
+
+  const hasRecommendations = recommendedActions.length > 0;
+
+  return (
+    <div className="bg-[#0a0a0a] border border-[#262626] rounded-[10px] overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-gray-800 bg-gray-950">
+      <div className="px-4 py-3 border-b border-[#262626]">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-white flex items-center gap-2">
-              <Zap className="w-4 h-4 text-yellow-400" />
-              {title}
-            </h3>
-            <p className="text-xs text-gray-500 mt-0.5">
-              Automated workflows and integrations
+            <h3 className="text-[#fafafa] text-sm font-medium">{title}</h3>
+            <p className="text-xs text-[#71717a] mt-0.5">
+              {hasRecommendations
+                ? "Context-aware actions based on agent analysis"
+                : "Automated workflows and integrations"}
             </p>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-800 border border-gray-700">
-            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-xs text-gray-400">Ready</span>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[#262626]">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            <span className="text-xs text-[#71717a]">Ready</span>
           </div>
         </div>
       </div>
 
       {/* Actions Grid */}
-      <div className="p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {actions.map((action) => {
-            const styles = getActionStyles(action.type);
-            const disabled = action.enabled === false;
+      <div className="p-4 space-y-4">
+        {/* Recommended Section */}
+        {hasRecommendations && (
+          <div>
+            <span className="text-[11px] font-medium text-[#71717a] uppercase tracking-[0.08em]">
+              Recommended Actions
+            </span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+              {recommendedActions.map((action) => (
+                <ActionButton
+                  key={action.id}
+                  action={action}
+                  isRecommended
+                  executingId={executingId}
+                  completedIds={completedIds}
+                  resultMap={resultMap}
+                  onClick={handleClick}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
-            return (
-              <button
+        {/* Other Actions */}
+        {hasRecommendations && availableActions.length > 0 && (
+          <div>
+            <span className="text-[11px] font-medium text-[#71717a] uppercase tracking-[0.08em]">
+              Other Actions
+            </span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+              {availableActions.map((action) => (
+                <ActionButton
+                  key={action.id}
+                  action={action}
+                  executingId={executingId}
+                  completedIds={completedIds}
+                  resultMap={resultMap}
+                  onClick={handleClick}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Fallback */}
+        {!hasRecommendations && fallbackActions.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {fallbackActions.map((action) => (
+              <ActionButton
                 key={action.id}
-                onClick={() => handleClick(action.type)}
-                disabled={disabled}
-                className={`group relative flex items-center gap-3 px-4 py-3 rounded-lg border transition-all duration-300 ${
-                  styles.button
-                } ${styles.glow} shadow-lg ${
-                  disabled
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:scale-[1.02] active:scale-[0.98]"
-                }`}
-              >
-                {/* Background shimmer effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg" />
+                action={action}
+                executingId={executingId}
+                completedIds={completedIds}
+                resultMap={resultMap}
+                onClick={handleClick}
+              />
+            ))}
+          </div>
+        )}
 
-                {/* Icon container */}
-                <div className="relative z-10 p-2 rounded-lg bg-white/10 backdrop-blur-sm">
-                  {getActionIcon(action.type)}
-                </div>
-
-                {/* Text content */}
-                <div className="relative z-10 flex-1 text-left">
-                  <div className={`text-sm ${styles.text}`}>
-                    {action.label}
-                  </div>
-                  {action.description && (
-                    <div className="text-xs text-white/70 mt-0.5">
-                      {action.description}
-                    </div>
-                  )}
-                </div>
-
-                {/* Arrow indicator */}
-                <div className="relative z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                </div>
-
-                {/* Glow accent */}
-                {!disabled && (
-                  <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl bg-current" />
-                )}
-              </button>
-            );
-          })}
-        </div>
+        {propActions && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {propActions.map((action) => (
+              <ActionButton
+                key={action.id}
+                action={action}
+                executingId={executingId}
+                completedIds={completedIds}
+                resultMap={resultMap}
+                onClick={handleClick}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Footer */}
-      <div className="px-4 py-2.5 border-t border-gray-800 bg-gray-950/50">
+      <div className="px-4 py-2.5 border-t border-[#262626]">
         <div className="flex items-center justify-between text-xs">
-          <span className="text-gray-500">
-            {actions.filter((a) => a.enabled !== false).length} action
-            {actions.filter((a) => a.enabled !== false).length !== 1 ? "s" : ""}{" "}
-            available
+          <span className="text-[#71717a]">
+            {hasRecommendations
+              ? `${recommendedActions.length} recommended, ${availableActions.length} other`
+              : `${allActions.length} action${allActions.length !== 1 ? "s" : ""} available`}
           </span>
-          <span className="text-gray-600">Workflow automation enabled</span>
+          <span className="text-[#71717a]">
+            {hasRecommendations ? "Context-aware" : "Automation enabled"}
+          </span>
         </div>
       </div>
     </div>

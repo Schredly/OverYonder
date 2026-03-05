@@ -4,8 +4,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from bootstrap.demo_setup import seed_demo_data
-from routers import admin_router, agent_router, integrations_router, llm_configs_router, runs_router, skills_router, tenants_router, tools_router, uc_runs_router, use_cases_router
+from routers import actions_router, admin_router, agent_router, integrations_router, llm_configs_router, runs_router, skills_router, tenants_router, tools_router, uc_runs_router, use_cases_router
 from store import (
+    InMemoryActionStore,
+    InMemoryAgentUIRunEventStore,
+    InMemoryAgentUIRunStore,
     InMemoryClassificationSchemaStore,
     InMemoryEventStore,
     InMemoryFeedbackStore,
@@ -55,9 +58,13 @@ app.state.integration_store = InMemoryIntegrationStore()
 app.state.skill_store = InMemorySkillStore()
 app.state.use_case_store = InMemoryUseCaseStore()
 app.state.use_case_run_store = InMemoryUseCaseRunStore()
+app.state.agent_ui_run_store = InMemoryAgentUIRunStore()
+app.state.agent_ui_run_event_store = InMemoryAgentUIRunEventStore()
+app.state.action_store = InMemoryActionStore()
 
 app.include_router(tenants_router)
 app.include_router(admin_router)
+app.include_router(actions_router)
 app.include_router(agent_router)
 app.include_router(integrations_router)
 app.include_router(tools_router)

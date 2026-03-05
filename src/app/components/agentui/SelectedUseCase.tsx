@@ -14,49 +14,30 @@ export function SelectedUseCase({
   category,
 }: SelectedUseCaseProps) {
   const getConfidenceColor = (score: number) => {
-    if (score >= 90) return "text-green-400";
-    if (score >= 75) return "text-blue-400";
-    if (score >= 60) return "text-yellow-400";
+    if (score >= 90) return "text-emerald-400";
+    if (score >= 75) return "text-indigo-400";
+    if (score >= 60) return "text-amber-400";
     return "text-orange-400";
   };
 
-  const getConfidenceGlow = (score: number) => {
-    if (score >= 90) return "shadow-green-500/20";
-    if (score >= 75) return "shadow-blue-500/20";
-    if (score >= 60) return "shadow-yellow-500/20";
-    return "shadow-orange-500/20";
-  };
-
-  const getGlowBorder = (score: number) => {
-    if (score >= 90) return "border-green-500/40";
-    if (score >= 75) return "border-blue-500/40";
-    if (score >= 60) return "border-yellow-500/40";
-    return "border-orange-500/40";
-  };
-
   const confidenceColor = getConfidenceColor(confidence);
-  const confidenceGlow = getConfidenceGlow(confidence);
-  const glowBorder = getGlowBorder(confidence);
 
   return (
-    <div
-      className={`relative bg-gradient-to-br from-gray-900 to-gray-950 border-2 ${glowBorder} rounded-lg overflow-hidden shadow-2xl ${confidenceGlow}`}
-    >
-      {/* Subtle animated gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-indigo-500/5 animate-pulse" />
-
+    <div className="bg-[#0a0a0a] border border-[#262626] rounded-[10px] overflow-hidden">
       {/* Header */}
-      <div className="relative px-4 py-3 border-b border-gray-800 bg-gray-950/50 backdrop-blur-sm">
+      <div className="px-4 py-3 border-b border-[#262626]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/30">
-              <Target className="w-4 h-4 text-blue-400" />
+            <div className="p-2 rounded-lg bg-[#161616] border border-[#262626]">
+              <Target className="w-4 h-4 text-[#a1a1aa]" />
             </div>
             <div>
-              <h3 className="text-sm text-gray-400">Selected Use Case</h3>
+              <span className="text-[11px] font-medium text-[#71717a] uppercase tracking-[0.08em]">
+                Selected Use Case
+              </span>
               {category && (
-                <span className="text-xs text-gray-600">
-                  Category: {category}
+                <span className="text-xs text-[#71717a] block">
+                  {category}
                 </span>
               )}
             </div>
@@ -64,7 +45,7 @@ export function SelectedUseCase({
 
           {/* Confidence Badge */}
           <div
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-900/80 border border-gray-700 ${confidenceColor}`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#262626] ${confidenceColor}`}
           >
             <TrendingUp className="w-3.5 h-3.5" />
             <span className="text-sm">{confidence}%</span>
@@ -73,18 +54,17 @@ export function SelectedUseCase({
       </div>
 
       {/* Content */}
-      <div className="relative px-4 py-4">
-        <h2 className="text-white mb-2 flex items-center gap-2">
+      <div className="px-4 py-4">
+        <h2 className="text-[#fafafa] text-sm font-medium mb-2">
           {name}
-          <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
         </h2>
-        <p className="text-sm text-gray-400 leading-relaxed">{description}</p>
+        <p className="text-sm text-[#a1a1aa] leading-relaxed">{description}</p>
       </div>
 
       {/* Footer with confidence bar */}
-      <div className="relative px-4 py-3 border-t border-gray-800 bg-gray-950/30">
+      <div className="px-4 py-3 border-t border-[#262626]">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-gray-500">Match Confidence</span>
+          <span className="text-[11px] font-medium text-[#71717a] uppercase tracking-[0.08em]">Match Confidence</span>
           <span className={`text-xs ${confidenceColor}`}>
             {confidence >= 90 && "Excellent"}
             {confidence >= 75 && confidence < 90 && "High"}
@@ -92,24 +72,13 @@ export function SelectedUseCase({
             {confidence < 60 && "Moderate"}
           </span>
         </div>
-        <div className="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
+        <div className="w-full bg-[#262626] rounded-full h-1.5 overflow-hidden">
           <div
-            className={`h-full rounded-full transition-all duration-1000 ${
-              confidence >= 90
-                ? "bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg shadow-green-500/50"
-                : confidence >= 75
-                ? "bg-gradient-to-r from-blue-500 to-cyan-500 shadow-lg shadow-blue-500/50"
-                : confidence >= 60
-                ? "bg-gradient-to-r from-yellow-500 to-amber-500 shadow-lg shadow-yellow-500/50"
-                : "bg-gradient-to-r from-orange-500 to-red-500 shadow-lg shadow-orange-500/50"
-            }`}
+            className="h-full bg-[#6366f1] rounded-full transition-all duration-1000"
             style={{ width: `${confidence}%` }}
           />
         </div>
       </div>
-
-      {/* Corner accent */}
-      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-500/10 to-transparent rounded-bl-full" />
     </div>
   );
 }

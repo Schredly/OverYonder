@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
-from models import AgentEvent, AgentRun, ClassificationSchema, FeedbackEvent, GoogleDriveConfig, Integration, LLMConfig, MetricsEvent, RunTelemetry, ServiceNowConfig, Skill, Tenant, TenantLLMAssignment, UseCase, UseCaseRun
+from models import Action, AgentEvent, AgentRun, AgentUIRun, AgentUIRunEvent, ClassificationSchema, FeedbackEvent, GoogleDriveConfig, Integration, LLMConfig, MetricsEvent, RunTelemetry, ServiceNowConfig, Skill, Tenant, TenantLLMAssignment, UseCase, UseCaseRun
 
 
 class TenantStore(ABC):
@@ -207,3 +207,42 @@ class UseCaseRunStore(ABC):
 
     @abstractmethod
     async def update(self, run_id: str, **kwargs: Any) -> Optional[UseCaseRun]: ...
+
+
+class AgentUIRunStore(ABC):
+    @abstractmethod
+    async def create(self, run: AgentUIRun) -> AgentUIRun: ...
+
+    @abstractmethod
+    async def get(self, run_id: str) -> Optional[AgentUIRun]: ...
+
+    @abstractmethod
+    async def list_for_tenant(self, tenant_id: str) -> list[AgentUIRun]: ...
+
+    @abstractmethod
+    async def update(self, run_id: str, **kwargs: Any) -> Optional[AgentUIRun]: ...
+
+
+class AgentUIRunEventStore(ABC):
+    @abstractmethod
+    async def create(self, event: AgentUIRunEvent) -> AgentUIRunEvent: ...
+
+    @abstractmethod
+    async def list_for_run(self, run_id: str) -> list[AgentUIRunEvent]: ...
+
+
+class ActionStore(ABC):
+    @abstractmethod
+    async def create(self, action: Action) -> Action: ...
+
+    @abstractmethod
+    async def get(self, action_id: str) -> Optional[Action]: ...
+
+    @abstractmethod
+    async def list_for_tenant(self, tenant_id: str) -> list[Action]: ...
+
+    @abstractmethod
+    async def update(self, action_id: str, **kwargs: Any) -> Optional[Action]: ...
+
+    @abstractmethod
+    async def delete(self, action_id: str) -> bool: ...

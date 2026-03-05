@@ -1,4 +1,7 @@
 from store.interface import (
+    ActionStore,
+    AgentUIRunEventStore,
+    AgentUIRunStore,
     ClassificationSchemaStore,
     EventStore,
     FeedbackStore,
@@ -16,6 +19,9 @@ from store.interface import (
     UseCaseStore,
 )
 from store.memory import (
+    InMemoryActionStore,
+    InMemoryAgentUIRunEventStore,
+    InMemoryAgentUIRunStore,
     InMemoryClassificationSchemaStore,
     InMemoryEventStore,
     InMemoryFeedbackStore,
@@ -49,6 +55,9 @@ __all__ = [
     "SkillStore",
     "UseCaseStore",
     "UseCaseRunStore",
+    "AgentUIRunStore",
+    "AgentUIRunEventStore",
+    "ActionStore",
     "InMemoryTenantStore",
     "InMemoryClassificationSchemaStore",
     "InMemoryGoogleDriveConfigStore",
@@ -64,4 +73,7 @@ __all__ = [
     "InMemorySkillStore",
     "InMemoryUseCaseStore",
     "InMemoryUseCaseRunStore",
+    "InMemoryAgentUIRunStore",
+    "InMemoryAgentUIRunEventStore",
+    "InMemoryActionStore",
 ]

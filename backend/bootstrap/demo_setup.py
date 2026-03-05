@@ -3,6 +3,9 @@
 import uuid
 
 from models import (
+    Action,
+    ActionParameter,
+    ActionRule,
     Integration,
     Skill,
     Tenant,
@@ -98,4 +101,93 @@ async def seed_demo_data(app) -> None:
     )
     await app.state.use_case_store.create(use_case)
 
-    print("[demo_setup] Seeded 'acme' tenant with ServiceNow integration, 4 skills, and 1 use case")
+    # --- Actions ---
+    action_defs = [
+        {
+            "name": "Create Incident",
+            "description": "Creates a new incident in ServiceNow with agent findings",
+            "integration_id": "servicenow",
+            "operation": "incident.create",
+            "parameters": [
+                ActionParameter(name="title", source="user_prompt"),
+                ActionParameter(name="description", source="agent_result"),
+                ActionParameter(name="priority", source="static", value="3"),
+            ],
+            "rules": [
+                ActionRule(type="use_case", operator="equals", value="Email Incident Diagnosis"),
+                ActionRule(type="keyword", operator="contains", value="email,incident,outage,smtp,exchange,outlook"),
+                ActionRule(type="skill", operator="contains", value="Incident Lookup"),
+                ActionRule(type="confidence", operator="greater_than", value="0.10"),
+            ],
+        },
+        {
+            "name": "Create Jira Issue",
+            "description": "Creates a new issue in Jira project with specified fields",
+            "integration_id": "jira",
+            "operation": "issue.create",
+            "parameters": [
+                ActionParameter(name="summary", source="user_prompt"),
+                ActionParameter(name="description", source="agent_result"),
+            ],
+            "rules": [
+                ActionRule(type="keyword", operator="contains", value="bug,issue,task,feature,ticket,jira"),
+            ],
+        },
+        {
+            "name": "Generate PDF Report",
+            "description": "Generates a PDF report from agent analysis results",
+            "integration_id": "internal",
+            "operation": "pdf.generate",
+            "parameters": [
+                ActionParameter(name="content", source="agent_result"),
+            ],
+            "rules": [
+                ActionRule(type="confidence", operator="greater_than", value="0.15"),
+                ActionRule(type="keyword", operator="contains", value="report,summary,diagnosis,analysis,pdf"),
+            ],
+        },
+        {
+            "name": "Send Slack Notification",
+            "description": "Sends a notification message to a specified Slack channel",
+            "integration_id": "slack",
+            "operation": "message.post",
+            "parameters": [
+                ActionParameter(name="channel", source="static", value="#incidents"),
+                ActionParameter(name="text", source="agent_result"),
+            ],
+            "rules": [
+                ActionRule(type="keyword", operator="contains", value="notify,alert,team,slack,urgent"),
+            ],
+            "status": "disabled",
+        },
+        {
+            "name": "Create Google Doc",
+            "description": "Creates a new Google Doc with agent-generated content",
+            "integration_id": "google-drive",
+            "operation": "document.create",
+            "parameters": [
+                ActionParameter(name="title", source="user_prompt"),
+                ActionParameter(name="content", source="agent_result"),
+            ],
+            "rules": [
+                ActionRule(type="skill", operator="contains", value="Documentation Search"),
+                ActionRule(type="keyword", operator="contains", value="document,doc,google,drive,save,write"),
+            ],
+        },
+    ]
+
+    for ad in action_defs:
+        action = Action(
+            id=f"act_{uuid.uuid4().hex[:12]}",
+            tenant_id="acme",
+            name=ad["name"],
+            description=ad["description"],
+            integration_id=ad["integration_id"],
+            operation=ad["operation"],
+            parameters=ad.get("parameters", []),
+            rules=ad.get("rules", []),
+            status=ad.get("status", "active"),
+        )
+        await app.state.action_store.create(action)
+
+    print(f"[demo_setup] Seeded 'acme' tenant with ServiceNow integration, 4 skills, 1 use case, and {len(action_defs)} actions")
