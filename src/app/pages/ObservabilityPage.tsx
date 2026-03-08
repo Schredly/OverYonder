@@ -71,17 +71,18 @@ export default function ObservabilityPage() {
     if (!currentTenantId) return;
     setLoading(true);
     try {
-      const [runs, useCases, skills] = await Promise.all([
+      const [runs, useCases, skills, agentTraces] = await Promise.all([
         getAllUCRuns(currentTenantId),
         getUseCases(currentTenantId),
         getSkills(currentTenantId),
+        fetch(`/api/admin/${currentTenantId}/agent/traces`).then((r) => r.ok ? r.json() : []).catch(() => []),
       ]);
 
       // Build filter options
       setUseCaseNames(useCases.map((uc) => uc.name));
       setSkillNames(skills.map((sk) => sk.name));
 
-      // Flatten runs into trace entries
+      // Flatten UC runs into trace entries
       const entries: TraceEntry[] = [];
       for (const run of runs) {
         for (const step of run.steps) {
@@ -107,6 +108,16 @@ export default function ObservabilityPage() {
           });
         }
       }
+
+      // Merge AgentUI traces (already in the right shape from the backend)
+      for (const trace of agentTraces as TraceEntry[]) {
+        entries.push({
+          ...trace,
+          tenant: currentTenant?.name ?? trace.tenant,
+          timestamp: trace.timestamp ? new Date(trace.timestamp).toLocaleString() : "—",
+        });
+      }
+
       setTraces(entries);
     } catch {
       // ignore

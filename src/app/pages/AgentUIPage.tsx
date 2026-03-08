@@ -46,6 +46,7 @@ export default function AgentUIPage() {
 
   // Draft refinement mode
   const [draftState, setDraftState] = useState<DraftState | null>(null);
+  const draftStateRef = useRef<DraftState | null>(null);
 
   // Input collection mode (action needs user input before executing)
   const [inputState, setInputState] = useState<InputCollectionState | null>(null);
@@ -54,6 +55,11 @@ export default function AgentUIPage() {
   const reasoningCountRef = useRef(0);
   const skillCountRef = useRef(0);
   const toolCountRef = useRef(0);
+
+  // Keep ref in sync so handleApproveReplit always reads the latest draft
+  useEffect(() => {
+    draftStateRef.current = draftState;
+  }, [draftState]);
 
   useEffect(() => {
     const check = () => setNarrowViewport(window.innerWidth < 768);
@@ -325,13 +331,14 @@ export default function AgentUIPage() {
   };
 
   const handleApproveReplit = async () => {
-    if (!draftState) return;
+    const currentDraft = draftStateRef.current;
+    if (!currentDraft) return;
     setIsLoading(true);
     try {
       const res = await fetch("/api/admin/acme/agent/approve-replit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ approved_prompt: draftState.draftPrompt }),
+        body: JSON.stringify({ approved_prompt: currentDraft.draftPrompt }),
       });
       const data = await res.json();
       if (data.repl_url) {

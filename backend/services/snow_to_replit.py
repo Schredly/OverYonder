@@ -21,6 +21,7 @@ _MAX_RETRIES = 2
 _RETRY_DELAY = 5  # seconds between retries
 
 _GRAPHQL_URL = "https://replit.com/graphql"
+_MAX_LLM_CATALOG_CHARS = 200_000  # ~50k tokens — keeps draft calls within model context limits
 
 _CREATE_REPL_MUTATION = """
 mutation CreateRepl($input: CreateReplInput!) {
@@ -217,9 +218,10 @@ async def convert_catalog_to_replit(tenant_id: str, payload: dict, app) -> dict:
 
     # 3. Load tenant LLM config and call LLM to analyze the catalog
     catalog_str = json.dumps(catalog_json, indent=2)
+    llm_catalog = catalog_str[:_MAX_LLM_CATALOG_CHARS]
     try:
         llm_cfg = await _get_llm_config(tenant_id, app)
-        user_message = f"Analyze this ServiceNow catalog payload and generate a Replit Agent prompt:\n\n{catalog_str}"
+        user_message = f"Analyze this ServiceNow catalog payload and generate a Replit Agent prompt:\n\n{llm_catalog}"
         draft_prompt, draft_meta = await call_llm(
             provider=llm_cfg["provider"],
             api_key=llm_cfg["api_key"],
@@ -237,7 +239,7 @@ async def convert_catalog_to_replit(tenant_id: str, payload: dict, app) -> dict:
             "Build a modern, responsive service catalog UI using React.\n\n"
             "Use ONLY the following ServiceNow catalog data — do NOT add items "
             "not present in the data:\n\n"
-            f"{catalog_str}"
+            f"{llm_catalog}"
         )
 
     # 4. Return draft for interactive refinement (no repl created yet)
@@ -257,10 +259,20 @@ async def refine_prompt(tenant_id: str, current_prompt: str, user_feedback: str,
     except ClaudeClientError as exc:
         return {"status": "error", "error": str(exc)}
 
+    # Cap the prompt and catalog context to stay within model token limits.
+    # Refinement only needs the current prompt + feedback; catalog data is
+    # just supplementary context, so we truncate aggressively.
+    _MAX_PROMPT_CHARS = 60_000   # ~15k tokens
+    _MAX_CATALOG_CHARS = 4_000   # ~1k tokens
+    trimmed_prompt = current_prompt[:_MAX_PROMPT_CHARS]
+    if len(current_prompt) > _MAX_PROMPT_CHARS:
+        trimmed_prompt += "\n\n[... prompt truncated for refinement ...]"
+    trimmed_catalog = catalog_data[:_MAX_CATALOG_CHARS]
+
     user_message = (
-        f"Current Replit Agent prompt:\n\n{current_prompt}\n\n"
+        f"Current Replit Agent prompt:\n\n{trimmed_prompt}\n\n"
         f"User feedback:\n{user_feedback}\n\n"
-        f"Original ServiceNow catalog data for reference:\n{catalog_data[:4000]}"
+        f"Original ServiceNow catalog data for reference:\n{trimmed_catalog}"
     )
 
     try:
@@ -328,9 +340,10 @@ async def convert_catalog_by_title_to_replit(tenant_id: str, payload: dict, app)
 
     # 3. Load tenant LLM config and call LLM to analyze the catalog
     catalog_str = json.dumps(catalog_json, indent=2)
+    llm_catalog = catalog_str[:_MAX_LLM_CATALOG_CHARS]
     try:
         llm_cfg = await _get_llm_config(tenant_id, app)
-        user_message = f"Analyze this ServiceNow catalog payload and generate a Replit Agent prompt:\n\n{catalog_str}"
+        user_message = f"Analyze this ServiceNow catalog payload and generate a Replit Agent prompt:\n\n{llm_catalog}"
         draft_prompt, draft_meta = await call_llm(
             provider=llm_cfg["provider"],
             api_key=llm_cfg["api_key"],
@@ -348,7 +361,7 @@ async def convert_catalog_by_title_to_replit(tenant_id: str, payload: dict, app)
             "Build a modern, responsive service catalog UI using React.\n\n"
             "Use ONLY the following ServiceNow catalog data — do NOT add items "
             "not present in the data:\n\n"
-            f"{catalog_str}"
+            f"{llm_catalog}"
         )
 
     # 4. Return draft for interactive refinement (no repl created yet)

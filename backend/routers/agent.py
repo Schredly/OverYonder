@@ -452,3 +452,96 @@ async def approve_replit_endpoint(tenant_id: str, body: ApproveReplitRequest, re
     if result.get("status") == "error":
         raise HTTPException(status_code=500, detail=result.get("error", "Failed to create repl"))
     return result
+
+
+# --- Observability traces from AgentUI runs ---
+
+@router.get("/traces")
+async def list_agent_traces(tenant_id: str, request: Request):
+    """Return AgentUI runs + events as flattened trace entries for the observability page."""
+    await _require_tenant(tenant_id, request)
+    app = request.app
+
+    runs = await app.state.agent_ui_run_store.list_for_tenant(tenant_id)
+    traces = []
+
+    for run in runs:
+        events = await app.state.agent_ui_run_event_store.list_for_run(run.id)
+
+        # Group events by skill for step-level trace entries
+        step_index = 0
+        current_skill = None
+        skill_events: dict[str, list] = {}
+
+        for evt in events:
+            skill_name = evt.payload.get("skill", "")
+            if evt.event_type == "skill_started":
+                current_skill = skill_name
+            if evt.event_type in ("tool_called", "tool_result", "llm_usage", "skill_completed"):
+                key = current_skill or skill_name or "unknown"
+                skill_events.setdefault(key, []).append(evt)
+
+        for skill_name, sevts in skill_events.items():
+            step_index += 1
+            tools = []
+            latency_ms = 0
+            tokens = 0
+            status = "completed"
+            model = ""
+            tool_results = []
+
+            for evt in sevts:
+                if evt.event_type == "tool_called":
+                    tools.append(evt.payload.get("tool", ""))
+                elif evt.event_type == "tool_result":
+                    tool_results.append(evt.payload)
+                    if evt.payload.get("status") == "error":
+                        status = "failed"
+                elif evt.event_type == "llm_usage":
+                    tokens += evt.payload.get("prompt_tokens", 0) + evt.payload.get("completion_tokens", 0)
+                    model = evt.payload.get("model", model)
+                    latency_ms += evt.payload.get("latency_ms", 0)
+
+            traces.append({
+                "id": f"{run.id}_{step_index}",
+                "step": step_index,
+                "runId": run.id,
+                "tenant": tenant_id,
+                "useCase": run.selected_use_case or "",
+                "skill": skill_name,
+                "tool": ", ".join(tools) if tools else "—",
+                "model": model or "—",
+                "latency": f"{latency_ms}ms" if latency_ms else "—",
+                "tokens": tokens,
+                "status": status,
+                "timestamp": run.created_at.isoformat(),
+                "skillInstructions": "",
+                "toolRequestPayload": None,
+                "toolResponse": tool_results[0] if len(tool_results) == 1 else (tool_results or None),
+                "llmOutput": "",
+            })
+
+        # If run had no skill events, still include it as a single entry
+        if not skill_events and run.status != "running":
+            traces.append({
+                "id": f"{run.id}_0",
+                "step": 1,
+                "runId": run.id,
+                "tenant": tenant_id,
+                "useCase": run.selected_use_case or "",
+                "skill": ", ".join(run.skills_used) if run.skills_used else "—",
+                "tool": "—",
+                "model": "—",
+                "latency": "—",
+                "tokens": 0,
+                "status": run.status,
+                "timestamp": run.created_at.isoformat(),
+                "skillInstructions": "",
+                "toolRequestPayload": None,
+                "toolResponse": None,
+                "llmOutput": run.result or "",
+            })
+
+    # Sort newest first
+    traces.sort(key=lambda t: t["timestamp"], reverse=True)
+    return traces

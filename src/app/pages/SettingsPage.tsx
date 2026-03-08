@@ -31,10 +31,12 @@ import {
   assignLLMConfig,
   unassignLLMConfig,
   activateLLMAssignment,
+  getLLMUsageSummary,
   type LLMProviderInfo,
   type LLMConfigResponse,
   type TenantLLMAssignmentResponse,
   type TenantResponse,
+  type LLMUsageSummary,
 } from '../services/api';
 
 type ActionStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -88,6 +90,9 @@ export function SettingsPage() {
   const [configs, setConfigs] = useState<LLMConfigResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Cost snapshot from real API data
+  const [costSnapshot, setCostSnapshot] = useState<{ today: number; month: number }>({ today: 0, month: 0 });
+
   // Slide-out panel state
   const [selectedConfig, setSelectedConfig] = useState<LLMConfigResponse | null>(null);
   const [isAddMode, setIsAddMode] = useState(false);
@@ -137,6 +142,24 @@ export function SettingsPage() {
   useEffect(() => {
     loadSharedData();
   }, [loadSharedData]);
+
+  // Load cost snapshot from real usage data
+  useEffect(() => {
+    (async () => {
+      try {
+        const [todaySummary, monthSummary] = await Promise.all([
+          getLLMUsageSummary('acme', '24h'),
+          getLLMUsageSummary('acme', '30d'),
+        ]);
+        setCostSnapshot({
+          today: todaySummary.totalCost,
+          month: monthSummary.totalCost,
+        });
+      } catch {
+        // ignore — keep zeros
+      }
+    })();
+  }, []);
 
   // Load tenants + all assignments upfront for the matrix view
   useEffect(() => {
@@ -853,8 +876,8 @@ export function SettingsPage() {
                       Today&apos;s Cost
                     </span>
                   </div>
-                  <p className="text-3xl font-bold">$47.32</p>
-                  <p className="text-xs text-blue-100 mt-1">+12.3% vs yesterday</p>
+                  <p className="text-3xl font-bold">${costSnapshot.today.toFixed(4)}</p>
+                  <p className="text-xs text-blue-100 mt-1">Last 24 hours</p>
                 </div>
 
                 {/* Monthly Cost */}
@@ -865,14 +888,14 @@ export function SettingsPage() {
                       Monthly Cost (MTD)
                     </span>
                   </div>
-                  <p className="text-3xl font-bold">$1,284.56</p>
+                  <p className="text-3xl font-bold">${costSnapshot.month.toFixed(4)}</p>
                   <p className="text-xs text-blue-100 mt-1">
-                    <span className="font-mono">$2,500.00</span> budget
+                    Last 30 days
                   </p>
                   <div className="mt-3 bg-white/20 rounded-full h-2 overflow-hidden">
                     <div
                       className="bg-white h-full rounded-full transition-all"
-                      style={{ width: '51.4%' }}
+                      style={{ width: `${Math.min((costSnapshot.month / 2500) * 100, 100).toFixed(1)}%` }}
                     />
                   </div>
                 </div>
