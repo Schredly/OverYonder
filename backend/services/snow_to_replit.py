@@ -21,7 +21,7 @@ _MAX_RETRIES = 2
 _RETRY_DELAY = 5  # seconds between retries
 
 _GRAPHQL_URL = "https://replit.com/graphql"
-_MAX_LLM_CATALOG_CHARS = 200_000  # ~50k tokens — keeps draft calls within model context limits
+_MAX_LLM_CATALOG_CHARS = 150_000  # ~37k tokens — fits full cleaned catalog (~113k chars)
 
 _CREATE_REPL_MUTATION = """
 mutation CreateRepl($input: CreateReplInput!) {
@@ -122,8 +122,43 @@ async def _create_repl_with_prompt(
         return None
 
 
+_REFORMAT_SYSTEM_PROMPT = """\
+You are an enterprise application architect.
+
+The following JSON payload was extracted from a ServiceNow catalog item.
+
+Your task is to reformat and simplify the payload so it is easier for an LLM or developer to understand.
+
+Rules:
+- Remove unnecessary ServiceNow metadata (sys_*, timestamps, etc.)
+- Rename fields to plain English where helpful
+- Group related information logically
+- Keep the structure simple and readable
+- Preserve all important functional information
+- Output clean, well-formatted JSON only
+
+Target structure:
+
+CatalogItem
+{
+  name
+  description
+  categories[]
+  variables[
+    {
+      name
+      question
+      type
+      mandatory
+      choices[]
+    }
+  ]
+  workflow_summary
+}\
+"""
+
 _DRAFT_SYSTEM_PROMPT = """\
-You are analyzing a ServiceNow service catalog payload. Your job:
+You are analyzing a simplified ServiceNow service catalog payload. Your job:
 1. Identify EXACTLY which catalog items, fields, and categories are in the data
 2. Generate a precise Replit Agent prompt to build a modern, responsive service catalog UI
 3. The prompt MUST instruct Replit to build ONLY the catalog items found in the data
@@ -134,10 +169,11 @@ Return ONLY the Replit Agent prompt text — no preamble or explanation.\
 """
 
 _REFINE_SYSTEM_PROMPT = """\
-You are refining a Replit Agent prompt for building a service catalog.
-Here is the current prompt and the user's feedback. Update the prompt
-to incorporate the feedback. Keep focus on ONLY the catalog items from
-the original ServiceNow data. Return ONLY the updated prompt text.\
+You are refining the instruction header of a Replit Agent prompt for building
+a service catalog app.  The catalog data (JSON) is attached separately and
+will be reattached automatically — do NOT reproduce the data in your output.
+Incorporate the user's feedback into the instructions. Return ONLY the
+updated instruction text — no preamble, no explanation, no catalog data.\
 """
 
 
@@ -178,6 +214,121 @@ async def _get_llm_config(tenant_id: str, app) -> dict:
     }
 
 
+def _strip_code_fences(text: str) -> str:
+    """Remove markdown code fences (```json ... ```) that LLMs sometimes add."""
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        first_nl = cleaned.find("\n")
+        if first_nl != -1:
+            cleaned = cleaned[first_nl + 1:]
+        if cleaned.endswith("```"):
+            cleaned = cleaned[:-3]
+        cleaned = cleaned.strip()
+    return cleaned
+
+
+def _strip_html(text: str) -> str:
+    """Remove HTML tags from a string, decode common entities."""
+    import re
+    import html
+    return html.unescape(re.sub(r"<[^>]+>", "", text)).strip()
+
+
+def _clean_catalog_item(entry: dict) -> dict | None:
+    """Clean a single ServiceNow catalog item entry (with 'item' and 'prompts' keys)."""
+    item = entry.get("item", entry)  # handle both wrapped and unwrapped
+
+    name = item.get("name", "").strip()
+    if not name:
+        return None
+
+    desc = item.get("description", "")
+    if isinstance(desc, str) and ("<" in desc and ">" in desc):
+        desc = _strip_html(desc)
+
+    clean: dict = {"name": name}
+    if desc:
+        clean["description"] = desc
+
+    categories = item.get("categories", [])
+    if categories:
+        clean["categories"] = categories
+
+    # Variables: keep name, question, type, mandatory, choices — drop sys_id, help_text
+    variables = []
+    for v in item.get("variables", []):
+        cv: dict = {
+            "name": v.get("name", ""),
+            "question": v.get("question", ""),
+            "type": v.get("type", ""),
+        }
+        if v.get("mandatory"):
+            cv["mandatory"] = True
+        choices = v.get("choices", [])
+        if choices:
+            cv["choices"] = [
+                c.get("text", c) if isinstance(c, dict) else c
+                for c in choices
+            ]
+        variables.append(cv)
+    if variables:
+        clean["variables"] = variables
+
+    return clean
+
+
+def _reformat_catalog(raw_catalog_str: str) -> str:
+    """Pre-process raw ServiceNow catalog JSON into a clean, simplified structure.
+
+    Structure-aware cleanup that:
+    - Drops the huge 'prompts' field (79% of payload — duplicates item data)
+    - Drops sys_* IDs, HTML markup, help_text, workflow metadata
+    - Preserves ALL items, categories, variables, and choices
+    """
+    try:
+        raw_obj = json.loads(raw_catalog_str)
+    except Exception:
+        return raw_catalog_str[:_MAX_LLM_CATALOG_CHARS]
+
+    # Handle the {result: {catalog_title, items: [...]}} wrapper
+    result = raw_obj.get("result", raw_obj)
+    if isinstance(result, dict) and "items" in result:
+        items_raw = result["items"]
+        catalog_title = result.get("catalog_title", "")
+    elif isinstance(raw_obj, list):
+        items_raw = raw_obj
+        catalog_title = ""
+    else:
+        # Unknown structure — generic fallback
+        return json.dumps(raw_obj, indent=2)[:_MAX_LLM_CATALOG_CHARS]
+
+    # Clean each item
+    items_clean = []
+    categories = set()
+    for entry in items_raw:
+        clean = _clean_catalog_item(entry)
+        if clean:
+            items_clean.append(clean)
+            for c in clean.get("categories", []):
+                categories.add(c)
+
+    output = {
+        "catalog_title": catalog_title,
+        "total_items": len(items_clean),
+        "total_categories": len(categories),
+        "categories": sorted(categories),
+        "items": items_clean,
+    }
+
+    result_str = json.dumps(output, indent=2)
+    print(f"[snow_to_replit] Catalog cleaned: {len(items_clean)} items, "
+          f"{len(categories)} categories, {len(result_str):,} chars")
+
+    if len(result_str) > _MAX_LLM_CATALOG_CHARS:
+        result_str = result_str[:_MAX_LLM_CATALOG_CHARS] + "\n... (truncated)"
+    return result_str
+
+
 async def convert_catalog_to_replit(tenant_id: str, payload: dict, app) -> dict:
     """Phase 1 — Fetch ServiceNow catalog, call LLM to analyze, return a draft prompt for review."""
 
@@ -216,12 +367,18 @@ async def convert_catalog_to_replit(tenant_id: str, payload: dict, app) -> dict:
 
     print(f"[snow_to_replit] Catalog JSON keys: {list(catalog_json.keys()) if isinstance(catalog_json, dict) else type(catalog_json).__name__}")
 
-    # 3. Load tenant LLM config and call LLM to analyze the catalog
+    # 3. Clean the catalog locally (fast, no LLM) then load LLM config for draft
     catalog_str = json.dumps(catalog_json, indent=2)
-    llm_catalog = catalog_str[:_MAX_LLM_CATALOG_CHARS]
+    clean_catalog = _reformat_catalog(catalog_str)
+
     try:
         llm_cfg = await _get_llm_config(tenant_id, app)
-        user_message = f"Analyze this ServiceNow catalog payload and generate a Replit Agent prompt:\n\n{llm_catalog}"
+    except ClaudeClientError as exc:
+        return {"status": "error", "error": str(exc)}
+
+    # 4. Generate draft Replit prompt from the clean catalog
+    try:
+        user_message = f"Analyze this ServiceNow catalog payload and generate a Replit Agent prompt:\n\n{clean_catalog}"
         draft_prompt, draft_meta = await call_llm(
             provider=llm_cfg["provider"],
             api_key=llm_cfg["api_key"],
@@ -233,61 +390,94 @@ async def convert_catalog_to_replit(tenant_id: str, payload: dict, app) -> dict:
             raise ClaudeClientError("LLM returned empty draft prompt")
         print(f"[snow_to_replit] LLM draft generated ({len(draft_prompt)} chars)")
         await _track_llm_usage(tenant_id, llm_cfg["model"], draft_meta, "catalog-draft", app)
-    except ClaudeClientError as exc:
-        print(f"[snow_to_replit] LLM error, falling back to template: {exc}")
+    except Exception as exc:
+        print(f"[snow_to_replit] Draft generation failed, using template: {type(exc).__name__}: {exc}")
         draft_prompt = (
             "Build a modern, responsive service catalog UI using React.\n\n"
             "Use ONLY the following ServiceNow catalog data — do NOT add items "
             "not present in the data:\n\n"
-            f"{llm_catalog}"
+            f"{clean_catalog}"
         )
 
-    # 4. Return draft for interactive refinement (no repl created yet)
+    # 5. Return draft for interactive refinement (no repl created yet)
     return {
         "status": "draft",
         "draft_prompt": draft_prompt.strip(),
-        "catalog_data": catalog_str,
-        "analysis": f"Analyzed catalog payload ({len(catalog_str)} chars) and generated a focused Replit prompt.",
+        "catalog_data": clean_catalog,
+        "analysis": f"Analyzed catalog payload ({len(catalog_str)} chars), reformatted, and generated a focused Replit prompt.",
         "latency_ms": latency_ms,
     }
 
 
+def _split_prompt_and_data(prompt: str) -> tuple[str, str]:
+    """Split a draft prompt into the instruction header and the embedded catalog data.
+
+    The LLM-generated draft typically has textual instructions at the top followed
+    by a large JSON block (the catalog data).  We only need to refine the
+    instructions — the data stays unchanged.
+    """
+    # Look for the start of the JSON payload (first '{' or '[' on its own line)
+    for i, line in enumerate(prompt.split("\n")):
+        stripped = line.strip()
+        if stripped.startswith("{") or stripped.startswith("["):
+            parts = prompt.split("\n")
+            header = "\n".join(parts[:i]).rstrip()
+            data = "\n".join(parts[i:])
+            if header:
+                return header, data
+            break
+    # No clear split — treat the whole thing as header
+    return prompt, ""
+
+
 async def refine_prompt(tenant_id: str, current_prompt: str, user_feedback: str, catalog_data: str, app) -> dict:
-    """Phase 2 — Refine the draft prompt using LLM + user feedback."""
+    """Phase 2 — Refine the draft prompt using LLM + user feedback.
+
+    Only the instruction header is sent to the LLM — the embedded catalog
+    data is stripped out and reattached after refinement, keeping the LLM
+    call small and fast.
+    """
     try:
         llm_cfg = await _get_llm_config(tenant_id, app)
     except ClaudeClientError as exc:
         return {"status": "error", "error": str(exc)}
 
-    # Cap the prompt and catalog context to stay within model token limits.
-    # Refinement only needs the current prompt + feedback; catalog data is
-    # just supplementary context, so we truncate aggressively.
-    _MAX_PROMPT_CHARS = 60_000   # ~15k tokens
-    _MAX_CATALOG_CHARS = 4_000   # ~1k tokens
-    trimmed_prompt = current_prompt[:_MAX_PROMPT_CHARS]
-    if len(current_prompt) > _MAX_PROMPT_CHARS:
-        trimmed_prompt += "\n\n[... prompt truncated for refinement ...]"
-    trimmed_catalog = catalog_data[:_MAX_CATALOG_CHARS]
+    # Split: only refine the instruction header, not the 100K+ catalog JSON
+    header, embedded_data = _split_prompt_and_data(current_prompt)
+    print(f"[snow_to_replit] Refine: header={len(header)} chars, "
+          f"embedded_data={len(embedded_data)} chars (stripped from LLM call)")
 
     user_message = (
-        f"Current Replit Agent prompt:\n\n{trimmed_prompt}\n\n"
-        f"User feedback:\n{user_feedback}\n\n"
-        f"Original ServiceNow catalog data for reference:\n{trimmed_catalog}"
+        f"Current Replit Agent prompt (instruction header only):\n\n{header}\n\n"
+        f"User feedback:\n{user_feedback}"
     )
 
     try:
-        refined, refine_meta = await call_llm(
+        refined_header, refine_meta = await call_llm(
             provider=llm_cfg["provider"],
             api_key=llm_cfg["api_key"],
             model=llm_cfg["model"],
             user_message=user_message,
             system_prompt=_REFINE_SYSTEM_PROMPT,
         )
+        if not refined_header.strip():
+            return {"status": "error", "error": "LLM returned an empty refinement response"}
     except ClaudeClientError as exc:
         return {"status": "error", "error": f"LLM refinement failed: {exc}"}
+    except Exception as exc:
+        logger.exception("Unexpected error during refinement")
+        err_str = str(exc) or f"{type(exc).__name__}: {repr(exc)}"
+        return {"status": "error", "error": f"Refinement failed: {err_str}"}
 
     await _track_llm_usage(tenant_id, llm_cfg["model"], refine_meta, "catalog-refine", app)
-    return {"status": "ok", "refined_prompt": refined.strip()}
+
+    # Reassemble: refined header + original catalog data
+    if embedded_data:
+        full_refined = refined_header.strip() + "\n\n" + embedded_data
+    else:
+        full_refined = refined_header.strip()
+
+    return {"status": "ok", "refined_prompt": full_refined}
 
 
 async def convert_catalog_by_title_to_replit(tenant_id: str, payload: dict, app) -> dict:
@@ -338,12 +528,18 @@ async def convert_catalog_by_title_to_replit(tenant_id: str, payload: dict, app)
 
     print(f"[snow_to_replit] Catalog JSON keys: {list(catalog_json.keys()) if isinstance(catalog_json, dict) else type(catalog_json).__name__}")
 
-    # 3. Load tenant LLM config and call LLM to analyze the catalog
+    # 3. Clean the catalog locally (fast, no LLM) then load LLM config for draft
     catalog_str = json.dumps(catalog_json, indent=2)
-    llm_catalog = catalog_str[:_MAX_LLM_CATALOG_CHARS]
+    clean_catalog = _reformat_catalog(catalog_str)
+
     try:
         llm_cfg = await _get_llm_config(tenant_id, app)
-        user_message = f"Analyze this ServiceNow catalog payload and generate a Replit Agent prompt:\n\n{llm_catalog}"
+    except ClaudeClientError as exc:
+        return {"status": "error", "error": str(exc)}
+
+    # 4. Generate draft Replit prompt from the clean catalog
+    try:
+        user_message = f"Analyze this ServiceNow catalog payload and generate a Replit Agent prompt:\n\n{clean_catalog}"
         draft_prompt, draft_meta = await call_llm(
             provider=llm_cfg["provider"],
             api_key=llm_cfg["api_key"],
@@ -355,21 +551,21 @@ async def convert_catalog_by_title_to_replit(tenant_id: str, payload: dict, app)
             raise ClaudeClientError("LLM returned empty draft prompt")
         print(f"[snow_to_replit] LLM draft generated ({len(draft_prompt)} chars)")
         await _track_llm_usage(tenant_id, llm_cfg["model"], draft_meta, "catalog-by-title-draft", app)
-    except ClaudeClientError as exc:
-        print(f"[snow_to_replit] LLM error, falling back to template: {exc}")
+    except Exception as exc:
+        print(f"[snow_to_replit] Draft generation failed, using template: {type(exc).__name__}: {exc}")
         draft_prompt = (
             "Build a modern, responsive service catalog UI using React.\n\n"
             "Use ONLY the following ServiceNow catalog data — do NOT add items "
             "not present in the data:\n\n"
-            f"{llm_catalog}"
+            f"{clean_catalog}"
         )
 
-    # 4. Return draft for interactive refinement (no repl created yet)
+    # 5. Return draft for interactive refinement (no repl created yet)
     return {
         "status": "draft",
         "draft_prompt": draft_prompt.strip(),
-        "catalog_data": catalog_str,
-        "analysis": f"Analyzed catalog \"{catalog_title}\" ({len(catalog_str)} chars) and generated a focused Replit prompt.",
+        "catalog_data": clean_catalog,
+        "analysis": f"Analyzed catalog \"{catalog_title}\" ({len(catalog_str)} chars), reformatted, and generated a focused Replit prompt.",
         "latency_ms": latency_ms,
     }
 

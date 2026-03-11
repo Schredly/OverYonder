@@ -23,7 +23,7 @@ export function TopBar({ agentName, tenant, status }: TopBarProps) {
     <div className="flex items-center justify-between px-4 py-3 border-b border-[#2F5F7A] bg-[#0B1E2D]">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <img src="/lb.png" alt="Love-Boat.AI" className="w-8 h-8 rounded-lg object-contain bg-[#0B1E2D]" style={{ mixBlendMode: 'screen' }} />
+          <img src="/overyonder-logo.png" alt="OverYonder.ai" className="w-8 h-8 rounded-lg object-contain" />
           <div>
             <h1 className="text-[#F1F5F9] text-sm font-medium">{agentName}</h1>
             <p className="text-xs text-[#8FA7B5]">{tenant}</p>

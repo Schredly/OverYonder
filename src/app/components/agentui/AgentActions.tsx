@@ -54,7 +54,7 @@ interface AgentActionsProps {
   runId?: string | null;
 }
 
-const API_BASE = "http://localhost:8000/api/admin/acme/actions";
+const API_BASE = "/api/admin/acme/actions";
 
 function getActionIcon(integration: string) {
   switch (integration) {

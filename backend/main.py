@@ -67,6 +67,7 @@ app.state.agent_ui_run_store = InMemoryAgentUIRunStore()
 app.state.agent_ui_run_event_store = InMemoryAgentUIRunEventStore()
 app.state.action_store = InMemoryActionStore()
 app.state.llm_usage_store = InMemoryLLMUsageStore()
+app.state.runtime_defaults = {}  # tenant_id -> RuntimeDefaults
 
 app.include_router(tenants_router)
 app.include_router(admin_router)

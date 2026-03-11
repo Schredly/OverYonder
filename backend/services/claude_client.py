@@ -194,7 +194,7 @@ async def _call_anthropic(api_key: str, model: str, user_message: str, *, system
     """Call the Anthropic Messages API. Returns (response_text, raw_body)."""
     payload = {
         "model": model,
-        "max_tokens": 1024,
+        "max_tokens": 16384,
         "system": system_prompt,
         "messages": [{"role": "user", "content": user_message}],
     }
@@ -258,7 +258,7 @@ async def _call_openai(api_key: str, model: str, user_message: str, *, system_pr
     # Reasoning models (o-series) use "developer" role instead of "system"
     # and need higher token limits for chain-of-thought overhead
     sys_role = "developer" if _is_reasoning_model(model) else "system"
-    token_limit = 16384 if _is_reasoning_model(model) else 4096
+    token_limit = 16384
     payload: dict = {
         "model": model,
         "max_completion_tokens": token_limit,

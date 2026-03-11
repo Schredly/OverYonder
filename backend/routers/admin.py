@@ -19,6 +19,7 @@ from models import (
     PutDriveConfigRequest,
     PutSchemaRequest,
     PutServiceNowConfigRequest,
+    RuntimeDefaults,
     RunTelemetry,
     ScaffoldApplyRequest,
     ScaffoldApplyResponse,
@@ -26,6 +27,7 @@ from models import (
     ServiceNowConfig,
     TestDriveFolderRequest,
     TestDriveFolderResponse,
+    UpdateRuntimeDefaultsRequest,
 )
 from services.google_drive import GoogleDriveError, GoogleDriveProvider
 from services.telemetry import aggregate_observability, build_run_telemetry, compute_trends
@@ -470,3 +472,38 @@ async def get_observability_runs(
     # Newest first
     telemetries.sort(key=lambda t: t.started_at, reverse=True)
     return telemetries[:limit]
+
+
+# ── Runtime Defaults ──────────────────────────────────────────────
+
+
+@router.get("/runtime-defaults", response_model=RuntimeDefaults)
+async def get_runtime_defaults(tenant_id: str, request: Request):
+    await _require_tenant(tenant_id, request)
+    defaults = request.app.state.runtime_defaults.get(tenant_id)
+    if defaults is None:
+        defaults = RuntimeDefaults(tenant_id=tenant_id)
+        request.app.state.runtime_defaults[tenant_id] = defaults
+    return defaults
+
+
+@router.put("/runtime-defaults", response_model=RuntimeDefaults)
+async def put_runtime_defaults(
+    tenant_id: str,
+    body: UpdateRuntimeDefaultsRequest,
+    request: Request,
+):
+    await _require_tenant(tenant_id, request)
+    from datetime import datetime, timezone
+
+    existing = request.app.state.runtime_defaults.get(tenant_id)
+    if existing is None:
+        existing = RuntimeDefaults(tenant_id=tenant_id)
+
+    data = existing.model_dump()
+    updates = body.model_dump(exclude_none=True)
+    data.update(updates)
+    data["updated_at"] = datetime.now(timezone.utc)
+    updated = RuntimeDefaults(**data)
+    request.app.state.runtime_defaults[tenant_id] = updated
+    return updated

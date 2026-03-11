@@ -1083,6 +1083,36 @@ export function getLLMUsageLedger(
   return request(`/admin/${tenantId}/llm-usage/ledger?time_filter=${timeFilter}&group_by=${groupBy}`);
 }
 
+// --- Runtime Defaults ---
+
+export interface RuntimeDefaultsResponse {
+  tenant_id: string;
+  max_tokens_per_run: number;
+  cost_guardrail_per_run: number;
+  cost_guardrail_daily: number;
+  updated_at: string;
+}
+
+export function getRuntimeDefaults(
+  tenantId: string,
+): Promise<RuntimeDefaultsResponse> {
+  return request(`/admin/${tenantId}/runtime-defaults`);
+}
+
+export function updateRuntimeDefaults(
+  tenantId: string,
+  updates: {
+    max_tokens_per_run?: number;
+    cost_guardrail_per_run?: number;
+    cost_guardrail_daily?: number;
+  },
+): Promise<RuntimeDefaultsResponse> {
+  return request(`/admin/${tenantId}/runtime-defaults`, {
+    method: 'PUT',
+    body: JSON.stringify(updates),
+  });
+}
+
 // --- ServiceNow Preview + Approve ---
 
 export interface ServiceNowPreviewRequest {

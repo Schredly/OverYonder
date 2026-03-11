@@ -32,6 +32,8 @@ import {
   unassignLLMConfig,
   activateLLMAssignment,
   getLLMUsageSummary,
+  getRuntimeDefaults,
+  updateRuntimeDefaults,
   type LLMProviderInfo,
   type LLMConfigResponse,
   type TenantLLMAssignmentResponse,
@@ -116,12 +118,13 @@ export function SettingsPage() {
   // Fallback model per tenant (client-side only — no backend field yet)
   const [fallbackMap, setFallbackMap] = useState<Record<string, string>>({});
 
-  // Runtime Defaults state (local — no backend endpoint yet)
+  // Runtime Defaults state
   const [runtimeDefaults, setRuntimeDefaults] = useState({
     maxTokensPerRun: 8000,
     costGuardrailPerRun: 0.5,
     costGuardrailDaily: 500,
   });
+  const [rtSaveStatus, setRtSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
   const loadSharedData = useCallback(async () => {
     setLoading(true);
@@ -160,6 +163,38 @@ export function SettingsPage() {
       }
     })();
   }, []);
+
+  // Load runtime defaults from backend
+  useEffect(() => {
+    (async () => {
+      try {
+        const rd = await getRuntimeDefaults('acme');
+        setRuntimeDefaults({
+          maxTokensPerRun: rd.max_tokens_per_run,
+          costGuardrailPerRun: rd.cost_guardrail_per_run,
+          costGuardrailDaily: rd.cost_guardrail_daily,
+        });
+      } catch {
+        // ignore — keep defaults
+      }
+    })();
+  }, []);
+
+  const handleSaveRuntimeDefaults = async () => {
+    setRtSaveStatus('saving');
+    try {
+      await updateRuntimeDefaults('acme', {
+        max_tokens_per_run: runtimeDefaults.maxTokensPerRun,
+        cost_guardrail_per_run: runtimeDefaults.costGuardrailPerRun,
+        cost_guardrail_daily: runtimeDefaults.costGuardrailDaily,
+      });
+      setRtSaveStatus('saved');
+      setTimeout(() => setRtSaveStatus('idle'), 2000);
+    } catch {
+      setRtSaveStatus('error');
+      setTimeout(() => setRtSaveStatus('idle'), 3000);
+    }
+  };
 
   // Load tenants + all assignments upfront for the matrix view
   useEffect(() => {
@@ -850,9 +885,21 @@ export function SettingsPage() {
                 </div>
 
                 <div className="pt-4 border-t border-slate-200 flex justify-end">
-                  <button className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium shadow-sm">
-                    <SettingsIcon className="w-4 h-4" />
-                    Save Configuration
+                  <button
+                    onClick={handleSaveRuntimeDefaults}
+                    disabled={rtSaveStatus === 'saving'}
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium shadow-sm disabled:opacity-50"
+                  >
+                    {rtSaveStatus === 'saving' ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : rtSaveStatus === 'saved' ? (
+                      <CheckCircle2 className="w-4 h-4 text-green-400" />
+                    ) : rtSaveStatus === 'error' ? (
+                      <XCircle className="w-4 h-4 text-red-400" />
+                    ) : (
+                      <SettingsIcon className="w-4 h-4" />
+                    )}
+                    {rtSaveStatus === 'saving' ? 'Saving...' : rtSaveStatus === 'saved' ? 'Saved!' : rtSaveStatus === 'error' ? 'Error' : 'Save Configuration'}
                   </button>
                 </div>
               </div>

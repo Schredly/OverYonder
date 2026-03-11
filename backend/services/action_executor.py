@@ -87,9 +87,10 @@ async def execute_action(
         }
     except Exception as e:
         logger.exception("Action %s execution failed", action.id)
+        error_msg = str(e) or f"{type(e).__name__}: {repr(e)}"
         return {
             "status": "error",
             "action_id": action.id,
             "action_name": action.name,
-            "error": str(e),
+            "error": error_msg,
         }

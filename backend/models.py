@@ -723,6 +723,20 @@ def calculate_llm_cost(model: str, prompt_tokens: int, completion_tokens: int) -
 estimate_cost = calculate_llm_cost
 
 
+class RuntimeDefaults(BaseModel):
+    tenant_id: str
+    max_tokens_per_run: int = 8000
+    cost_guardrail_per_run: float = 0.5
+    cost_guardrail_daily: float = 500.0
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class UpdateRuntimeDefaultsRequest(BaseModel):
+    max_tokens_per_run: Optional[int] = None
+    cost_guardrail_per_run: Optional[float] = None
+    cost_guardrail_daily: Optional[float] = None
+
+
 class LLMUsageEvent(BaseModel):
     id: str                          # "llmu_" + uuid hex[:12]
     tenant_id: str

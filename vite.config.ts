@@ -13,6 +13,8 @@ export default defineConfig({
         target: 'http://localhost:8000',
         changeOrigin: true,
         ws: true,
+        timeout: 300000,        // 5 min — incoming request timeout
+        proxyTimeout: 300000,   // 5 min — outgoing proxy timeout (ServiceNow + LLM)
       },
     },
   },

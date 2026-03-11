@@ -44,6 +44,23 @@ export default function AgentUIPage() {
   const [executionTime, setExecutionTime] = useState<string | null>(null);
   const [runId, setRunId] = useState<string | null>(null);
 
+  // Progress status during loading
+  const [loadingStatus, setLoadingStatus] = useState("Agent is thinking...");
+  const loadingTimerRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  const clearLoadingTimers = () => {
+    loadingTimerRef.current.forEach(clearTimeout);
+    loadingTimerRef.current = [];
+  };
+
+  const startProgressSteps = (steps: { message: string; delayMs: number }[]) => {
+    clearLoadingTimers();
+    steps.forEach(({ message, delayMs }) => {
+      const timer = setTimeout(() => setLoadingStatus(message), delayMs);
+      loadingTimerRef.current.push(timer);
+    });
+  };
+
   // Draft refinement mode
   const [draftState, setDraftState] = useState<DraftState | null>(null);
   const draftStateRef = useRef<DraftState | null>(null);
@@ -76,9 +93,17 @@ export default function AgentUIPage() {
       const userMsg: Message = { id: Date.now().toString(), type: "user", content, timestamp: now };
       setMessages((prev) => [...prev, userMsg]);
       setIsLoading(true);
+      startProgressSteps([
+        { message: "Connecting to ServiceNow...", delayMs: 0 },
+        { message: "Fetching catalog from ServiceNow...", delayMs: 1500 },
+        { message: "Received catalog data — cleaning and formatting...", delayMs: 4000 },
+        { message: "Analyzing catalog structure...", delayMs: 6000 },
+        { message: "Generating draft Replit prompt...", delayMs: 9000 },
+        { message: "Finalizing draft — almost done...", delayMs: 20000 },
+      ]);
 
       try {
-        const res = await fetch(`http://localhost:8000/api/admin/acme/actions/${inputState.actionId}/execute`, {
+        const res = await fetch(`/api/admin/acme/actions/${inputState.actionId}/execute`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -87,6 +112,22 @@ export default function AgentUIPage() {
           }),
         });
         const data = await res.json();
+
+        if (!res.ok) {
+          setInputState(null);
+          const detail = data.detail || data.error || `Server error ${res.status}`;
+          const errMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            type: "agent-result",
+            content: "",
+            timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+            result: `Error: ${typeof detail === "string" ? detail : JSON.stringify(detail)}`,
+          };
+          setMessages((prev) => [...prev, errMsg]);
+          clearLoadingTimers();
+          setIsLoading(false);
+          return;
+        }
 
         if (data.status === "draft" && data.draft_prompt) {
           // Transition to draft/refine mode
@@ -107,10 +148,21 @@ export default function AgentUIPage() {
           setInputState(null);
           const errMsg: Message = {
             id: (Date.now() + 1).toString(),
-            type: "agent-structured",
+            type: "agent-result",
             content: "",
             timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-            result: `Error: ${data.error || "Unknown error"}`,
+            result: `Error: ${data.error || data.message || "Action execution failed"}`,
+          };
+          setMessages((prev) => [...prev, errMsg]);
+        } else {
+          // Unexpected status — show whatever we got
+          setInputState(null);
+          const errMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            type: "agent-result",
+            content: "",
+            timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+            result: `Error: Unexpected response — ${data.status || "no status"}: ${data.error || data.message || JSON.stringify(data).slice(0, 200)}`,
           };
           setMessages((prev) => [...prev, errMsg]);
         }
@@ -119,13 +171,14 @@ export default function AgentUIPage() {
         const errText = err instanceof Error ? err.message : "Network error";
         const errMsg: Message = {
           id: (Date.now() + 1).toString(),
-          type: "agent-structured",
+          type: "agent-result",
           content: "",
           timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
           result: `Error: ${errText}`,
         };
         setMessages((prev) => [...prev, errMsg]);
       }
+      clearLoadingTimers();
       setIsLoading(false);
       return;
     }
@@ -135,6 +188,11 @@ export default function AgentUIPage() {
       const userMsg: Message = { id: Date.now().toString(), type: "user", content, timestamp: now };
       setMessages((prev) => [...prev, userMsg]);
       setIsLoading(true);
+      startProgressSteps([
+        { message: "Processing your feedback...", delayMs: 0 },
+        { message: "Refining the Replit prompt...", delayMs: 3000 },
+        { message: "Incorporating changes — almost done...", delayMs: 10000 },
+      ]);
 
       try {
         const res = await fetch("/api/admin/acme/agent/refine-prompt", {
@@ -147,8 +205,23 @@ export default function AgentUIPage() {
           }),
         });
         const data = await res.json();
+        if (!res.ok) {
+          const errorDetail = data.detail || data.error || `Server error ${res.status}`;
+          const detail = typeof errorDetail === "string" ? errorDetail : JSON.stringify(errorDetail);
+          setMessages((prev) => [
+            ...prev,
+            { id: (Date.now() + 1).toString(), type: "user" as const, content: `Refinement error: ${detail}. You can still approve the current prompt or try different feedback.`, timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) },
+          ]);
+          clearLoadingTimers();
+          setIsLoading(false);
+          return;
+        }
         if (data.refined_prompt) {
-          setDraftState((prev) => prev ? { ...prev, draftPrompt: data.refined_prompt } : null);
+          setDraftState((prev) => {
+            const updated = prev ? { ...prev, draftPrompt: data.refined_prompt } : null;
+            draftStateRef.current = updated;  // sync ref immediately (don't wait for useEffect)
+            return updated;
+          });
           const agentMsg: Message = {
             id: (Date.now() + 1).toString(),
             type: "agent-draft",
@@ -178,6 +251,7 @@ export default function AgentUIPage() {
           { id: (Date.now() + 1).toString(), type: "user" as const, content: `Refinement error: ${errText}. You can still approve the current prompt or try different feedback.`, timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) },
         ]);
       }
+      clearLoadingTimers();
       setIsLoading(false);
       return;
     }
@@ -188,6 +262,7 @@ export default function AgentUIPage() {
     const userMsg: Message = { id: Date.now().toString(), type: "user", content, timestamp: now };
     setMessages((prev) => [...prev, userMsg]);
     setIsLoading(true);
+    setLoadingStatus("Agent is thinking...");
 
     // Clear previous response
     setReasoningSteps([]);
@@ -333,18 +408,22 @@ export default function AgentUIPage() {
   const handleApproveReplit = async () => {
     const currentDraft = draftStateRef.current;
     if (!currentDraft) return;
+
+    // Always copy the approved prompt to clipboard immediately (before async call)
+    const promptToCopy = currentDraft.draftPrompt;
+    if (promptToCopy) {
+      navigator.clipboard.writeText(promptToCopy).catch(() => {});
+    }
+
     setIsLoading(true);
     try {
       const res = await fetch("/api/admin/acme/agent/approve-replit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ approved_prompt: currentDraft.draftPrompt }),
+        body: JSON.stringify({ approved_prompt: promptToCopy }),
       });
       const data = await res.json();
       if (data.repl_url) {
-        if (data.prompt_text) {
-          navigator.clipboard.writeText(data.prompt_text).catch(() => {});
-        }
         window.open(data.repl_url, "_blank");
       }
       const successMsg: Message = {
@@ -405,7 +484,7 @@ export default function AgentUIPage() {
     <div className="h-screen flex flex-col bg-[#0B1E2D]">
       {/* Top Header */}
       <TopBar
-        agentName="Love-Boat.AI Agent"
+        agentName="OverYonder.ai Agent"
         tenant="Production - ACME Corp"
         status={isLoading ? "processing" : "connected"}
       />
@@ -425,7 +504,7 @@ export default function AgentUIPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                       </svg>
                     </div>
-                    <h3 className="text-[#F1F5F9] text-lg font-medium mb-1">Ask the Love-Boat.AI Agent</h3>
+                    <h3 className="text-[#F1F5F9] text-lg font-medium mb-1">Ask the OverYonder.ai Agent</h3>
                     <p className="text-[#8FA7B5] text-sm">Type a question about your systems, incidents, or documentation</p>
                   </div>
                 </div>
@@ -443,6 +522,49 @@ export default function AgentUIPage() {
                   );
                 }
                 if (message.type === "agent-draft") {
+                  // Parse and render the draft in a human-readable way
+                  const renderDraftContent = (raw: string) => {
+                    // Strip HTML tags and decode entities
+                    const stripHtml = (s: string) => {
+                      const doc = new DOMParser().parseFromString(s, "text/html");
+                      return doc.body.textContent || s;
+                    };
+                    const cleaned = stripHtml(raw);
+
+                    // Try to detect if the content has a leading text section + JSON payload
+                    const jsonStart = cleaned.search(/\n\s*\{[\s\S]*"(name|result|catalog)/);
+                    if (jsonStart > 0) {
+                      const textPart = cleaned.slice(0, jsonStart).trim();
+                      const jsonPart = cleaned.slice(jsonStart).trim();
+                      let parsed: Record<string, unknown> | null = null;
+                      try { parsed = JSON.parse(jsonPart); } catch { /* not valid JSON, show as-is */ }
+
+                      if (parsed) {
+                        return (
+                          <>
+                            <p className="text-sm text-[#F1F5F9] leading-relaxed mb-3">{textPart}</p>
+                            <div className="bg-[#0B1E2D] rounded-lg p-3 border border-[#2F5F7A] overflow-auto max-h-[400px] custom-scrollbar">
+                              <pre className="text-xs text-[#8FD6E8] whitespace-pre-wrap font-mono leading-relaxed">{JSON.stringify(parsed, null, 2)}</pre>
+                            </div>
+                          </>
+                        );
+                      }
+                    }
+
+                    // Try to parse the entire content as JSON
+                    try {
+                      const fullJson = JSON.parse(cleaned);
+                      return (
+                        <div className="bg-[#0B1E2D] rounded-lg p-3 border border-[#2F5F7A] overflow-auto max-h-[400px] custom-scrollbar">
+                          <pre className="text-xs text-[#8FD6E8] whitespace-pre-wrap font-mono leading-relaxed">{JSON.stringify(fullJson, null, 2)}</pre>
+                        </div>
+                      );
+                    } catch { /* not JSON */ }
+
+                    // Plain text — render as readable paragraphs
+                    return <p className="text-sm text-[#C7D2DA] whitespace-pre-wrap leading-relaxed">{cleaned}</p>;
+                  };
+
                   return (
                     <div key={message.id} className="bg-[#102A43] border border-amber-500/30 rounded-[10px] p-4">
                       <div className="flex items-center gap-2 mb-3">
@@ -450,9 +572,9 @@ export default function AgentUIPage() {
                         <span className="text-xs font-medium text-amber-400 uppercase tracking-wider">Draft Replit Prompt</span>
                         <span className="text-xs text-[#8FA7B5] ml-auto">{message.timestamp}</span>
                       </div>
-                      <pre className="text-sm text-[#C7D2DA] whitespace-pre-wrap font-mono leading-relaxed">{message.content}</pre>
+                      {renderDraftContent(message.content)}
                       <p className="text-xs text-[#8FA7B5] mt-3">
-                        Type feedback below to refine, or click "Approve & Send to Replit" when ready.
+                        Type feedback below to refine, or click "Approve &amp; Send to Replit" when ready.
                       </p>
                     </div>
                   );
@@ -490,35 +612,29 @@ export default function AgentUIPage() {
                         suggestedActions={[]}
                         additionalContext=""
                       />
-                      <div className="mt-4">
-                        <AgentActions
-                          onAction={handleAgentAction}
-                          onDraftReady={handleDraftReady}
-                          onNeedsInput={handleNeedsInput}
-                          runId={runId}
-                        />
-                      </div>
+                      {!draftState && !inputState && (
+                        <div className="mt-4">
+                          <AgentActions
+                            onAction={handleAgentAction}
+                            onDraftReady={handleDraftReady}
+                            onNeedsInput={handleNeedsInput}
+                            runId={runId}
+                          />
+                        </div>
+                      )}
                     </div>
                   );
                 }
                 return null;
               })}
 
-              {/* Show actions persistently during draft/refine mode */}
-              {draftState && !isLoading && (
-                <div className="mt-4">
-                  <AgentActions
-                    onAction={handleAgentAction}
-                    onDraftReady={handleDraftReady}
-                    runId={runId}
-                  />
-                </div>
-              )}
+              {/* Show actions only when NOT in draft/refine or input mode */}
+              {/* (draft mode has its own Approve/Refine controls in the InputPanel) */}
 
               {isLoading && (
                 <div className="flex items-center gap-3 text-[#C7D2DA] py-4">
                   <div className="w-2 h-2 rounded-full bg-[#2E86AB] animate-pulse" />
-                  <span className="text-sm">Agent is thinking...</span>
+                  <span className="text-sm">{loadingStatus}</span>
                 </div>
               )}
             </div>
@@ -571,7 +687,7 @@ export default function AgentUIPage() {
                     name={selectedUseCase.name}
                     description={selectedUseCase.description}
                     confidence={selectedUseCase.confidence}
-                    category="Love-Boat.AI Operations"
+                    category="OverYonder.ai Operations"
                   />
                 </div>
               </div>

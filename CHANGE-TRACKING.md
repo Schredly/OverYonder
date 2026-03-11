@@ -2569,3 +2569,96 @@ Added a new action "ServiceNow Catalog to Replit" that lets users fetch a Servic
 - `src/app/components/agentui/AgentActions.tsx` — Added `NeedsInputPayload` interface and `onNeedsInput` prop; `handleClick` now detects `needs_input` status from backend and fires the callback
 - `src/app/pages/AgentUIPage.tsx` — Added `InputCollectionState` and `inputState`; `handleSendMessage` intercepts input mode to send the user's answer back to the action execute endpoint, then transitions to draft/refine mode; added `handleNeedsInput` callback wired to all `AgentActions` instances
 - `src/app/components/agentui/InputPanel.tsx` — Added `"input"` mode with `inputPrompt` prop for contextual placeholder text and "Submit" button label
+
+---
+
+## #044 — 2026-03-09 — Runtime Defaults Backend + Save Configuration Wiring
+
+**What happened:**
+Added full-stack support for persisting per-tenant runtime defaults (max tokens per run, cost guardrails). Previously the "Save Configuration" button in Settings → Runtime Defaults had no backend wiring.
+
+**Backend:**
+- `backend/models.py` — Added `RuntimeDefaults` model (`tenant_id`, `max_tokens_per_run`, `cost_guardrail_per_run`, `cost_guardrail_daily`, `updated_at`) and `UpdateRuntimeDefaultsRequest`
+- `backend/main.py` — Added `app.state.runtime_defaults = {}` (dict keyed by tenant_id)
+- `backend/routers/admin.py` — Added `GET /runtime-defaults` and `PUT /runtime-defaults` endpoints with tenant validation and upsert logic
+
+**Frontend:**
+- `src/app/services/api.ts` — Added `RuntimeDefaultsResponse` interface, `getRuntimeDefaults()`, and `updateRuntimeDefaults()` functions
+- `src/app/pages/SettingsPage.tsx` — Wired Save Configuration button with `useEffect` to load defaults on mount, `handleSaveRuntimeDefaults` async handler, loading/saved/error icon states on the button
+
+---
+
+## #045 — 2026-03-09 — ServiceNow Catalog Cleanup + Error Handling Hardening
+
+**What happened:**
+Fixed multiple issues in the ServiceNow-to-Replit pipeline: empty error messages, refinement failures, truncated output, raw HTML in drafts, and Agent Actions appearing below drafts.
+
+**Refinement & LLM fixes:**
+- `backend/services/claude_client.py` — Increased `max_tokens` from 1024 → 16384 for both Anthropic and OpenAI calls to prevent output truncation
+- `backend/services/snow_to_replit.py` — Changed `except ClaudeClientError` to `except Exception` in both draft generation functions to catch all LLM failures; added `except Exception` catch-all in `refine_prompt`
+
+**Error handling:**
+- `backend/services/action_executor.py` — Fixed empty error string from `httpx.TimeoutException('')` by using `str(e) or f"{type(e).__name__}: {repr(e)}"`
+
+**Frontend fixes:**
+- `src/app/pages/AgentUIPage.tsx` — Changed input collection fetch URL from `http://localhost:8000/api/...` to `/api/...` (Vite proxy); added `res.ok` checks before parsing response; added `else` branch for unexpected response statuses; changed error messages from `agent-structured` to `agent-result` type (no AgentActions below errors); wrapped inline AgentActions with `{!draftState && !inputState && (...)}` to hide during draft/input modes
+
+---
+
+## #046 — 2026-03-09 — Catalog Payload Optimization (1.28MB → 113KB)
+
+**What happened:**
+Rewrote the ServiceNow catalog cleanup pipeline to be structure-aware instead of generic. The raw catalog payload (1.28MB) was causing LLM timeouts because the old approach sent 200K+ chars to an LLM for reformatting, then made a second LLM call for draft generation — two massive calls in sequence.
+
+**Root cause:** The ServiceNow response contains a `prompts` field on every item that duplicates the item data as an embedded string — accounting for **79% of the payload**. The old generic cleanup only stripped 22% of the noise.
+
+**New pipeline:**
+- `_clean_catalog_item()` — Structure-aware per-item cleanup: drops `prompts` duplication entirely, strips `sys_id` fields, cleans HTML from descriptions, keeps only useful variable fields (`name`, `question`, `type`, `mandatory`, `choices`), drops `help_text` and `workflow_summary`
+- `_reformat_catalog()` — Now synchronous (no LLM call): parses the `{result: {items: [...]}}` wrapper, runs `_clean_catalog_item` on each entry, collects unique categories, outputs structured JSON with `catalog_title`, `total_items`, `total_categories`, `categories[]`, and `items[]`
+- Eliminated the LLM reformat call entirely — the deterministic cleanup is instant and produces better results
+- `_MAX_LLM_CATALOG_CHARS` changed from 200K to 150K (cleaned output is ~113K, fits without truncation)
+
+**Result:** 1,286,670 chars → 112,860 chars (91.8% reduction). All 185 items and 26 categories preserved. Pipeline went from 2+ minute timeout to ~3 second ServiceNow fetch + single LLM draft call.
+
+**Vite proxy:**
+- `vite.config.ts` — Added `timeout: 300000` and `proxyTimeout: 300000` (5 minutes) for the `/api` proxy to handle slow ServiceNow instances
+- `src/app/components/agentui/AgentActions.tsx` — Changed `API_BASE` from `http://localhost:8000/api/admin/acme/actions` to `/api/admin/acme/actions` (Vite proxy)
+
+---
+
+## #047 — 2026-03-09 — Header-Only Prompt Refinement
+
+**What happened:**
+Refinement was timing out (`ReadTimeout`) because it sent the entire 113K+ draft prompt (instructions + embedded catalog JSON) to the LLM. The user's feedback only applies to the instruction header — the catalog data never changes.
+
+**Fix:**
+- `backend/services/snow_to_replit.py` — Added `_split_prompt_and_data()` that splits a draft prompt at the first JSON block (`{` or `[` on its own line), separating the instruction header from the embedded catalog data
+- `refine_prompt()` — Now sends only the header (~200-500 chars) to the LLM for refinement, then reassembles the refined header with the original catalog data automatically
+- `_REFINE_SYSTEM_PROMPT` — Updated to tell the LLM it's only seeing the instruction header, not to reproduce catalog data
+
+**Result:** Refinement calls went from 113K+ chars (timeout) to ~500 chars (5-10 second response).
+
+---
+
+## #048 — 2026-03-10 — Progress Steps + Branding + Clipboard Fix
+
+**What happened:**
+Three UX improvements: progress indicators during long operations, rebranding from Love-Boat.AI to OverYonder.ai, and fixing the clipboard to always contain the refined prompt.
+
+**Progress indicators:**
+- `src/app/pages/AgentUIPage.tsx` — Added `loadingStatus` state and `startProgressSteps()` timer system that shows contextual progress messages during long operations:
+  - Input collection: "Connecting to ServiceNow..." → "Fetching catalog..." → "Received catalog data — cleaning and formatting..." → "Analyzing catalog structure..." → "Generating draft Replit prompt..." → "Finalizing draft..."
+  - Refinement: "Processing your feedback..." → "Refining the Replit prompt..." → "Incorporating changes..."
+  - Normal agent queries: "Agent is thinking..."
+- Loading indicator now shows `{loadingStatus}` instead of hardcoded "Agent is thinking..."
+- All timers properly cleaned up via `clearLoadingTimers()` on response/error
+
+**Branding:**
+- `src/app/pages/AgentUIPage.tsx` — Replaced all "Love-Boat.AI" references with "OverYonder.ai" (agent name, empty state heading, operations category)
+- `src/app/components/agentui/TopBar.tsx` — Changed logo from `/lb.png` to `/overyonder-logo.png`, updated alt text, removed `mixBlendMode: 'screen'` and dark background
+- `public/overyonder-logo.png` — Added new orange/gold arrow-shield logo
+
+**Clipboard fix (refined prompt not pasting to Replit):**
+- `handleApproveReplit` — Clipboard write now happens **immediately** on Approve click (before the async backend call), using `currentDraft.draftPrompt` from local state
+- `setDraftState` during refinement — Ref sync (`draftStateRef.current = updated`) now happens synchronously inside the state updater callback, not deferred to `useEffect`
+- Removed dependency on `data.prompt_text` from backend echo for clipboard — local state is the source of truth
