@@ -1,0 +1,478 @@
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router";
+import {
+  ArrowLeft,
+  Download,
+  Trash2,
+  Server,
+  Cloud,
+  Ticket,
+  Headset,
+  Briefcase,
+  ArrowRight,
+  TrendingDown,
+  Package,
+  Workflow as WorkflowIcon,
+  Grid3x3,
+  Share2,
+  ChevronDown,
+  ChevronUp,
+  Hammer,
+  Zap,
+  Loader2,
+  Copy,
+  FileJson,
+  Check,
+} from "lucide-react";
+import { getGenome, type GenomeResponse } from "../services/api";
+
+const vendorIcons: Record<string, typeof Server> = {
+  ServiceNow: Server,
+  Salesforce: Cloud,
+  Jira: Ticket,
+  Zendesk: Headset,
+  Workday: Briefcase,
+};
+
+const formatCurrency = (amount: number) =>
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+
+const formatDate = (dateString: string) =>
+  new Date(dateString).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+export default function GenomeDetailPage() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [showRawGenome, setShowRawGenome] = useState(false);
+  const [showArtifact, setShowArtifact] = useState(false);
+  const [artifactCopied, setArtifactCopied] = useState(false);
+  const [genome, setGenome] = useState<GenomeResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+    getGenome("acme", id)
+      .then(setGenome)
+      .catch(() => setGenome(null))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="p-8">
+        <div className="max-w-7xl mx-auto text-center py-20">
+          <Loader2 className="w-6 h-6 text-gray-400 mx-auto mb-2 animate-spin" />
+          <p className="text-sm text-muted-foreground">Loading genome…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!genome) {
+    return (
+      <div className="p-8">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Genome not found
+          </h2>
+          <button
+            onClick={() => navigate("/genomes")}
+            className="text-sm text-blue-600 hover:text-blue-700"
+          >
+            Back to Genomes
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const doc = genome.genome_document;
+  const VendorIcon = vendorIcons[genome.vendor] || Package;
+
+  const savingsPercentage = (
+    ((genome.legacy_cost - genome.migrated_cost) / genome.legacy_cost) *
+    100
+  ).toFixed(1);
+
+  // Parse relationships into from/to pairs
+  const parsedRelationships = doc.relationships.map((r) => {
+    const parts = r.split(" → ");
+    return { from: parts[0] || r, to: parts[1] || "" };
+  });
+
+  return (
+    <div className="p-8 max-w-7xl mx-auto">
+        {/* Back button */}
+        <button
+          onClick={() => navigate("/genomes")}
+          className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Genomes
+        </button>
+
+        {/* Header */}
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-6">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
+                <VendorIcon className="w-6 h-6 text-teal-600" />
+              </div>
+              <div>
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                  Application Genome
+                </p>
+                <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+                  {genome.application_name}
+                </h1>
+                <div className="flex items-center gap-3 text-sm">
+                  <span className="font-mono bg-gray-100 px-2 py-1 rounded text-gray-700">
+                    {genome.source_platform}
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-gray-400" />
+                  <span className="font-mono bg-blue-50 px-2 py-1 rounded text-blue-700">
+                    {genome.target_platform}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
+                <Download className="w-4 h-4" />
+                Export Genome
+              </button>
+              <button className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium">
+                <Hammer className="w-4 h-4" />
+                Rebuild Application
+              </button>
+              <button className="flex items-center gap-2 px-4 py-2 bg-white border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors text-sm font-medium">
+                <Trash2 className="w-4 h-4" />
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 1 - Application Overview */}
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            Application Overview
+          </h2>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+              <p className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2">
+                Vendor
+              </p>
+              <div className="flex items-center gap-2">
+                <VendorIcon className="w-5 h-5 text-teal-600" />
+                <p className="text-sm font-medium text-gray-900">
+                  {genome.vendor}
+                </p>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+              <p className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2">
+                Application Name
+              </p>
+              <p className="text-sm font-medium text-gray-900">
+                {genome.application_name}
+              </p>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+              <p className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2">
+                Category
+              </p>
+              <p className="text-sm font-medium text-gray-900">
+                {genome.category}
+              </p>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+              <p className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2">
+                Source Platform
+              </p>
+              <p className="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-gray-700 inline-block">
+                {genome.source_platform}
+              </p>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+              <p className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2">
+                Target Platform
+              </p>
+              <p className="text-xs font-mono bg-blue-50 px-2 py-1 rounded text-blue-700 inline-block">
+                {genome.target_platform}
+              </p>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+              <p className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2">
+                Captured Date
+              </p>
+              <p className="text-sm font-medium text-gray-900">
+                {formatDate(genome.captured_date)}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 2 - Cost Profile */}
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            Cost Profile
+          </h2>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <Package className="w-4 h-4 text-gray-600" />
+                </div>
+                <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                  Legacy Cost
+                </p>
+              </div>
+              <p className="text-2xl font-semibold text-gray-900 font-mono">
+                {formatCurrency(genome.legacy_cost)}
+              </p>
+              <p className="text-xs text-gray-500 mt-1">Annual</p>
+            </div>
+
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                  <TrendingDown className="w-4 h-4 text-emerald-600" />
+                </div>
+                <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                  Migrated Cost
+                </p>
+              </div>
+              <p className="text-2xl font-semibold text-emerald-600 font-mono">
+                {formatCurrency(genome.migrated_cost)}
+              </p>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-xs text-emerald-600 font-medium">
+                  ↓ {savingsPercentage}% savings
+                </span>
+                <span className="text-xs text-gray-500">
+                  ({formatCurrency(genome.legacy_cost - genome.migrated_cost)}
+                  /year)
+                </span>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Zap className="w-4 h-4 text-blue-600" />
+                </div>
+                <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                  Operational Cost
+                </p>
+              </div>
+              <p className="text-2xl font-semibold text-blue-600 font-mono">
+                {formatCurrency(genome.operational_cost)}
+              </p>
+              <p className="text-xs text-gray-500 mt-1">Annual</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 3 - Structural Genome */}
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            Structural Genome
+          </h2>
+          <div className="grid grid-cols-4 gap-4">
+            {/* Objects */}
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+              <div className="flex items-center gap-2 mb-3 pb-3 border-b border-gray-200">
+                <Package className="w-4 h-4 text-slate-600" />
+                <h3 className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                  Objects ({doc.objects.length})
+                </h3>
+              </div>
+              <div className="space-y-1.5 max-h-80 overflow-y-auto">
+                {doc.objects.map((obj, idx) => (
+                  <div
+                    key={idx}
+                    className="text-xs p-2 bg-slate-50 rounded hover:bg-slate-100 transition-colors font-mono text-slate-700"
+                  >
+                    {obj}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Workflows */}
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+              <div className="flex items-center gap-2 mb-3 pb-3 border-b border-gray-200">
+                <WorkflowIcon className="w-4 h-4 text-purple-600" />
+                <h3 className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                  Workflows ({doc.workflows.length})
+                </h3>
+              </div>
+              <div className="space-y-1.5 max-h-80 overflow-y-auto">
+                {doc.workflows.map((wf, idx) => (
+                  <div
+                    key={idx}
+                    className="text-xs p-2 bg-purple-50 rounded hover:bg-purple-100 transition-colors font-mono text-purple-900"
+                  >
+                    {wf}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Fields */}
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+              <div className="flex items-center gap-2 mb-3 pb-3 border-b border-gray-200">
+                <Grid3x3 className="w-4 h-4 text-blue-600" />
+                <h3 className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                  Fields ({doc.fields.length})
+                </h3>
+              </div>
+              <div className="space-y-1.5 max-h-80 overflow-y-auto">
+                {doc.fields.map((field, idx) => (
+                  <div
+                    key={idx}
+                    className="text-xs p-2 bg-blue-50 rounded hover:bg-blue-100 transition-colors font-mono text-blue-900"
+                  >
+                    {field}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Relationships */}
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+              <div className="flex items-center gap-2 mb-3 pb-3 border-b border-gray-200">
+                <Share2 className="w-4 h-4 text-emerald-600" />
+                <h3 className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                  Relationships ({doc.relationships.length})
+                </h3>
+              </div>
+              <div className="space-y-1.5 max-h-80 overflow-y-auto">
+                {parsedRelationships.map((rel, idx) => (
+                  <div
+                    key={idx}
+                    className="p-2 bg-emerald-50 rounded hover:bg-emerald-100 transition-colors"
+                  >
+                    <div className="flex items-center gap-1 text-xs text-emerald-900">
+                      <span className="font-mono truncate">{rel.from}</span>
+                      <ArrowRight className="w-3 h-3 flex-shrink-0 text-emerald-600" />
+                      <span className="font-mono truncate">{rel.to}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 4 - Genome Artifact */}
+        {genome.artifact && (
+          <div className="mb-6">
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+              <button
+                onClick={() => setShowArtifact(!showArtifact)}
+                className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <FileJson className="w-5 h-5 text-teal-600" />
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    Genome Artifact
+                  </h2>
+                  <span className="text-xs font-mono bg-gray-100 px-2 py-0.5 rounded text-gray-500">
+                    v{genome.artifact.version}
+                  </span>
+                </div>
+                {showArtifact ? (
+                  <ChevronUp className="w-5 h-5 text-gray-600" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-gray-600" />
+                )}
+              </button>
+              {showArtifact && (
+                <div className="border-t border-gray-200">
+                  <div className="flex items-center justify-end gap-2 px-4 py-2 bg-gray-50 border-b border-gray-200">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          JSON.stringify(genome.artifact!.artifact_json, null, 2)
+                        );
+                        setArtifactCopied(true);
+                        setTimeout(() => setArtifactCopied(false), 2000);
+                      }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                    >
+                      {artifactCopied ? (
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      ) : (
+                        <Copy className="w-3.5 h-3.5" />
+                      )}
+                      {artifactCopied ? "Copied" : "Copy"}
+                    </button>
+                    <button
+                      onClick={() => {
+                        const blob = new Blob(
+                          [JSON.stringify(genome.artifact!.artifact_json, null, 2)],
+                          { type: "application/json" }
+                        );
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = `${genome.application_name.toLowerCase().replace(/\s+/g, "-")}-artifact-v${genome.artifact!.version}.json`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                      }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      Download JSON
+                    </button>
+                  </div>
+                  <div className="p-4 bg-gray-900 max-h-[600px] overflow-auto">
+                    <pre className="text-xs font-mono text-emerald-400 whitespace-pre-wrap">
+                      {JSON.stringify(genome.artifact.artifact_json, null, 2)}
+                    </pre>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Section 5 - Raw Genome Artifact */}
+        <div className="mb-6">
+          <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+            <button
+              onClick={() => setShowRawGenome(!showRawGenome)}
+              className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+            >
+              <h2 className="text-lg font-semibold text-gray-900">
+                Raw Genome Artifact
+              </h2>
+              {showRawGenome ? (
+                <ChevronUp className="w-5 h-5 text-gray-600" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-gray-600" />
+              )}
+            </button>
+            {showRawGenome && (
+              <div className="border-t border-gray-200 p-4 bg-gray-900">
+                <pre className="text-xs font-mono text-emerald-400 overflow-x-auto">
+                  {JSON.stringify(genome, null, 2)}
+                </pre>
+              </div>
+            )}
+          </div>
+        </div>
+    </div>
+  );
+}

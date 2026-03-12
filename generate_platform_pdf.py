@@ -23,7 +23,7 @@ ROW_ALT    = HexColor("#fef9f0")   # warm light orange tint
 SECTION_BG = HexColor("#fef3e2")   # warm callout bg
 CALLOUT_BD = HexColor("#f5d5a0")
 
-OUT = os.path.join(os.path.dirname(__file__), "Context-Agents-Platform-Overview.pdf")
+OUT = os.path.join(os.path.dirname(__file__), "OverYonder-Platform-Overview.pdf")
 
 
 def build_styles():
@@ -200,8 +200,8 @@ def build_pdf():
     story.append(Spacer(1, 12))
 
     stats = [
-        ["7+", "25+", "9", "Real-time"],
-        ["Integrations", "API Endpoints", "Action Types", "SSE Streaming"],
+        ["7+", "30+", "9", "5"],
+        ["Integrations", "API Endpoints", "Action Types", "Vendor Parsers"],
     ]
     stat_tbl = Table(stats, colWidths=[1.6 * inch] * 4)
     stat_tbl.setStyle(TableStyle([
@@ -221,9 +221,10 @@ def build_pdf():
     story.append(callout_box(
         "<b>Platform at a Glance:</b>  OverYonder.ai is a multi-tenant, agentic intelligence "
         "platform that extracts application definitions from legacy enterprise systems, "
-        "orchestrates AI agents to analyze and transform them, and generates modern application "
-        "specifications \u2014 complete with interactive refinement, real-time execution visibility, "
-        "and full cost transparency across LLM providers.",
+        "generates structured Application Genomes that capture every object, workflow, field, "
+        "and relationship, orchestrates AI agents to analyze and transform them, and produces "
+        "modern application specifications \u2014 complete with interactive refinement, real-time "
+        "execution visibility, and full cost transparency across LLM providers.",
         ss,
     ))
 
@@ -243,16 +244,17 @@ def build_pdf():
     toc_items = [
         ("1", "Executive Summary"),
         ("2", "Platform Architecture"),
-        ("3", "Agent Orchestration Flow"),
-        ("4", "ServiceNow Catalog Extraction & Modernization"),
-        ("5", "Interactive Prompt Refinement"),
-        ("6", "Integrations Ecosystem"),
-        ("7", "Control Plane & Administration"),
-        ("8", "Actions & Recommendations Engine"),
-        ("9", "Agent Conversational UI"),
-        ("10", "LLM Cost Tracking & Observability"),
-        ("11", "Security & Multi-Tenancy"),
-        ("12", "Extensibility & Roadmap"),
+        ("3", "Application Genomes"),
+        ("4", "Agent Orchestration Flow"),
+        ("5", "ServiceNow Catalog Extraction & Modernization"),
+        ("6", "Interactive Prompt Refinement"),
+        ("7", "Integrations Ecosystem"),
+        ("8", "Control Plane & Administration"),
+        ("9", "Actions & Recommendations Engine"),
+        ("10", "Agent Conversational UI"),
+        ("11", "LLM Cost Tracking & Observability"),
+        ("12", "Security & Multi-Tenancy"),
+        ("13", "Extensibility & Roadmap"),
     ]
     for num, title in toc_items:
         story.append(Paragraph(
@@ -284,6 +286,8 @@ def build_pdf():
     story.append(Spacer(1, 6))
     story.append(Paragraph("Key Value Propositions", ss["SubSection"]))
     story.append(bullet("Extract entire service catalogs from ServiceNow (185+ items, 26+ categories) and transform them into modern React applications in minutes, not months", ss))
+    story.append(bullet("<b>Application Genomes</b> capture the complete structural DNA of enterprise applications \u2014 objects, workflows, fields, and relationships \u2014 with deterministic parsing across 5 vendor platforms", ss))
+    story.append(bullet("Async genome worker with parallel batch processing, SHA-256 payload deduplication, and instant wake-on-demand processing (51ms vs 30s polling)", ss))
     story.append(bullet("Interactive prompt refinement lets users add capabilities (AI chat, search, item creation) through natural language feedback", ss))
     story.append(bullet("Structure-aware payload optimization reduces 1.28 MB of raw ServiceNow data to 113 KB of clean, human-readable JSON \u2014 a 91.8% reduction", ss))
     story.append(bullet("Full transparency via real-time execution traces, skill-level telemetry, and per-call LLM cost tracking", ss))
@@ -345,7 +349,7 @@ def build_pdf():
          Paragraph("25+ REST endpoints, streaming orchestration, tenant routing, proxy-aware CORS", ss["TableCell"])],
         [Paragraph("Orchestration", ss["TableCellBold"]),
          Paragraph("Python async, background tasks", ss["TableCell"]),
-         Paragraph("Skill chain execution, use case selection, tool dispatch, action pipeline, event emission", ss["TableCell"])],
+         Paragraph("Skill chain execution, use case selection, tool dispatch, action pipeline, genome worker, event emission", ss["TableCell"])],
         [Paragraph("AI / LLM", ss["TableCellBold"]),
          Paragraph("Anthropic Claude, OpenAI (multi-provider)", ss["TableCell"]),
          Paragraph("Catalog analysis, draft generation, prompt refinement, resolution synthesis, confidence scoring", ss["TableCell"])],
@@ -353,8 +357,8 @@ def build_pdf():
          Paragraph("httpx async clients", ss["TableCell"]),
          Paragraph("ServiceNow, Google Drive, Replit, Jira, Slack, GitHub, Salesforce adapters", ss["TableCell"])],
         [Paragraph("Persistence", ss["TableCellBold"]),
-         Paragraph("ABC stores (18+ in-memory)", ss["TableCell"]),
-         Paragraph("Tenants, runs, events, actions, LLM configs, usage tracking, telemetry, integrations", ss["TableCell"])],
+         Paragraph("ABC stores (23 in-memory)", ss["TableCell"]),
+         Paragraph("Tenants, runs, events, actions, LLM configs, usage tracking, telemetry, integrations, genomes, genome artifacts, extraction payloads", ss["TableCell"])],
     ]
     arch_tbl = Table(arch_data, colWidths=[1.1 * inch, 1.8 * inch, 3.4 * inch])
     arch_tbl.setStyle(TableStyle([
@@ -375,9 +379,108 @@ def build_pdf():
     story.append(PageBreak())
 
     # ═══════════════════════════════════════════════════════════════════════
-    #  3. AGENT ORCHESTRATION FLOW
+    #  3. APPLICATION GENOMES
     # ═══════════════════════════════════════════════════════════════════════
-    story.append(Paragraph("3. Agent Orchestration Flow", ss["SectionTitle"]))
+    story.append(Paragraph("3. Application Genomes", ss["SectionTitle"]))
+    story.append(divider())
+    story.append(Paragraph(
+        "Application Genomes are the structural DNA of enterprise applications. Each genome "
+        "captures the complete blueprint of an application \u2014 its objects, workflows, fields, "
+        "and relationships \u2014 providing a portable, vendor-agnostic representation that powers "
+        "migration planning, cost analysis, and modern application generation.",
+        ss["BodyText2"],
+    ))
+
+    story.append(Paragraph("Genome Document Structure", ss["SubSection"]))
+    story.append(Paragraph(
+        "Every genome contains a <b>GenomeDocument</b> with four structural dimensions:",
+        ss["BodyText2"],
+    ))
+    story.append(bullet("Objects \u2014 tables, entities, SObjects, ticket forms, business objects", ss, bold_prefix="Objects"))
+    story.append(bullet("Workflows \u2014 business rules, approval flows, automations, triggers, process builders", ss, bold_prefix="Workflows"))
+    story.append(bullet("Fields \u2014 columns, variables, attributes, custom fields", ss, bold_prefix="Fields"))
+    story.append(bullet("Relationships \u2014 references, lookups, master-detail links, foreign keys", ss, bold_prefix="Relationships"))
+
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("Extraction Pipeline", ss["SubSection"]))
+    story.append(Paragraph(
+        "Raw platform data flows through a three-stage pipeline: extraction, parsing, and persistence.",
+        ss["BodyText2"],
+    ))
+
+    genome_pipeline = [
+        ("Extraction Payload", "Raw JSON from a platform API (ServiceNow catalog, Salesforce metadata, Jira project config) is stored as an ExtractionPayload with status tracking: pending \u2192 processing \u2192 completed | failed."),
+        ("Genome Builder", "A deterministic parser (no LLM) converts the raw payload into a structured GenomeDocument. Vendor-specific parsers handle ServiceNow, Salesforce, Jira, Zendesk, and Workday. A generic fallback handles unknown vendors via heuristic key scanning."),
+        ("Genome + Artifact", "An ApplicationGenome record is created with metadata (vendor, costs, dates) and a versioned GenomeArtifact stores the parsed document independently \u2014 enabling future multi-version support."),
+    ]
+
+    for i, (title, desc) in enumerate(genome_pipeline, 1):
+        step_data = [[
+            Paragraph(f"<b>{i}</b>", ParagraphStyle("_n", fontSize=14, textColor=PRIMARY,
+                                                      fontName="Helvetica-Bold", alignment=TA_CENTER)),
+            Paragraph(f"<b>{title}</b><br/><font size=10 color='#475569'>{desc}</font>",
+                      ParagraphStyle("_d", fontSize=11, leading=16, textColor=DARK_TEXT,
+                                      fontName="Helvetica-Bold")),
+        ]]
+        step_tbl = Table(step_data, colWidths=[0.5 * inch, 5.8 * inch])
+        step_tbl.setStyle(TableStyle([
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ("TOPPADDING", (0, 0), (-1, -1), 6),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+            ("LEFTPADDING", (0, 0), (0, 0), 0),
+            ("LEFTPADDING", (1, 0), (1, 0), 10),
+        ]))
+        story.append(step_tbl)
+
+    story.append(Spacer(1, 8))
+    story.append(Paragraph("Vendor Parsers", ss["SubSection"]))
+
+    vendor_tbl = styled_table(
+        ["Vendor", "Objects From", "Workflows From", "Relationships From"],
+        [
+            ["ServiceNow", "tables, result[].name", "workflows, flows, business_rules", "references, relationships"],
+            ["Salesforce", "sobjects, custom_objects", "flows, process_builders, apex_triggers", "lookups, master_details"],
+            ["Jira", "projects, issue_types, boards", "workflows, automations, rules", "links, relationships"],
+            ["Zendesk", "ticket_forms, groups, brands", "triggers, automations, macros", "relationships"],
+            ["Workday", "business_objects, domains", "business_processes, integrations", "relationships"],
+        ],
+        col_widths=[1.1 * inch, 1.7 * inch, 1.9 * inch, 1.6 * inch],
+    )
+    story.append(vendor_tbl)
+
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("Async Genome Worker", ss["SubSection"]))
+    story.append(Paragraph(
+        "A background asyncio worker processes pending extractions into genomes automatically:",
+        ss["BodyText2"],
+    ))
+    story.append(bullet("Parallel batch processing via asyncio.gather with configurable concurrency (default: 5)", ss))
+    story.append(bullet("SHA-256 payload deduplication \u2014 identical payloads reuse the existing genome instead of creating duplicates", ss))
+    story.append(bullet("Wake-on-demand via asyncio.Event \u2014 when the ServiceNow-to-Replit action creates an extraction, the worker wakes instantly (51ms) instead of waiting for the next 30-second poll", ss))
+    story.append(bullet("Configurable via environment variables: GENOME_WORKER_INTERVAL_SECONDS, GENOME_WORKER_BATCH_CONCURRENCY", ss))
+
+    story.append(Spacer(1, 10))
+    story.append(Paragraph("Genome UI", ss["SubSection"]))
+    story.append(bullet("Genomes list page with horizontal scroll, cost columns, and created/updated timestamps", ss, bold_prefix="Genomes Page"))
+    story.append(bullet("Detail page with Application Overview, Cost Profile, Structural Genome (4-column layout), and collapsible Genome Artifact viewer with copy and download", ss, bold_prefix="Detail Page"))
+    story.append(bullet("5-step capture wizard: Source Platform \u2192 Application Type \u2192 Configure \u2192 Preview \u2192 Confirm", ss, bold_prefix="Capture Wizard"))
+    story.append(bullet("Analytics dashboard with vendor distribution, workflow complexity, and migration savings", ss, bold_prefix="Insights"))
+
+    story.append(Spacer(1, 10))
+    story.append(callout_box(
+        "<b>Automatic Genome Creation:</b>  When a user runs the ServiceNow Catalog to Replit "
+        "action, the raw catalog data is automatically fed into the genome extraction pipeline. "
+        "The genome worker wakes immediately, parses the catalog into a structured genome, and "
+        "creates the genome + artifact records \u2014 all within milliseconds, with no manual step required.",
+        ss,
+    ))
+
+    story.append(PageBreak())
+
+    # ═══════════════════════════════════════════════════════════════════════
+    #  4. AGENT ORCHESTRATION FLOW
+    # ═══════════════════════════════════════════════════════════════════════
+    story.append(Paragraph("4. Agent Orchestration Flow", ss["SectionTitle"]))
     story.append(divider())
     story.append(Paragraph(
         "When a user submits a query, the platform executes a deterministic, observable pipeline:",
@@ -423,9 +526,9 @@ def build_pdf():
     story.append(PageBreak())
 
     # ═══════════════════════════════════════════════════════════════════════
-    #  4. SERVICENOW CATALOG EXTRACTION & MODERNIZATION
+    #  5. SERVICENOW CATALOG EXTRACTION & MODERNIZATION
     # ═══════════════════════════════════════════════════════════════════════
-    story.append(Paragraph("4. ServiceNow Catalog Extraction & Modernization", ss["SectionTitle"]))
+    story.append(Paragraph("5. ServiceNow Catalog Extraction & Modernization", ss["SectionTitle"]))
     story.append(divider())
     story.append(Paragraph(
         "The flagship capability of OverYonder.ai is extracting live ServiceNow service catalogs "
@@ -483,9 +586,9 @@ def build_pdf():
     story.append(PageBreak())
 
     # ═══════════════════════════════════════════════════════════════════════
-    #  5. INTERACTIVE PROMPT REFINEMENT
+    #  6. INTERACTIVE PROMPT REFINEMENT
     # ═══════════════════════════════════════════════════════════════════════
-    story.append(Paragraph("5. Interactive Prompt Refinement", ss["SectionTitle"]))
+    story.append(Paragraph("6. Interactive Prompt Refinement", ss["SectionTitle"]))
     story.append(divider())
     story.append(Paragraph(
         "The initial LLM-generated draft is a starting point, not a final deliverable. "
@@ -530,9 +633,9 @@ def build_pdf():
     story.append(PageBreak())
 
     # ═══════════════════════════════════════════════════════════════════════
-    #  6. INTEGRATIONS ECOSYSTEM
+    #  7. INTEGRATIONS ECOSYSTEM
     # ═══════════════════════════════════════════════════════════════════════
-    story.append(Paragraph("6. Integrations Ecosystem", ss["SectionTitle"]))
+    story.append(Paragraph("7. Integrations Ecosystem", ss["SectionTitle"]))
     story.append(divider())
     story.append(Paragraph(
         "OverYonder.ai connects to the enterprise tools your teams already use. Each integration "
@@ -585,9 +688,9 @@ def build_pdf():
     story.append(PageBreak())
 
     # ═══════════════════════════════════════════════════════════════════════
-    #  7. CONTROL PLANE & ADMINISTRATION
+    #  8. CONTROL PLANE & ADMINISTRATION
     # ═══════════════════════════════════════════════════════════════════════
-    story.append(Paragraph("7. Control Plane & Administration", ss["SectionTitle"]))
+    story.append(Paragraph("8. Control Plane & Administration", ss["SectionTitle"]))
     story.append(divider())
     story.append(Paragraph(
         "The admin control plane provides a comprehensive interface for configuring every "
@@ -606,6 +709,9 @@ def build_pdf():
             ["Skills", "Create reusable AI skills with instructions and tool bindings"],
             ["Use Cases", "Build multi-step workflows chaining skills with trigger keywords"],
             ["Actions", "Configure post-resolution actions with parameter sources and scoring rules"],
+            ["App Genomes", "Browse captured genomes, view structural details, download artifacts"],
+            ["Genome Capture", "5-step wizard to extract application structure from source platforms"],
+            ["Genome Insights", "Analytics dashboard with vendor distribution, complexity, and savings"],
             ["Runs", "Browse execution history, drill into run details with full event traces"],
             ["Observability", "KPI dashboard with success rates, confidence trends, cost analysis"],
             ["Cost Ledger", "Daily cost breakdown, model usage distribution, per-run cost analysis"],
@@ -617,9 +723,9 @@ def build_pdf():
     story.append(PageBreak())
 
     # ═══════════════════════════════════════════════════════════════════════
-    #  8. ACTIONS & RECOMMENDATIONS ENGINE
+    #  9. ACTIONS & RECOMMENDATIONS ENGINE
     # ═══════════════════════════════════════════════════════════════════════
-    story.append(Paragraph("8. Actions & Recommendations Engine", ss["SectionTitle"]))
+    story.append(Paragraph("9. Actions & Recommendations Engine", ss["SectionTitle"]))
     story.append(divider())
     story.append(Paragraph(
         "After the agent resolves a query, users need to <i>act</i> on the findings. The "
@@ -671,9 +777,9 @@ def build_pdf():
     story.append(PageBreak())
 
     # ═══════════════════════════════════════════════════════════════════════
-    #  9. AGENT CONVERSATIONAL UI
+    #  10. AGENT CONVERSATIONAL UI
     # ═══════════════════════════════════════════════════════════════════════
-    story.append(Paragraph("9. Agent Conversational UI", ss["SectionTitle"]))
+    story.append(Paragraph("10. Agent Conversational UI", ss["SectionTitle"]))
     story.append(divider())
     story.append(Paragraph(
         "The Agent UI is the primary interface where users interact with the platform. It provides "
@@ -713,9 +819,9 @@ def build_pdf():
     story.append(PageBreak())
 
     # ═══════════════════════════════════════════════════════════════════════
-    #  10. LLM COST TRACKING & OBSERVABILITY
+    #  11. LLM COST TRACKING & OBSERVABILITY
     # ═══════════════════════════════════════════════════════════════════════
-    story.append(Paragraph("10. LLM Cost Tracking & Observability", ss["SectionTitle"]))
+    story.append(Paragraph("11. LLM Cost Tracking & Observability", ss["SectionTitle"]))
     story.append(divider())
 
     story.append(Paragraph("Per-Call Cost Tracking", ss["SubSection"]))
@@ -758,14 +864,14 @@ def build_pdf():
     story.append(PageBreak())
 
     # ═══════════════════════════════════════════════════════════════════════
-    #  11. SECURITY & MULTI-TENANCY
+    #  12. SECURITY & MULTI-TENANCY
     # ═══════════════════════════════════════════════════════════════════════
-    story.append(Paragraph("11. Security & Multi-Tenancy", ss["SectionTitle"]))
+    story.append(Paragraph("12. Security & Multi-Tenancy", ss["SectionTitle"]))
     story.append(divider())
 
     story.append(Paragraph("Tenant Isolation", ss["SubSection"]))
     story.append(Paragraph(
-        "Every API endpoint is scoped to a tenant ID. All 18+ data stores enforce tenant-level "
+        "Every API endpoint is scoped to a tenant ID. All 23 data stores enforce tenant-level "
         "isolation \u2014 skills, use cases, integrations, actions, runs, LLM configs, and "
         "cost tracking are all partitioned. Tenants cannot access each other's data.",
         ss["BodyText2"],
@@ -784,9 +890,9 @@ def build_pdf():
     story.append(Spacer(1, 20))
 
     # ═══════════════════════════════════════════════════════════════════════
-    #  12. EXTENSIBILITY & ROADMAP
+    #  13. EXTENSIBILITY & ROADMAP
     # ═══════════════════════════════════════════════════════════════════════
-    story.append(Paragraph("12. Extensibility & Roadmap", ss["SectionTitle"]))
+    story.append(Paragraph("13. Extensibility & Roadmap", ss["SectionTitle"]))
     story.append(divider())
 
     story.append(Paragraph("Built for Extension", ss["SubSection"]))

@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
-from models import Action, AgentEvent, AgentRun, AgentUIRun, AgentUIRunEvent, ClassificationSchema, FeedbackEvent, GoogleDriveConfig, Integration, LLMConfig, LLMUsageEvent, MetricsEvent, ReplitConfig, RunTelemetry, ServiceNowConfig, Skill, Tenant, TenantLLMAssignment, UseCase, UseCaseRun
+from models import Action, AgentEvent, AgentRun, AgentUIRun, AgentUIRunEvent, ApplicationGenome, ClassificationSchema, ExtractionPayload, FeedbackEvent, GenomeArtifact, GoogleDriveConfig, Integration, LLMConfig, LLMUsageEvent, MetricsEvent, ReplitConfig, RunTelemetry, ServiceNowConfig, Skill, Tenant, TenantLLMAssignment, UseCase, UseCaseRun
 
 
 class TenantStore(ABC):
@@ -268,3 +268,48 @@ class ActionStore(ABC):
 
     @abstractmethod
     async def delete(self, action_id: str) -> bool: ...
+
+
+class GenomeStore(ABC):
+    @abstractmethod
+    async def create(self, genome: ApplicationGenome) -> ApplicationGenome: ...
+
+    @abstractmethod
+    async def get(self, genome_id: str) -> Optional[ApplicationGenome]: ...
+
+    @abstractmethod
+    async def list_for_tenant(self, tenant_id: str) -> list[ApplicationGenome]: ...
+
+    @abstractmethod
+    async def delete(self, genome_id: str) -> bool: ...
+
+
+class GenomeArtifactStore(ABC):
+    @abstractmethod
+    async def create(self, artifact: GenomeArtifact) -> GenomeArtifact: ...
+
+    @abstractmethod
+    async def get_by_genome(self, genome_id: str) -> Optional[GenomeArtifact]: ...
+
+    @abstractmethod
+    async def get_latest_by_genome(self, genome_id: str) -> Optional[GenomeArtifact]: ...
+
+
+class ExtractionPayloadStore(ABC):
+    @abstractmethod
+    async def create(self, extraction: ExtractionPayload) -> ExtractionPayload: ...
+
+    @abstractmethod
+    async def get(self, extraction_id: str) -> Optional[ExtractionPayload]: ...
+
+    @abstractmethod
+    async def list_for_tenant(self, tenant_id: str) -> list[ExtractionPayload]: ...
+
+    @abstractmethod
+    async def list_by_status(self, status: str) -> list[ExtractionPayload]: ...
+
+    @abstractmethod
+    async def update(self, extraction_id: str, **kwargs: Any) -> Optional[ExtractionPayload]: ...
+
+    @abstractmethod
+    async def find_by_payload_hash(self, payload_hash: str) -> Optional[ExtractionPayload]: ...

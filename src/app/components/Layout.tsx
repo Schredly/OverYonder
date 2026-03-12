@@ -10,6 +10,7 @@ import {
   Settings,
   ChevronRight,
   DollarSign,
+  Dna,
 } from 'lucide-react';
 import { TopBar } from './TopBar';
 import { Toaster } from '../components/ui/sonner';
@@ -26,14 +27,24 @@ const navigation: NavItem[] = [
   { name: 'Tenants', href: '/tenants', icon: Building2 },
   { name: 'Integrations', href: '/integrations', icon: Plug },
   { name: 'Skills', href: '/skills', icon: Sparkles },
-  { name: 'Actions', href: '/actions', icon: Zap },
   { name: 'Use Cases', href: '/use-cases', icon: Workflow },
-  { name: 'Runs', href: '/runs', icon: PlayCircle },
+  { name: 'Actions', href: '/actions', icon: Zap },
+  {
+    name: 'App Genomes',
+    href: '/genomes',
+    icon: Dna,
+    subItems: [
+      { name: 'Genomes', href: '/genomes' },
+      { name: 'Capture', href: '/genomes/capture' },
+      { name: 'Insights', href: '/genomes/insights' },
+    ],
+  },
   {
     name: 'Observability',
     href: '/observability',
     icon: Activity,
     subItems: [
+      { name: 'Runs', href: '/runs' },
       { name: 'LLM Usage', href: '/observability' },
       { name: 'Cost Ledger', href: '/observability/cost-ledger' },
     ],
@@ -43,7 +54,7 @@ const navigation: NavItem[] = [
 
 export function Layout() {
   const location = useLocation();
-  const [expandedItems, setExpandedItems] = useState<string[]>(['Observability']);
+  const [expandedItems, setExpandedItems] = useState<string[]>(['App Genomes', 'Observability']);
 
   const isActive = (href: string) => {
     if (href === '/') {

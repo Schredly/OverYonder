@@ -1,37 +1,59 @@
-# Google Drive Scaffolding (MVP)
+# Google Drive Integration — OverYonder.ai Platform
 
-## Goal
-Create a deterministic folder scaffold per tenant based on manual classification schema.
+## Role in the platform
+Google Drive serves as the knowledge and document storage layer:
+- Store exported genome artifacts (JSON, PDF)
+- Store migration plans and analysis reports
+- Serve as a knowledge base for agent document retrieval during runs
+- House per-tenant organized document structure
 
 ## Drive layout
-Under the configured root folder:
+Under the configured root folder per tenant:
 
-- `AgenticKnowledge/`
-- `AgenticKnowledge/{tenant_id}/`
-- `AgenticKnowledge/{tenant_id}/_schema/`
-- `AgenticKnowledge/{tenant_id}/dimensions/`
-- `AgenticKnowledge/{tenant_id}/dimensions/{LevelDisplayName}/`
-- `AgenticKnowledge/{tenant_id}/documents/`
-- `AgenticKnowledge/{tenant_id}/documents/by_classification/...` (optional, future)
-
-MVP: create dimension folders; docs can live anywhere under `documents/`.
+```
+AgenticKnowledge/
+  {tenant_id}/
+    _schema/                          # Configuration artifacts
+      classification_schema.json
+      integration_config_redacted.json
+    genomes/                          # Exported genome artifacts
+      {genome_id}_genome.json
+      {genome_id}_migration_plan.json
+    documents/                        # Knowledge documents
+      by_vendor/
+        ServiceNow/
+        Salesforce/
+        Jira/
+      by_category/
+        IT_Service_Management/
+        HR_Operations/
+        Customer_Service/
+    reports/                          # Generated analysis reports
+      migration_savings_report.pdf
+      platform_overview.pdf
+```
 
 ## Idempotency
 `ensure_folder(name, parent_id)` must:
-- search for existing by name+parent
-- create if missing
-- return folder id
+- Search for existing folder by name + parent
+- Create if missing
+- Return folder ID
 
-## What gets uploaded
-In `_schema/`:
-- `classification_schema.json`
-- `servicenow_config_redacted.json` (optional)
-- `adapter_mapping.json` (optional)
+## What gets stored
+- **_schema/**: Tenant configuration snapshots (redacted credentials)
+- **genomes/**: Exported genome JSON artifacts for portability
+- **documents/**: Knowledge documents organized by vendor and category
+- **reports/**: Generated PDF reports (migration analysis, platform overview)
 
-## Search strategy (MVP)
-Given classification path values:
-- Query Drive within `{tenant}/documents/` for relevant docs using:
-  - filename contains tokens
-  - full-text (Drive API `q` limited; for MVP use filename+folder scoping)
-- Return top N doc ids + names + links
-Later add embeddings.
+## Search strategy
+Given a query from an agent run:
+- Search Drive within `{tenant}/documents/` for relevant docs
+- Use filename + folder scoping for targeted retrieval
+- Return top N document IDs + names + links
+- Future: embeddings-based semantic search
+
+## Integration configuration
+- Root folder ID (required)
+- Shared Drive ID (optional, for shared drives)
+- Service account credentials
+- Connection test: verify folder access

@@ -750,3 +750,82 @@ class LLMUsageEvent(BaseModel):
     cost: float = 0.0
     latency_ms: int = 0
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+# --- Application Genomes ---
+
+
+class GenomeDocument(BaseModel):
+    objects: list[str] = Field(default_factory=list)
+    workflows: list[str] = Field(default_factory=list)
+    fields: list[str] = Field(default_factory=list)
+    relationships: list[str] = Field(default_factory=list)
+
+
+class ApplicationGenome(BaseModel):
+    id: str                          # "genome_" + uuid hex[:12]
+    tenant_id: str
+    vendor: str
+    application_name: str
+    source_platform: str
+    target_platform: str
+    category: str = ""
+    object_count: int = 0
+    workflow_count: int = 0
+    legacy_cost: float = 0.0
+    migrated_cost: float = 0.0
+    operational_cost: float = 0.0
+    captured_date: str = ""          # ISO date string
+    genome_document: GenomeDocument = Field(default_factory=GenomeDocument)
+    source_signature: str = ""
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class GenomeArtifact(BaseModel):
+    id: str                          # "gart_" + uuid hex[:12]
+    genome_id: str
+    version: int = 1
+    artifact_json: dict = Field(default_factory=dict)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class CreateGenomeRequest(BaseModel):
+    vendor: str
+    application_name: str
+    source_platform: str
+    target_platform: str
+    category: str = ""
+    object_count: int = 0
+    workflow_count: int = 0
+    legacy_cost: float = 0.0
+    migrated_cost: float = 0.0
+    operational_cost: float = 0.0
+    captured_date: str = ""
+    genome_document: GenomeDocument = Field(default_factory=GenomeDocument)
+    source_signature: str = ""
+
+
+# --- Extraction Payloads ---
+
+
+class ExtractionPayload(BaseModel):
+    id: str                          # "ext_" + uuid hex[:12]
+    tenant_id: str
+    vendor: str
+    source_platform: str
+    application_name: str
+    payload: dict = Field(default_factory=dict)
+    payload_hash: str = ""           # SHA-256 of canonical payload JSON
+    status: str = "pending"          # pending | processing | completed | failed
+    error_message: str = ""
+    genome_id: str = ""              # populated on successful genome creation
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class CreateExtractionRequest(BaseModel):
+    vendor: str
+    source_platform: str
+    application_name: str
+    payload: dict = Field(default_factory=dict)

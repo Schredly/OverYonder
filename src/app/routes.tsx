@@ -11,7 +11,6 @@ import SkillsPage from './pages/SkillsPage';
 import SkillEditorPage from './pages/SkillEditorPage';
 import UseCasesPage from './pages/UseCasesPage';
 import UseCaseBuilderPage from './pages/UseCaseBuilderPage';
-import AgentConsolePage from './pages/AgentConsolePage';
 import RunDetailPage from './pages/RunDetailPage';
 import CreateTenantPage from './pages/CreateTenantPage';
 import AgentUIPage from './pages/AgentUIPage';
@@ -20,6 +19,10 @@ import CreateEditActionPage from './pages/CreateEditActionPage';
 import ActionVisibilityRulesPage from './pages/ActionVisibilityRulesPage';
 import AgentUIActionsPage from './pages/AgentUIActionsPage';
 import CostLedgerPage from './pages/CostLedgerPage';
+import GenomesPage from './pages/GenomesPage';
+import GenomeDetailPage from './pages/GenomeDetailPage';
+import GenomeCapturePage from './pages/GenomeCapturePage';
+import GenomeInsightsPage from './pages/GenomeInsightsPage';
 
 export const router = createBrowserRouter([
   {
@@ -111,8 +114,20 @@ export const router = createBrowserRouter([
         Component: CostLedgerPage,
       },
       {
-        path: 'console',
-        Component: AgentConsolePage,
+        path: 'genomes',
+        Component: GenomesPage,
+      },
+      {
+        path: 'genomes/capture',
+        Component: GenomeCapturePage,
+      },
+      {
+        path: 'genomes/insights',
+        Component: GenomeInsightsPage,
+      },
+      {
+        path: 'genomes/:id',
+        Component: GenomeDetailPage,
       },
       {
         path: 'settings',

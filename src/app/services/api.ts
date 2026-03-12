@@ -1155,3 +1155,52 @@ export function approveRunWriteback(
     },
   );
 }
+
+// --- Application Genomes ---
+
+export interface GenomeDocumentResponse {
+  objects: string[];
+  workflows: string[];
+  fields: string[];
+  relationships: string[];
+}
+
+export interface GenomeArtifactResponse {
+  id: string;
+  genome_id: string;
+  version: number;
+  artifact_json: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface GenomeResponse {
+  id: string;
+  tenant_id: string;
+  vendor: string;
+  application_name: string;
+  source_platform: string;
+  target_platform: string;
+  category: string;
+  object_count: number;
+  workflow_count: number;
+  legacy_cost: number;
+  migrated_cost: number;
+  operational_cost: number;
+  captured_date: string;
+  genome_document: GenomeDocumentResponse;
+  source_signature: string;
+  created_at: string;
+  updated_at: string;
+  artifact?: GenomeArtifactResponse | null;
+}
+
+export function getGenomes(tenantId: string): Promise<GenomeResponse[]> {
+  return request(`/admin/${tenantId}/genomes`);
+}
+
+export function getGenome(
+  tenantId: string,
+  genomeId: string,
+): Promise<GenomeResponse> {
+  return request(`/admin/${tenantId}/genomes/${genomeId}`);
+}

@@ -10,9 +10,12 @@ from models import (
     AgentRun,
     AgentUIRun,
     AgentUIRunEvent,
+    ApplicationGenome,
     ClassificationNodeModel,
     ClassificationSchema,
+    ExtractionPayload,
     FeedbackEvent,
+    GenomeArtifact,
     GoogleDriveConfig,
     Integration,
     LLMConfig,
@@ -33,7 +36,10 @@ from store.interface import (
     AgentUIRunStore,
     ClassificationSchemaStore,
     EventStore,
+    ExtractionPayloadStore,
     FeedbackStore,
+    GenomeArtifactStore,
+    GenomeStore,
     GoogleDriveConfigStore,
     IntegrationStore,
     LLMConfigStore,
@@ -536,3 +542,86 @@ class InMemoryActionStore(ActionStore):
 
     async def delete(self, action_id: str) -> bool:
         return self._actions.pop(action_id, None) is not None
+
+
+class InMemoryGenomeStore(GenomeStore):
+    def __init__(self) -> None:
+        self._genomes: dict[str, ApplicationGenome] = {}
+
+    async def create(self, genome: ApplicationGenome) -> ApplicationGenome:
+        self._genomes[genome.id] = genome
+        return genome
+
+    async def get(self, genome_id: str) -> Optional[ApplicationGenome]:
+        return self._genomes.get(genome_id)
+
+    async def list_for_tenant(self, tenant_id: str) -> list[ApplicationGenome]:
+        return [g for g in self._genomes.values() if g.tenant_id == tenant_id]
+
+    async def delete(self, genome_id: str) -> bool:
+        return self._genomes.pop(genome_id, None) is not None
+
+
+class InMemoryGenomeArtifactStore(GenomeArtifactStore):
+    def __init__(self) -> None:
+        self._artifacts: dict[str, GenomeArtifact] = {}
+
+    async def create(self, artifact: GenomeArtifact) -> GenomeArtifact:
+        self._artifacts[artifact.id] = artifact
+        return artifact
+
+    async def get_by_genome(self, genome_id: str) -> Optional[GenomeArtifact]:
+        """Return the first artifact for a genome (for backward compat)."""
+        for a in self._artifacts.values():
+            if a.genome_id == genome_id:
+                return a
+        return None
+
+    async def get_latest_by_genome(self, genome_id: str) -> Optional[GenomeArtifact]:
+        """Return the highest-version artifact for a genome."""
+        matches = [a for a in self._artifacts.values() if a.genome_id == genome_id]
+        if not matches:
+            return None
+        return max(matches, key=lambda a: a.version)
+
+
+class InMemoryExtractionPayloadStore(ExtractionPayloadStore):
+    def __init__(self) -> None:
+        self._extractions: dict[str, ExtractionPayload] = {}
+
+    async def create(self, extraction: ExtractionPayload) -> ExtractionPayload:
+        self._extractions[extraction.id] = extraction
+        return extraction
+
+    async def get(self, extraction_id: str) -> Optional[ExtractionPayload]:
+        return self._extractions.get(extraction_id)
+
+    async def list_for_tenant(self, tenant_id: str) -> list[ExtractionPayload]:
+        return sorted(
+            [e for e in self._extractions.values() if e.tenant_id == tenant_id],
+            key=lambda e: e.created_at,
+            reverse=True,
+        )
+
+    async def list_by_status(self, status: str) -> list[ExtractionPayload]:
+        return sorted(
+            [e for e in self._extractions.values() if e.status == status],
+            key=lambda e: e.created_at,
+        )
+
+    async def update(self, extraction_id: str, **kwargs: Any) -> Optional[ExtractionPayload]:
+        existing = self._extractions.get(extraction_id)
+        if existing is None:
+            return None
+        data = existing.model_dump()
+        data.update({k: v for k, v in kwargs.items() if v is not None})
+        data["updated_at"] = datetime.now(timezone.utc)
+        updated = ExtractionPayload(**data)
+        self._extractions[extraction_id] = updated
+        return updated
+
+    async def find_by_payload_hash(self, payload_hash: str) -> Optional[ExtractionPayload]:
+        for e in self._extractions.values():
+            if e.payload_hash == payload_hash and e.status in ("completed", "processing"):
+                return e
+        return None

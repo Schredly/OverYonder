@@ -11,6 +11,7 @@ import httpx
 
 from services import servicenow_tools
 from services.claude_client import call_llm, ClaudeClientError
+from adapters.servicenow_catalog_adapter import create_servicenow_extraction
 from models import LLMUsageEvent, calculate_llm_cost
 
 logger = logging.getLogger(__name__)
@@ -367,6 +368,15 @@ async def convert_catalog_to_replit(tenant_id: str, payload: dict, app) -> dict:
 
     print(f"[snow_to_replit] Catalog JSON keys: {list(catalog_json.keys()) if isinstance(catalog_json, dict) else type(catalog_json).__name__}")
 
+    # 2b. Feed raw catalog into the genome extraction pipeline
+    catalog_name = payload.get("catalog_name", "ServiceNow Catalog")
+    try:
+        extraction_id = await create_servicenow_extraction(tenant_id, catalog_name, catalog_json, app)
+        print(f"[snow_to_replit] Genome extraction created: {extraction_id}")
+    except Exception as exc:
+        print(f"[snow_to_replit] Genome extraction failed (non-blocking): {exc}")
+        extraction_id = None
+
     # 3. Clean the catalog locally (fast, no LLM) then load LLM config for draft
     catalog_str = json.dumps(catalog_json, indent=2)
     clean_catalog = _reformat_catalog(catalog_str)
@@ -400,13 +410,16 @@ async def convert_catalog_to_replit(tenant_id: str, payload: dict, app) -> dict:
         )
 
     # 5. Return draft for interactive refinement (no repl created yet)
-    return {
+    result = {
         "status": "draft",
         "draft_prompt": draft_prompt.strip(),
         "catalog_data": clean_catalog,
         "analysis": f"Analyzed catalog payload ({len(catalog_str)} chars), reformatted, and generated a focused Replit prompt.",
         "latency_ms": latency_ms,
     }
+    if extraction_id:
+        result["extraction_id"] = extraction_id
+    return result
 
 
 def _split_prompt_and_data(prompt: str) -> tuple[str, str]:
@@ -528,6 +541,14 @@ async def convert_catalog_by_title_to_replit(tenant_id: str, payload: dict, app)
 
     print(f"[snow_to_replit] Catalog JSON keys: {list(catalog_json.keys()) if isinstance(catalog_json, dict) else type(catalog_json).__name__}")
 
+    # 2b. Feed raw catalog into the genome extraction pipeline
+    try:
+        extraction_id = await create_servicenow_extraction(tenant_id, catalog_title, catalog_json, app)
+        print(f"[snow_to_replit] Genome extraction created: {extraction_id}")
+    except Exception as exc:
+        print(f"[snow_to_replit] Genome extraction failed (non-blocking): {exc}")
+        extraction_id = None
+
     # 3. Clean the catalog locally (fast, no LLM) then load LLM config for draft
     catalog_str = json.dumps(catalog_json, indent=2)
     clean_catalog = _reformat_catalog(catalog_str)
@@ -561,13 +582,16 @@ async def convert_catalog_by_title_to_replit(tenant_id: str, payload: dict, app)
         )
 
     # 5. Return draft for interactive refinement (no repl created yet)
-    return {
+    result = {
         "status": "draft",
         "draft_prompt": draft_prompt.strip(),
         "catalog_data": clean_catalog,
         "analysis": f"Analyzed catalog \"{catalog_title}\" ({len(catalog_str)} chars), reformatted, and generated a focused Replit prompt.",
         "latency_ms": latency_ms,
     }
+    if extraction_id:
+        result["extraction_id"] = extraction_id
+    return result
 
 
 async def approve_and_create_repl(tenant_id: str, approved_prompt: str, app) -> dict:
