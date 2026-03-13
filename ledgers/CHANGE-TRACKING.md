@@ -2983,3 +2983,125 @@ Generated a technical PDF (`OverYonder-Platform-Modules.pdf`) documenting the si
 - Section 5 (Skills): skills catalog with tool assignments
 - Section 6 (Use Cases): workflows with trigger keywords
 - Section 7 (Actions): actions catalog with recommendation rules
+
+## #063 — 2026-03-13 — "All Tenants" Global View + Cross-Page Tenant Filtering
+
+**What happened:**
+Added an "All Tenants" selection mode to the platform, letting users view data aggregated across all tenants rather than scoped to a single one. A reusable `TenantFilter` dropdown was added and wired into every list page.
+
+**Frontend — TenantContext + TopBar:**
+- `src/app/context/TenantContext.tsx` — Added `ALL_TENANTS` sentinel (`"__all__"`), `isAllTenants` boolean, and `apiTenantId` (falls back to first tenant for URL paths when "All" is selected). Selection persists across refreshes.
+- `src/app/components/TopBar.tsx` — Global tenant dropdown now shows "All Tenants" option at top with a "Global View" badge when selected.
+
+**New component — `src/app/components/TenantFilter.tsx`:**
+- Reusable dropdown filter with three modes: "All Tenants", "Global", or specific tenant. Used on every list page.
+
+**Pages wired up with TenantFilter:**
+- `ActionsCatalogPage.tsx` — passes `filter_tenant` query param
+- `RunsPage.tsx` — `getAllUCRuns` passes `filterTenant`
+- `SkillsPage.tsx` — `getSkills` passes `filterTenant`
+- `UseCasesPage.tsx` — `getUseCases` passes `filterTenant`
+- `CostLedgerPage.tsx` — replaced hardcoded `"acme"` with `currentTenantId`; `getLLMUsageLedger` and `getLLMUsageSummary` pass `filterTenant`
+- `IntegrationsPage.tsx` — uses `apiTenantId` and `isAllTenants`; passes `filter_tenant=all` in global view
+
+**Frontend — api.ts:**
+- `getIntegrations`, `getSkills`, `getUseCases`, `getAllUCRuns`, `getLLMUsage`, `getLLMUsageSummary`, `getLLMUsageLedger` all accept optional `filterTenant` parameter appended as query string
+
+**Backend — Store layer (`store/interface.py` + `store/memory.py`):**
+- Added `list_filtered(tenant_id)` abstract method to `IntegrationStore`, `SkillStore`, `UseCaseStore`, `UseCaseRunStore`, `LLMUsageStore`, and `ActionStore`
+- Logic: `None`/`"all"` returns everything, `"GLOBAL"` returns only global items, otherwise returns items for that tenant + GLOBAL
+- All six in-memory store implementations include the new `list_filtered` method
+
+**Backend — Routers:**
+- `actions.py`, `skills.py`, `use_cases.py`, `uc_runs.py`, `llm_usage.py` — all list endpoints accept optional `filter_tenant` query param and call `list_filtered`
+- `llm_usage.py` — `usage_summary` and `cost_ledger` endpoints also accept `filter_tenant`
+
+## #064 — 2026-03-13 — Managed Integrations v2 (Web Service + GitHub)
+
+**What happened:**
+Added a new "managed integrations" subsystem alongside the existing integration CRUD, supporting `web_service` and `github` types with their own auth config, connectivity test, and lifecycle.
+
+**Backend — Model (`backend/models.py`):**
+- `ManagedIntegration` — id, name, type, tenant_id, base_url, endpoint, headers, auth_type, token, test_endpoint, enabled, timestamps
+- `CreateManagedIntegrationRequest` — creation payload
+
+**Backend — Store:**
+- `store/interface.py` — `ManagedIntegrationStore` ABC (create, get, list_for_tenant, update, delete)
+- `store/memory.py` — `InMemoryManagedIntegrationStore` implementation
+- `store/__init__.py` — exports the new store
+
+**Backend — Router (`backend/routers/managed_integrations.py`, new):**
+- Full CRUD at `/api/admin/{tenant_id}/managed-integrations`
+- `POST /{integration_id}/test` — connectivity test endpoint
+
+**Backend — Service (`backend/services/integration_executor.py`, new):**
+- `test_managed_integration()` — tests GitHub (validates PAT via `/user`) and web_service (hits base_url + test/primary endpoint with auth headers)
+
+**Wiring:**
+- `main.py` — instantiates `InMemoryManagedIntegrationStore`, registers router
+- `routers/__init__.py` — exports `managed_integrations_router`
+
+## #065 — 2026-03-13 — ServiceNow-to-GitHub Export Pipeline + PromptEditor
+
+**What happened:**
+Added a multi-phase action that fetches a ServiceNow catalog and commits structured files to a GitHub org repository. Includes a new inline PromptEditor component for reviewing/editing the commit prompt before pushing.
+
+**Backend — Service (`backend/services/snow_to_github.py`, new, 390 lines):**
+- Two-phase flow:
+  - Phase 1: `convert_catalog_to_github()` lists catalogs (returns `needs_input` with numbered list)
+  - Phase 2: fetches selected catalog, cleans it, returns `draft` status with generated prompt, catalog payload, and `target: "github"`
+- `commit_to_github()` — looks up tenant's GitHub managed integration (token + org), creates repo via GitHub API, builds structured file tree (`catalog/`, `forms/`, `workflows/`, `models/`, `README.md`), commits each file via Contents API
+
+**Backend — Action registration:**
+- `action_executor.py` — registered `"servicenow:catalog_to_github"` handler pointing to `snow_to_github.convert_catalog_to_github`
+
+**Backend — Agent endpoints (`routers/agent.py`):**
+- `POST /approve-github` — acknowledges export approval
+- `POST /commit-github` — calls `commit_to_github()` to push files to org repo
+
+**Frontend — New component (`src/app/components/agentui/PromptEditor.tsx`):**
+- Rich inline editor with editable prompt textarea, collapsible read-only JSON payload viewer, and "Commit to GitHub" button with cancel
+- Styled in dark agent UI theme
+
+**Frontend — AgentUIPage integration:**
+- When draft returns with `target: "github"`, renders `PromptEditor` instead of standard draft + InputPanel
+- `handleCommitToGithub()` POSTs to `/commit-github`
+- `handleApprove` routes to either `/approve-github` or `/approve-replit` based on `target`
+- Draft state carries `approveLabel`, `draftLabel`, and `target`
+
+**Frontend — AgentActions + InputPanel:**
+- `AgentActions.tsx` — `DraftReadyPayload` now includes `approve_label`, `draft_label`, `target`
+- `InputPanel.tsx` — approve button label is dynamic via `approveLabel` prop (defaults to "Approve & Send to Replit")
+
+## #066 — 2026-03-13 — Integration Endpoints Data Model + CRUD
+
+**What happened:**
+Expanded the Integration model to support named API endpoints with per-endpoint config, CRUD operations, and a default endpoint catalog per integration type.
+
+**Backend — Model (`backend/models.py`):**
+- `IntegrationEndpoint` — id, name, path, method, headers, query_params, description
+- `Integration` model now has `endpoints: list[IntegrationEndpoint]` and `name: str`
+- `AddEndpointRequest` and `UpdateEndpointRequest` for endpoint CRUD
+- `CreateIntegrationRequest` now accepts optional `name`
+- `INTEGRATION_CATALOG` expanded with `default_endpoints`: ServiceNow (6 endpoints including catalog APIs), Salesforce (3), GitHub (3), Jira (3)
+
+**Backend — ServiceNow tools (`backend/services/servicenow_tools.py`):**
+- `get_endpoint_url()` helper — looks up a named endpoint from a tenant's ServiceNow integration, substitutes path variables, returns full URL. Used by `snow_to_github.py` to resolve "List Catalogs" and "Catalog by Title" dynamically.
+
+**Frontend — api.ts:**
+- New interfaces: `IntegrationEndpoint`, `CatalogDefaultEndpoint`
+- `IntegrationResponse` now includes `name` and `endpoints`
+- `IntegrationCatalogEntry` now includes `default_endpoints`
+- `createIntegration()` accepts optional `name`
+- New functions: `addIntegrationEndpoint`, `updateIntegrationEndpoint`, `deleteIntegrationEndpoint`, `testIntegrationEndpoint`, `fetchEndpointRecords`, `reassignIntegrationTenant`, `renameIntegration`
+
+## #067 — 2026-03-13 — Multi-Instance Integration Support (GitHub)
+
+**What happened:**
+Enabled GitHub to have multiple integration instances per tenant (e.g. "Production", "Staging"), while other integration types remain one-per-tenant.
+
+**Frontend — IntegrationsPage.tsx:**
+- `MULTI_INSTANCE_TYPES` designates GitHub as multi-instance — multiple integrations per tenant allowed
+- When adding a multi-instance type, a modal prompts for a custom name
+- Integration list card displays custom `name` if set, with catalog type name as subtitle
+- GitHub integrations no longer filtered out of the "Add" dropdown once one exists
