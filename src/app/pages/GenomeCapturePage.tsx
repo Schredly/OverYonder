@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { mockGenomes } from "../data/mockGenomes";
 import {
   X,
   Check,
@@ -9,547 +8,817 @@ import {
   Ticket,
   Headset,
   Briefcase,
-  Package,
-  Workflow as WorkflowIcon,
-  Grid3x3,
-  Share2,
-  ArrowRight,
+  Loader2,
   Dna,
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  AlertCircle,
+  GitBranch,
+  Globe,
+  Plug,
+  Play,
+  ChevronRight,
+  Plus,
+  Circle,
+  Search,
+  Database,
+  FileCode,
+  Package,
 } from "lucide-react";
 
-const steps = [
-  { id: 1, name: "Source Platform" },
-  { id: 2, name: "Application Type" },
-  { id: 3, name: "Configure" },
-  { id: 4, name: "Preview" },
-  { id: 5, name: "Confirm" },
+const TENANT = "acme";
+const API = `/api/admin/${TENANT}`;
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+interface Integration {
+  id: string;
+  integration_type: string;
+  name: string;
+  enabled: boolean;
+  config: Record<string, string>;
+  endpoints: Endpoint[];
+  connection_status: string;
+}
+
+interface Endpoint {
+  id: string;
+  name: string;
+  path: string;
+  method: string;
+  description: string;
+}
+
+interface StepState {
+  label: string;
+  status: "idle" | "running" | "done" | "error";
+  message: string;
+}
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+const vendorIcons: Record<string, typeof Server> = {
+  servicenow: Server,
+  salesforce: Cloud,
+  jira: Ticket,
+  zendesk: Headset,
+  workday: Briefcase,
+  github: GitBranch,
+};
+
+const WIZARD_STEPS = [
+  { id: 1, label: "Source Integration" },
+  { id: 2, label: "Extraction Target" },
+  { id: 3, label: "Genome Scan" },
+  { id: 4, label: "Expand & Commit" },
 ];
 
-const platforms = [
-  { id: "servicenow", name: "ServiceNow", icon: Server },
-  { id: "salesforce", name: "Salesforce", icon: Cloud },
-  { id: "jira", name: "Jira", icon: Ticket },
-  { id: "zendesk", name: "Zendesk", icon: Headset },
-  { id: "workday", name: "Workday", icon: Briefcase },
+const TARGET_TYPES = [
+  { id: "service_catalog", label: "Service Catalog", icon: Package, description: "Catalog items, forms, and variables" },
+  { id: "application", label: "Application", icon: FileCode, description: "Scoped or custom application" },
+  { id: "table", label: "Table", icon: Database, description: "Table-based data structure" },
+  { id: "update_set", label: "Update Set", icon: Globe, description: "Configuration update set" },
 ];
 
-const applicationTypes = [
-  {
-    id: "catalog_item",
-    name: "Catalog Item",
-    description: "Service catalog items with forms and variables",
-  },
-  {
-    id: "workflow",
-    name: "Workflow",
-    description: "Business process workflows and automations",
-  },
-  {
-    id: "table_application",
-    name: "Table Application",
-    description: "Custom table-based applications with CRUD operations",
-  },
-  {
-    id: "custom_app",
-    name: "Custom App",
-    description: "Fully custom scoped or legacy application",
-  },
+const SCAN_DEPTHS = [
+  { id: "structure", label: "Structure", description: "Objects, fields, relationships" },
+  { id: "config", label: "Config", description: "Structure + configuration details" },
+  { id: "full", label: "Full", description: "Structure + config + data samples" },
 ];
 
-// Use the first genome's document as a mock preview
-const mockPreview = mockGenomes[0].genome_document;
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
 
 export default function GenomeCapturePage() {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [step, setStep] = useState(1);
 
-  // Step 1
-  const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
-  // Step 2
-  const [selectedAppType, setSelectedAppType] = useState<string | null>(null);
-  // Step 3
-  const [config, setConfig] = useState({
-    instanceUrl: "",
-    apiCredentials: "",
-    applicationName: "",
-    applicationCategory: "",
-  });
+  // Step 1 — source integration
+  const [integrations, setIntegrations] = useState<Integration[]>([]);
+  const [loadingIntegrations, setLoadingIntegrations] = useState(true);
+  const [selectedIntegration, setSelectedIntegration] = useState<Integration | null>(null);
+  const [testingSource, setTestingSource] = useState(false);
+  const [sourceTestResult, setSourceTestResult] = useState<{ ok: boolean; detail?: string } | null>(null);
 
-  const handleConfigChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setConfig({ ...config, [e.target.name]: e.target.value });
+  // Step 2 — extraction target
+  const [targetType, setTargetType] = useState("service_catalog");
+  const [selectedEndpoint, setSelectedEndpoint] = useState<Endpoint | null>(null);
+  const [targetName, setTargetName] = useState("");
+  const [scanDepth, setScanDepth] = useState("structure");
+  const [addingEndpoint, setAddingEndpoint] = useState(false);
+  const [newEpName, setNewEpName] = useState("");
+  const [newEpPath, setNewEpPath] = useState("");
+  const [newEpDesc, setNewEpDesc] = useState("");
+  // Dynamic discovery
+  const [discoveredCatalogs, setDiscoveredCatalogs] = useState<string[]>([]);
+  const [loadingCatalogs, setLoadingCatalogs] = useState(false);
+  const [selectedCatalog, setSelectedCatalog] = useState<string>("");
+
+  // Step 3 — genome scan (pass 1)
+  const [scanning, setScanning] = useState(false);
+  const [scanResult, setScanResult] = useState<any>(null);
+  const [scanPipeline, setScanPipeline] = useState<StepState[]>([
+    { label: "Integration", status: "idle", message: "Connect to source" },
+    { label: "Vendor Adapter", status: "idle", message: "Call extraction endpoint" },
+    { label: "Genome Scan Engine", status: "idle", message: "Parse extraction response" },
+    { label: "Genome Builder", status: "idle", message: "Build GenomeDocument + GenomeGraph" },
+  ]);
+
+  // Step 4 — expand & commit (pass 2)
+  const [committing, setCommitting] = useState(false);
+  const [commitDone, setCommitDone] = useState(false);
+  const [commitResult, setCommitResult] = useState<any>(null);
+  const [commitPipeline, setCommitPipeline] = useState<StepState[]>([
+    { label: "Vendor Adapter", status: "idle", message: "Expand configuration data" },
+    { label: "Genome Builder", status: "idle", message: "Build YAML structure" },
+    { label: "GitHub Repo", status: "idle", message: "Commit genome files" },
+  ]);
+
+  // ---------------------------------------------------------------------------
+  // Data loading
+  // ---------------------------------------------------------------------------
+
+  useEffect(() => {
+    fetch(`${API}/integrations/?filter_tenant=all`)
+      .then((r) => r.json())
+      .then((data: Integration[]) => {
+        setIntegrations(data.filter((i) => i.integration_type !== "github"));
+      })
+      .catch(() => {})
+      .finally(() => setLoadingIntegrations(false));
+  }, []);
+
+  // Discover catalogs when entering step 2 with service_catalog type
+  useEffect(() => {
+    if (step !== 2 || targetType !== "service_catalog" || !selectedIntegration) return;
+    setLoadingCatalogs(true);
+    setDiscoveredCatalogs([]);
+    fetch(`${API}/genomes/discover/candidates`)
+      .then((r) => r.json())
+      .then((results: Array<{ candidates: Array<{ name: string; type: string }> }>) => {
+        const names: string[] = [];
+        for (const disc of results) {
+          for (const c of disc.candidates) {
+            if (c.type === "catalog" && !names.includes(c.name)) names.push(c.name);
+          }
+        }
+        setDiscoveredCatalogs(names);
+      })
+      .catch(() => {})
+      .finally(() => setLoadingCatalogs(false));
+  }, [step, targetType, selectedIntegration]);
+
+  // ---------------------------------------------------------------------------
+  // Handlers
+  // ---------------------------------------------------------------------------
+
+  const testSourceConnection = async () => {
+    if (!selectedIntegration) return;
+    setTestingSource(true);
+    setSourceTestResult(null);
+    try {
+      const r = await fetch(`${API}/integrations/${selectedIntegration.id}/test`, { method: "POST" });
+      setSourceTestResult(await r.json());
+    } catch {
+      setSourceTestResult({ ok: false, detail: "Network error" });
+    }
+    setTestingSource(false);
   };
 
-  const canContinue = (step: number) => {
+  const addEndpoint = async () => {
+    if (!selectedIntegration || !newEpName || !newEpPath) return;
+    try {
+      const r = await fetch(`${API}/integrations/${selectedIntegration.id}/endpoints`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newEpName, path: newEpPath, method: "GET", description: newEpDesc }),
+      });
+      if (r.ok) {
+        const updated = await r.json();
+        setSelectedIntegration(updated);
+        setIntegrations((prev) => prev.map((i) => (i.id === updated.id ? updated : i)));
+        setAddingEndpoint(false);
+        setNewEpName("");
+        setNewEpPath("");
+        setNewEpDesc("");
+      }
+    } catch {}
+  };
+
+  // ---------------------------------------------------------------------------
+  // Pass 1 — Genome Scan
+  // ---------------------------------------------------------------------------
+
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  const updateScanStep = (idx: number, update: Partial<StepState>) =>
+    setScanPipeline((prev) => prev.map((s, i) => (i === idx ? { ...s, ...update } : s)));
+
+  const runScan = async () => {
+    if (!selectedIntegration) return;
+    // For service_catalog, auto-resolve endpoint if not explicitly selected
+    const effectiveEndpoint = selectedEndpoint
+      || (targetType === "service_catalog"
+        ? selectedIntegration.endpoints.find((ep) => ep.name === "Catalog By Title") || selectedIntegration.endpoints[0]
+        : null);
+    if (!effectiveEndpoint && targetType !== "service_catalog") return;
+    if (!effectiveEndpoint && !targetName) return;
+    setScanning(true);
+    setScanResult(null);
+    setScanPipeline([
+      { label: "Integration", status: "idle", message: "Connect to source" },
+      { label: "Vendor Adapter", status: "idle", message: "Call extraction endpoint" },
+      { label: "Genome Scan Engine", status: "idle", message: "Parse extraction response" },
+      { label: "Genome Builder", status: "idle", message: "Build GenomeDocument + GenomeGraph" },
+    ]);
+
+    // Animate: Integration
+    updateScanStep(0, { status: "running", message: `Connecting to ${selectedIntegration.config?.instance_url || selectedIntegration.integration_type}...` });
+    await sleep(600);
+    updateScanStep(0, { status: "done", message: `Connected to ${selectedIntegration.config?.instance_url || selectedIntegration.integration_type}` });
+
+    // Animate: Vendor Adapter
+    const epPath = effectiveEndpoint?.path || "/api/1939459/overyonder_selfdeploy/extract/...";
+    updateScanStep(1, { status: "running", message: `POST ${epPath} (depth: ${scanDepth})...` });
+
+    try {
+      const res = await fetch(`${API}/genomes/capture/scan`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          integration_id: selectedIntegration.id,
+          target_type: targetType,
+          target_name: targetName || effectiveEndpoint?.name || "Unknown",
+          depth: scanDepth,
+        }),
+      });
+      const data = await res.json();
+
+      if (data.status !== "ok") {
+        updateScanStep(1, { status: "error", message: data.error || "Extraction failed" });
+        setScanResult(data);
+        setScanning(false);
+        return;
+      }
+
+      updateScanStep(1, { status: "done", message: `Retrieved ${((data.payload_size || 0) / 1024).toFixed(0)} KB in ${data.latency_ms}ms` });
+
+      // Animate: Genome Scan Engine
+      updateScanStep(2, { status: "running", message: "Parsing extraction response..." });
+      await sleep(800);
+      const summary = data.summary || {};
+      updateScanStep(2, { status: "done", message: `${summary.items || 0} items, ${summary.variables || 0} variables, ${summary.choices || 0} choices` });
+
+      // Animate: Genome Builder
+      updateScanStep(3, { status: "running", message: "Building GenomeDocument + GenomeGraph..." });
+      await sleep(600);
+      const objCount = data.genome_document?.objects?.length || 0;
+      const wfCount = data.genome_document?.workflows?.length || 0;
+      updateScanStep(3, { status: "done", message: `${objCount} objects, ${wfCount} workflows` });
+
+      setScanResult(data);
+    } catch (err) {
+      updateScanStep(1, { status: "error", message: err instanceof Error ? err.message : "Network error" });
+    }
+    setScanning(false);
+  };
+
+  // ---------------------------------------------------------------------------
+  // Pass 2 — Expand & Commit
+  // ---------------------------------------------------------------------------
+
+  const updateCommitStep = (idx: number, update: Partial<StepState>) =>
+    setCommitPipeline((prev) => prev.map((s, i) => (i === idx ? { ...s, ...update } : s)));
+
+  const runExpandAndCommit = async () => {
+    if (!selectedIntegration || !scanResult) return;
+    setCommitting(true);
+    setCommitResult(null);
+    setCommitPipeline([
+      { label: "Vendor Adapter", status: "idle", message: "Expand configuration data" },
+      { label: "Genome Builder", status: "idle", message: "Build YAML structure" },
+      { label: "GitHub Repo", status: "idle", message: "Commit genome files" },
+    ]);
+
+    // Animate: Vendor Adapter
+    updateCommitStep(0, { status: "running", message: "Expanding configuration and data..." });
+    await sleep(500);
+    updateCommitStep(0, { status: "done", message: "Configuration expanded from scan result" });
+
+    // Animate: Genome Builder
+    updateCommitStep(1, { status: "running", message: "Building YAML + JSON file tree..." });
+
+    try {
+      const res = await fetch(`${API}/genomes/capture/expand`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          integration_id: selectedIntegration.id,
+          target_name: targetName || selectedCatalog || selectedEndpoint?.name || "Unknown",
+          target_type: targetType,
+          depth: scanDepth,
+          raw_extraction: scanResult.raw_extraction || {},
+          genome_document: scanResult.genome_document || null,
+          genome_graph: scanResult.genome_graph || null,
+        }),
+      });
+      const data = await res.json();
+
+      if (data.status !== "ok") {
+        updateCommitStep(1, { status: "error", message: data.error || "Expand failed" });
+        setCommitResult(data);
+        setCommitting(false);
+        return;
+      }
+
+      updateCommitStep(1, { status: "done", message: `${data.file_count || 0} files generated` });
+
+      // Animate: GitHub Repo
+      updateCommitStep(2, { status: "running", message: "Committing to GitHub..." });
+      await sleep(400);
+      updateCommitStep(2, {
+        status: "done",
+        message: `${data.files_pushed?.length || 0} files pushed to ${data.repo_url?.replace("https://github.com/", "") || "GitHub"}`,
+      });
+
+      setCommitResult(data);
+      setCommitDone(true);
+    } catch (err) {
+      updateCommitStep(1, { status: "error", message: err instanceof Error ? err.message : "Network error" });
+    }
+    setCommitting(false);
+  };
+
+  // ---------------------------------------------------------------------------
+  // Render helpers
+  // ---------------------------------------------------------------------------
+
+  const canAdvance = () => {
     switch (step) {
-      case 1:
-        return !!selectedPlatform;
+      case 1: return selectedIntegration?.enabled;
       case 2:
-        return !!selectedAppType;
-      case 3:
-        return !!(config.instanceUrl && config.apiCredentials && config.applicationName);
-      default:
-        return true;
+        if (targetType === "service_catalog") return !!targetName;
+        return !!selectedEndpoint;
+      case 3: return scanResult?.status === "ok";
+      default: return false;
     }
   };
 
+  const PipelineStatus = ({ steps }: { steps: StepState[] }) => (
+    <div className="bg-gray-50 border border-gray-200 rounded-lg divide-y divide-gray-200">
+      {steps.map((s, i) => (
+        <div key={i} className="flex items-start gap-3 px-4 py-3">
+          <div className="mt-0.5 flex-shrink-0">
+            {s.status === "idle" && <Circle className="w-4 h-4 text-gray-300" />}
+            {s.status === "running" && <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />}
+            {s.status === "done" && <CheckCircle2 className="w-4 h-4 text-green-500" />}
+            {s.status === "error" && <AlertCircle className="w-4 h-4 text-red-500" />}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className={`text-xs font-medium uppercase tracking-wide ${
+              s.status === "done" ? "text-green-700" : s.status === "error" ? "text-red-700" : s.status === "running" ? "text-blue-700" : "text-gray-400"
+            }`}>
+              {s.label}
+            </p>
+            <p className={`text-sm mt-0.5 ${
+              s.status === "done" ? "text-green-600" : s.status === "error" ? "text-red-600" : s.status === "running" ? "text-blue-600" : "text-gray-400"
+            }`}>
+              {s.message}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  const FlowNode = ({ icon: Icon, label, sublabel, active, done, error }: {
+    icon: typeof Server; label: string; sublabel?: string; active?: boolean; done?: boolean; error?: boolean;
+  }) => (
+    <div className={`flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl border-2 transition-all w-36 ${
+      error ? "border-red-400 bg-red-50" : done ? "border-green-400 bg-green-50" : active ? "border-blue-400 bg-blue-50 animate-pulse" : "border-gray-200 bg-white"
+    }`}>
+      <Icon className={`w-5 h-5 ${error ? "text-red-500" : done ? "text-green-600" : active ? "text-blue-500" : "text-gray-400"}`} />
+      <span className="text-[11px] font-medium text-gray-900 text-center leading-tight">{label}</span>
+      {sublabel && <span className="text-[9px] text-gray-500 text-center truncate w-full">{sublabel}</span>}
+    </div>
+  );
+
+  const FlowArrow = ({ done, active }: { done?: boolean; active?: boolean }) => (
+    <div className="flex items-center mx-0.5">
+      <div className={`w-4 h-0.5 ${done ? "bg-green-400" : active ? "bg-blue-400" : "bg-gray-200"}`} />
+      <ChevronRight className={`w-3 h-3 -ml-0.5 ${done ? "text-green-400" : active ? "text-blue-400" : "text-gray-300"}`} />
+    </div>
+  );
+
+  // ---------------------------------------------------------------------------
+  // Render
+  // ---------------------------------------------------------------------------
+
+  if (loadingIntegrations) {
+    return (
+      <div className="p-8 text-center py-20">
+        <Loader2 className="w-6 h-6 text-gray-400 mx-auto mb-3 animate-spin" />
+        <p className="text-sm text-gray-500">Loading integrations...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="p-8">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-semibold text-gray-900">
-            Capture Genome
-          </h1>
-          <button
-            onClick={() => navigate("/genomes")}
-            className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-          >
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <button onClick={() => navigate("/genomes")} className="p-2 text-gray-400 hover:text-gray-600">
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900">Capture Genome</h1>
+              <p className="text-sm text-gray-500 mt-0.5">Extract an application genome from a connected integration</p>
+            </div>
+          </div>
+          <button onClick={() => navigate("/genomes")} className="p-2 text-gray-400 hover:text-gray-600">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Steps indicator */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            {steps.map((step, index) => (
-              <div key={step.id} className="flex items-center flex-1">
-                <div className="flex items-center">
-                  <div
-                    className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-colors ${
-                      currentStep > step.id
-                        ? "bg-green-500 border-green-500 text-white"
-                        : currentStep === step.id
-                        ? "border-gray-900 bg-gray-900 text-white"
-                        : "border-gray-300 text-gray-400"
-                    }`}
-                  >
-                    {currentStep > step.id ? (
-                      <Check className="w-4 h-4" />
-                    ) : (
-                      <span className="text-sm">{step.id}</span>
-                    )}
-                  </div>
-                  <span
-                    className={`ml-2 text-sm ${
-                      currentStep >= step.id
-                        ? "text-gray-900 font-medium"
-                        : "text-gray-400"
-                    }`}
-                  >
-                    {step.name}
-                  </span>
+        {/* Step indicator */}
+        <div className="flex items-center gap-1 mb-8">
+          {WIZARD_STEPS.map((s, i) => (
+            <div key={s.id} className="flex items-center">
+              <div className="flex items-center gap-2">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+                  step > s.id ? "bg-green-500 text-white" : step === s.id ? "bg-gray-900 text-white" : "bg-gray-200 text-gray-500"
+                }`}>
+                  {step > s.id ? <Check className="w-4 h-4" /> : s.id}
                 </div>
-                {index < steps.length - 1 && (
-                  <div
-                    className={`flex-1 h-0.5 mx-4 ${
-                      currentStep > step.id ? "bg-green-500" : "bg-gray-200"
-                    }`}
-                  />
-                )}
+                <span className={`text-sm ${step >= s.id ? "text-gray-900 font-medium" : "text-gray-400"}`}>{s.label}</span>
               </div>
-            ))}
-          </div>
+              {i < WIZARD_STEPS.length - 1 && <div className={`w-8 h-0.5 mx-2 ${step > s.id ? "bg-green-500" : "bg-gray-200"}`} />}
+            </div>
+          ))}
         </div>
 
-        {/* Form */}
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-          {/* Step 1: Select Source Platform */}
-          {currentStep === 1 && (
+          {/* ============================================================== */}
+          {/* STEP 1 — Source Integration                                    */}
+          {/* ============================================================== */}
+          {step === 1 && (
             <div className="space-y-4">
-              <p className="text-sm text-gray-600">
-                Select the source platform to extract the application genome
-                from.
-              </p>
+              <p className="text-sm text-gray-600">Select the source integration to extract from.</p>
               <div className="grid grid-cols-1 gap-3">
-                {platforms.map((platform) => {
-                  const Icon = platform.icon;
-                  const selected = selectedPlatform === platform.id;
+                {integrations.map((integ) => {
+                  const Icon = vendorIcons[integ.integration_type] || Globe;
+                  const sel = selectedIntegration?.id === integ.id;
                   return (
-                    <button
-                      key={platform.id}
-                      onClick={() => setSelectedPlatform(platform.id)}
-                      className={`flex items-center gap-4 p-4 rounded-lg border-2 transition-colors text-left ${
-                        selected
-                          ? "border-gray-900 bg-gray-50"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
-                    >
-                      <div
-                        className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                          selected
-                            ? "bg-gray-900 text-white"
-                            : "bg-gray-100 text-gray-600"
-                        }`}
-                      >
+                    <button key={integ.id} onClick={() => { setSelectedIntegration(integ); setSourceTestResult(null); setSelectedEndpoint(null); }}
+                      className={`flex items-center gap-4 p-4 rounded-lg border-2 text-left transition-colors ${sel ? "border-gray-900 bg-gray-50" : "border-gray-200 hover:border-gray-300"}`}>
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${sel ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`}>
                         <Icon className="w-5 h-5" />
                       </div>
-                      <span className="text-sm font-medium text-gray-900">
-                        {platform.name}
-                      </span>
-                      {selected && (
-                        <Check className="w-5 h-5 text-gray-900 ml-auto" />
-                      )}
+                      <div className="flex-1">
+                        <span className="text-sm font-medium text-gray-900 capitalize">{integ.name || integ.integration_type}</span>
+                        {integ.config?.instance_url && <p className="text-xs text-gray-500 font-mono mt-0.5">{integ.config.instance_url.replace("https://", "")}</p>}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {integ.enabled
+                          ? <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">Connected</span>
+                          : <span className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-medium">Not configured</span>}
+                        {sel && <Check className="w-5 h-5 text-gray-900" />}
+                      </div>
                     </button>
                   );
                 })}
               </div>
 
-              <div className="flex justify-end gap-3 pt-4">
-                <button
-                  onClick={() => navigate("/genomes")}
-                  className="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => setCurrentStep(2)}
-                  disabled={!canContinue(1)}
-                  className="px-4 py-2 text-sm bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
-                >
-                  Continue
-                </button>
-              </div>
+              {selectedIntegration && !selectedIntegration.enabled && (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                  <p className="text-sm text-amber-800">
+                    This integration is not configured.{" "}
+                    <button onClick={() => navigate(`/integrations/${selectedIntegration.id}`)} className="underline font-medium hover:text-amber-900">Configure it now</button>
+                  </p>
+                </div>
+              )}
+
+              {selectedIntegration?.enabled && (
+                <div className="flex items-center gap-3">
+                  <button onClick={testSourceConnection} disabled={testingSource}
+                    className="flex items-center gap-2 px-4 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50">
+                    {testingSource ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plug className="w-4 h-4" />}
+                    Test Connection
+                  </button>
+                  {sourceTestResult && (
+                    <span className={`text-xs flex items-center gap-1 ${sourceTestResult.ok ? "text-green-600" : "text-red-600"}`}>
+                      {sourceTestResult.ok ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertCircle className="w-3.5 h-3.5" />}
+                      {sourceTestResult.ok ? "Connection successful" : sourceTestResult.detail || "Failed"}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
-          {/* Step 2: Select Application Type */}
-          {currentStep === 2 && (
-            <div className="space-y-4">
-              <p className="text-sm text-gray-600">
-                What type of application are you extracting?
-              </p>
-              <div className="grid grid-cols-1 gap-3">
-                {applicationTypes.map((appType) => {
-                  const selected = selectedAppType === appType.id;
-                  return (
-                    <button
-                      key={appType.id}
-                      onClick={() => setSelectedAppType(appType.id)}
-                      className={`flex items-center justify-between p-4 rounded-lg border-2 transition-colors text-left ${
-                        selected
-                          ? "border-gray-900 bg-gray-50"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
-                    >
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {appType.name}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                          {appType.description}
-                        </p>
-                      </div>
-                      {selected && (
-                        <Check className="w-5 h-5 text-gray-900 flex-shrink-0" />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="flex justify-end gap-3 pt-4">
-                <button
-                  onClick={() => setCurrentStep(1)}
-                  className="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                >
-                  Back
-                </button>
-                <button
-                  onClick={() => setCurrentStep(3)}
-                  disabled={!canContinue(2)}
-                  className="px-4 py-2 text-sm bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
-                >
-                  Continue
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Configure Extraction */}
-          {currentStep === 3 && (
-            <div className="space-y-6">
-              <p className="text-sm text-gray-600">
-                Provide connection details and application metadata.
-              </p>
-
+          {/* ============================================================== */}
+          {/* STEP 2 — Extraction Target                                     */}
+          {/* ============================================================== */}
+          {step === 2 && selectedIntegration && (
+            <div className="space-y-5">
+              {/* Target type */}
               <div>
-                <label className="block text-sm text-gray-700 mb-2">
-                  Instance URL
-                </label>
-                <input
-                  type="text"
-                  name="instanceUrl"
-                  value={config.instanceUrl}
-                  onChange={handleConfigChange}
-                  placeholder="https://your-instance.service-now.com"
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent font-mono text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-700 mb-2">
-                  API Credentials
-                </label>
-                <input
-                  type="password"
-                  name="apiCredentials"
-                  value={config.apiCredentials}
-                  onChange={handleConfigChange}
-                  placeholder="API key or token"
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-700 mb-2">
-                  Application Name
-                </label>
-                <input
-                  type="text"
-                  name="applicationName"
-                  value={config.applicationName}
-                  onChange={handleConfigChange}
-                  placeholder="e.g., Hardware Request"
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-700 mb-2">
-                  Application Category
-                </label>
-                <select
-                  name="applicationCategory"
-                  value={config.applicationCategory}
-                  onChange={handleConfigChange}
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
-                >
-                  <option value="">Select category...</option>
-                  <option value="it_service_management">IT Service Management</option>
-                  <option value="identity_access">Identity & Access Management</option>
-                  <option value="hr_operations">HR Operations</option>
-                  <option value="finance">Finance & Procurement</option>
-                  <option value="customer_service">Customer Service</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-
-              <div className="flex justify-end gap-3 pt-4">
-                <button
-                  onClick={() => setCurrentStep(2)}
-                  className="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                >
-                  Back
-                </button>
-                <button
-                  onClick={() => setCurrentStep(4)}
-                  disabled={!canContinue(3)}
-                  className="px-4 py-2 text-sm bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
-                >
-                  Continue
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Step 4: Genome Preview */}
-          {currentStep === 4 && (
-            <div className="space-y-4">
-              <p className="text-sm text-gray-600">
-                Preview of the detected application genome structure.
-              </p>
-
-              <div className="grid grid-cols-2 gap-4">
-                {/* Objects */}
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-3 pb-3 border-b border-gray-200">
-                    <Package className="w-4 h-4 text-slate-600" />
-                    <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Objects ({mockPreview.objects.length})
-                    </h3>
-                  </div>
-                  <div className="space-y-1.5">
-                    {mockPreview.objects.map((obj, idx) => (
-                      <div
-                        key={idx}
-                        className="text-xs p-2 bg-slate-50 rounded font-mono text-slate-700"
-                      >
-                        {obj}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Workflows */}
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-3 pb-3 border-b border-gray-200">
-                    <WorkflowIcon className="w-4 h-4 text-purple-600" />
-                    <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Workflows ({mockPreview.workflows.length})
-                    </h3>
-                  </div>
-                  <div className="space-y-1.5">
-                    {mockPreview.workflows.map((wf, idx) => (
-                      <div
-                        key={idx}
-                        className="text-xs p-2 bg-purple-50 rounded font-mono text-purple-900"
-                      >
-                        {wf}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Fields */}
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-3 pb-3 border-b border-gray-200">
-                    <Grid3x3 className="w-4 h-4 text-blue-600" />
-                    <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Fields ({mockPreview.fields.length})
-                    </h3>
-                  </div>
-                  <div className="space-y-1.5">
-                    {mockPreview.fields.map((field, idx) => (
-                      <div
-                        key={idx}
-                        className="text-xs p-2 bg-blue-50 rounded font-mono text-blue-900"
-                      >
-                        {field}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Relationships */}
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-3 pb-3 border-b border-gray-200">
-                    <Share2 className="w-4 h-4 text-emerald-600" />
-                    <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Relationships ({mockPreview.relationships.length})
-                    </h3>
-                  </div>
-                  <div className="space-y-1.5">
-                    {mockPreview.relationships.map((rel, idx) => {
-                      const parts = rel.split(" → ");
-                      return (
-                        <div
-                          key={idx}
-                          className="p-2 bg-emerald-50 rounded"
-                        >
-                          <div className="flex items-center gap-1 text-xs text-emerald-900">
-                            <span className="font-mono">{parts[0]}</span>
-                            <ArrowRight className="w-3 h-3 text-emerald-600" />
-                            <span className="font-mono">{parts[1]}</span>
-                          </div>
+                <p className="text-sm text-gray-600 mb-3">What do you want to extract?</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {TARGET_TYPES.map((t) => {
+                    const Icon = t.icon;
+                    const sel = targetType === t.id;
+                    return (
+                      <button key={t.id} onClick={() => { setTargetType(t.id); setSelectedCatalog(""); setTargetName(""); }}
+                        className={`flex items-center gap-3 p-3 rounded-lg border-2 text-left transition-colors ${sel ? "border-gray-900 bg-gray-50" : "border-gray-200 hover:border-gray-300"}`}>
+                        <Icon className={`w-4 h-4 ${sel ? "text-gray-900" : "text-gray-400"}`} />
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{t.label}</p>
+                          <p className="text-[10px] text-gray-500">{t.description}</p>
                         </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Dynamic catalog discovery for Service Catalog */}
+              {targetType === "service_catalog" && (
+                <div>
+                  <p className="text-sm text-gray-600 mb-3">
+                    Select a catalog discovered from{" "}
+                    <span className="font-medium">{selectedIntegration.name || selectedIntegration.integration_type}</span>
+                  </p>
+                  {loadingCatalogs ? (
+                    <div className="flex items-center gap-2 py-4 text-gray-400">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span className="text-sm">Discovering catalogs from ServiceNow...</span>
+                    </div>
+                  ) : discoveredCatalogs.length > 0 ? (
+                    <div className="grid grid-cols-1 gap-2">
+                      {discoveredCatalogs.map((cat) => {
+                        const sel = selectedCatalog === cat;
+                        return (
+                          <button key={cat} onClick={() => { setSelectedCatalog(cat); setTargetName(cat); }}
+                            className={`flex items-center gap-3 p-3 rounded-lg border-2 text-left transition-colors ${
+                              sel ? "border-teal-600 bg-teal-50" : "border-gray-200 hover:border-gray-300"
+                            }`}>
+                            <Package className={`w-4 h-4 flex-shrink-0 ${sel ? "text-teal-600" : "text-gray-400"}`} />
+                            <span className="text-sm font-medium text-gray-900">{cat}</span>
+                            {sel && <Check className="w-4 h-4 text-teal-600 ml-auto flex-shrink-0" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                      <p className="text-xs text-amber-700">No catalogs discovered. Enter a target name manually below.</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Endpoint selection (for non-catalog types or as fallback) */}
+              {targetType !== "service_catalog" && (
+                <div>
+                  <p className="text-sm text-gray-600 mb-3">Select the web service endpoint to call.</p>
+                  <div className="grid grid-cols-1 gap-2">
+                    {selectedIntegration.endpoints.map((ep) => {
+                      const sel = selectedEndpoint?.id === ep.id;
+                      return (
+                        <button key={ep.id} onClick={() => { setSelectedEndpoint(ep); if (!targetName) setTargetName(ep.name); }}
+                          className={`flex items-center gap-3 p-3 rounded-lg border-2 text-left transition-colors ${sel ? "border-gray-900 bg-gray-50" : "border-gray-200 hover:border-gray-300"}`}>
+                          <Globe className={`w-4 h-4 flex-shrink-0 ${sel ? "text-gray-900" : "text-gray-400"}`} />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900">{ep.name}</p>
+                            <p className="text-xs text-gray-500 font-mono truncate">{ep.method} {ep.path}</p>
+                          </div>
+                          {sel && <Check className="w-4 h-4 text-gray-900 flex-shrink-0" />}
+                        </button>
                       );
                     })}
                   </div>
+
+                  {!addingEndpoint && (
+                    <button onClick={() => setAddingEndpoint(true)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mt-2">
+                      <Plus className="w-4 h-4" /> Add endpoint
+                    </button>
+                  )}
+
+                  {addingEndpoint && (
+                    <div className="border border-gray-200 rounded-lg p-4 mt-2 space-y-3">
+                      <input value={newEpName} onChange={(e) => setNewEpName(e.target.value)} placeholder="Endpoint name"
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" />
+                      <input value={newEpPath} onChange={(e) => setNewEpPath(e.target.value)} placeholder="Path (e.g. /api/now/table/...)"
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-mono" />
+                      <input value={newEpDesc} onChange={(e) => setNewEpDesc(e.target.value)} placeholder="Description (optional)"
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" />
+                      <div className="flex gap-2">
+                        <button onClick={addEndpoint} disabled={!newEpName || !newEpPath}
+                          className="px-4 py-2 text-sm bg-gray-900 text-white rounded-lg disabled:opacity-50">Add</button>
+                        <button onClick={() => setAddingEndpoint(false)}
+                          className="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg">Cancel</button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Target name (auto-filled from catalog selection, editable) */}
+              <div>
+                <label className="text-sm text-gray-600 block mb-2">Target name</label>
+                <input value={targetName} onChange={(e) => setTargetName(e.target.value)}
+                  placeholder={targetType === "service_catalog" ? "Select a catalog above or type a name" : "e.g. Application name"}
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" />
+              </div>
+
+              {/* Scan depth */}
+              <div>
+                <p className="text-sm text-gray-600 mb-2">Scan depth</p>
+                <div className="flex gap-2">
+                  {SCAN_DEPTHS.map((d) => (
+                    <button key={d.id} onClick={() => setScanDepth(d.id)}
+                      className={`flex-1 p-3 rounded-lg border-2 text-center transition-colors ${scanDepth === d.id ? "border-gray-900 bg-gray-50" : "border-gray-200 hover:border-gray-300"}`}>
+                      <p className="text-sm font-medium text-gray-900">{d.label}</p>
+                      <p className="text-[10px] text-gray-500 mt-0.5">{d.description}</p>
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4">
-                <button
-                  onClick={() => setCurrentStep(3)}
-                  className="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                >
-                  Back
-                </button>
-                <button
-                  onClick={() => setCurrentStep(5)}
-                  className="px-4 py-2 text-sm bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
-                >
-                  Continue
-                </button>
-              </div>
+              {/* Payload preview */}
+              {targetName && (
+                <div>
+                  <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wide mb-2">Extraction Payload</p>
+                  <div className="bg-gray-900 rounded-lg p-4 overflow-auto">
+                    <pre className="text-xs font-mono text-emerald-400 whitespace-pre">{JSON.stringify({
+                      metadata: {
+                        tenant: TENANT,
+                        vendor: selectedIntegration.integration_type,
+                        application: targetType,
+                      },
+                      target: {
+                        type: targetType === "service_catalog" ? "catalog" : targetType,
+                        name: targetName,
+                      },
+                      scan: {
+                        depth: scanDepth,
+                      },
+                    }, null, 2)}</pre>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
-          {/* Step 5: Confirm Capture */}
-          {currentStep === 5 && (
-            <div className="space-y-4">
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <h3 className="text-sm font-medium text-green-900 mb-2">
-                  Ready to Capture
-                </h3>
-                <p className="text-sm text-green-700">
-                  The genome for{" "}
-                  <strong>{config.applicationName || "this application"}</strong>{" "}
-                  will be extracted from{" "}
-                  <strong>
-                    {platforms.find((p) => p.id === selectedPlatform)?.name ||
-                      "the selected platform"}
-                  </strong>
-                  .
-                </p>
+          {/* ============================================================== */}
+          {/* STEP 3 — Genome Scan (Pass 1)                                  */}
+          {/* ============================================================== */}
+          {step === 3 && selectedIntegration && (selectedEndpoint || targetType === "service_catalog") && (
+            <div className="space-y-6">
+              <p className="text-sm text-gray-600">
+                Discovery pass — extract genome structure from <strong>{selectedIntegration.name || selectedIntegration.integration_type}</strong> via <strong>{selectedEndpoint?.name || targetName || "self-deploy extractor"}</strong>.
+              </p>
+
+              {/* Pipeline flow diagram */}
+              <div className="flex items-center justify-center py-3 overflow-x-auto">
+                <FlowNode icon={vendorIcons[selectedIntegration.integration_type] || Globe}
+                  label={selectedIntegration.name || selectedIntegration.integration_type}
+                  sublabel={selectedIntegration.config?.instance_url?.replace("https://", "")}
+                  active={scanPipeline[0].status === "running"} done={scanPipeline[0].status === "done"} error={scanPipeline[0].status === "error"} />
+                <FlowArrow done={scanPipeline[1].status === "done"} active={scanPipeline[1].status === "running"} />
+                <FlowNode icon={Globe} label="Vendor Adapter" sublabel={selectedEndpoint?.path || `/extract/${targetName.toLowerCase().replace(/ /g, "_")}`}
+                  active={scanPipeline[1].status === "running"} done={scanPipeline[1].status === "done"} error={scanPipeline[1].status === "error"} />
+                <FlowArrow done={scanPipeline[2].status === "done"} active={scanPipeline[2].status === "running"} />
+                <FlowNode icon={Search} label="Genome Scan Engine" sublabel={`depth: ${scanDepth}`}
+                  active={scanPipeline[2].status === "running"} done={scanPipeline[2].status === "done"} error={scanPipeline[2].status === "error"} />
+                <FlowArrow done={scanPipeline[3].status === "done"} active={scanPipeline[3].status === "running"} />
+                <FlowNode icon={Dna} label="Genome Builder"
+                  active={scanPipeline[3].status === "running"} done={scanPipeline[3].status === "done"} error={scanPipeline[3].status === "error"} />
               </div>
 
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500">Platform</span>
-                  <span className="font-medium text-gray-900">
-                    {platforms.find((p) => p.id === selectedPlatform)?.name}
-                  </span>
+              {/* Pipeline status */}
+              <PipelineStatus steps={scanPipeline} />
+
+              {/* Scan button */}
+              {!scanResult && (
+                <div className="flex justify-center">
+                  <button onClick={runScan} disabled={scanning}
+                    className="flex items-center gap-2 px-6 py-2.5 text-sm bg-gray-900 text-white rounded-lg hover:bg-gray-800 font-semibold disabled:opacity-50">
+                    {scanning ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                    {scanning ? "Scanning..." : "Run Genome Scan"}
+                  </button>
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500">Application Type</span>
-                  <span className="font-medium text-gray-900">
-                    {applicationTypes.find((t) => t.id === selectedAppType)?.name}
-                  </span>
+              )}
+
+              {/* Scan result summary */}
+              {scanResult?.status === "ok" && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <p className="text-sm text-green-800 font-medium">Genome scan complete</p>
+                  <div className="flex gap-6 mt-2 text-xs text-green-700">
+                    <span>Objects: {scanResult.genome_document?.objects?.length || 0}</span>
+                    <span>Workflows: {scanResult.genome_document?.workflows?.length || 0}</span>
+                    <span>Fields: {scanResult.genome_document?.fields?.length || 0}</span>
+                    <span>Relationships: {scanResult.genome_document?.relationships?.length || 0}</span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500">Instance</span>
-                  <span className="font-mono text-xs text-gray-700">
-                    {config.instanceUrl || "—"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500">Application</span>
-                  <span className="font-medium text-gray-900">
-                    {config.applicationName || "—"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500">Detected Objects</span>
-                  <span className="font-medium text-gray-900">
-                    {mockPreview.objects.length}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500">Detected Workflows</span>
-                  <span className="font-medium text-gray-900">
-                    {mockPreview.workflows.length}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500">Detected Fields</span>
-                  <span className="font-medium text-gray-900">
-                    {mockPreview.fields.length}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500">Detected Relationships</span>
-                  <span className="font-medium text-gray-900">
-                    {mockPreview.relationships.length}
-                  </span>
-                </div>
+              )}
+            </div>
+          )}
+
+          {/* ============================================================== */}
+          {/* STEP 4 — Expand & Commit (Pass 2)                              */}
+          {/* ============================================================== */}
+          {step === 4 && selectedIntegration && scanResult && (
+            <div className="space-y-6">
+              <p className="text-sm text-gray-600">
+                Expand configuration and commit genome to GitHub.
+              </p>
+
+              {/* Pipeline flow diagram */}
+              <div className="flex items-center justify-center py-3 overflow-x-auto">
+                <FlowNode icon={Globe} label="Vendor Adapter" sublabel="Expand config"
+                  active={commitPipeline[0].status === "running"} done={commitPipeline[0].status === "done"} error={commitPipeline[0].status === "error"} />
+                <FlowArrow done={commitPipeline[1].status === "done"} active={commitPipeline[1].status === "running"} />
+                <FlowNode icon={Dna} label="Genome Builder" sublabel="YAML + JSON"
+                  active={commitPipeline[1].status === "running"} done={commitPipeline[1].status === "done"} error={commitPipeline[1].status === "error"} />
+                <FlowArrow done={commitPipeline[2].status === "done"} active={commitPipeline[2].status === "running"} />
+                <FlowNode icon={GitBranch} label="GitHub Repo" sublabel="Commit"
+                  active={commitPipeline[2].status === "running"} done={commitPipeline[2].status === "done"} error={commitPipeline[2].status === "error"} />
               </div>
 
-              <div className="flex justify-end gap-3 pt-4">
-                <button
-                  onClick={() => setCurrentStep(4)}
-                  className="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                >
-                  Back
+              {/* Pipeline status */}
+              <PipelineStatus steps={commitPipeline} />
+
+              {/* Action buttons */}
+              {!commitDone && (
+                <div className="flex justify-center gap-3">
+                  <button onClick={() => navigate("/genomes")}
+                    className="px-6 py-2.5 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium">
+                    Cancel
+                  </button>
+                  <button onClick={runExpandAndCommit} disabled={committing}
+                    className="flex items-center gap-2 px-6 py-2.5 text-sm bg-green-600 text-white rounded-lg hover:bg-green-500 font-semibold disabled:opacity-50">
+                    {committing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+                    {committing ? "Executing..." : "Do It!"}
+                  </button>
+                </div>
+              )}
+
+              {/* GitHub result */}
+              {commitResult?.status === "ok" && commitResult.repo_url && (
+                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2">
+                    <GitBranch className="w-4 h-4 text-indigo-600" />
+                    <a href={commitResult.repo_url} target="_blank" rel="noopener noreferrer"
+                      className="text-sm text-indigo-700 underline hover:text-indigo-900 font-medium">
+                      {commitResult.repo_url.replace("https://github.com/", "")}
+                    </a>
+                    <span className="text-xs text-indigo-500">— {commitResult.files_pushed?.length || 0} file(s)</span>
+                  </div>
+                </div>
+              )}
+
+              {commitDone && (
+                <div className="flex justify-center">
+                  <button onClick={() => navigate("/genomes")}
+                    className="flex items-center gap-2 px-6 py-2.5 text-sm bg-gray-900 text-white rounded-lg hover:bg-gray-800 font-medium">
+                    <Dna className="w-4 h-4" /> View Genomes
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ============================================================== */}
+          {/* Navigation footer                                              */}
+          {/* ============================================================== */}
+          {step < 4 && (
+            <div className="flex justify-between items-center pt-6 mt-6 border-t border-gray-100">
+              <button onClick={() => step === 1 ? navigate("/genomes") : setStep(step - 1)}
+                className="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">
+                {step === 1 ? "Cancel" : "Back"}
+              </button>
+              {step < 3 && (
+                <button onClick={() => setStep(step + 1)} disabled={!canAdvance()}
+                  className="flex items-center gap-2 px-4 py-2 text-sm bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50">
+                  Next <ArrowRight className="w-4 h-4" />
                 </button>
-                <button
-                  onClick={() => navigate("/genomes")}
-                  className="flex items-center gap-2 px-4 py-2 text-sm bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
-                >
-                  <Dna className="w-4 h-4" />
-                  Capture Genome
+              )}
+              {step === 3 && scanResult?.status === "ok" && (
+                <button onClick={() => setStep(4)}
+                  className="flex items-center gap-2 px-4 py-2 text-sm bg-gray-900 text-white rounded-lg hover:bg-gray-800">
+                  Expand & Commit <ArrowRight className="w-4 h-4" />
                 </button>
-              </div>
+              )}
             </div>
           )}
         </div>

@@ -1288,6 +1288,46 @@ export interface GenomeArtifactResponse {
   created_at: string;
 }
 
+export interface GenomeFieldResponse {
+  id: string;
+  name: string;
+  object_name: string;
+  type: string;
+  required: boolean;
+  reference: string | null;
+  metadata: Record<string, unknown>;
+}
+
+export interface GenomeRelationshipResponse {
+  id: string;
+  source_object: string;
+  target_object: string;
+  relationship_type: string;
+  cardinality: string;
+}
+
+export interface GenomeWorkflowResponse {
+  id: string;
+  name: string;
+  trigger: string;
+  steps: string[];
+}
+
+export interface GenomeObjectResponse {
+  id: string;
+  name: string;
+  type: string;
+  fields: GenomeFieldResponse[];
+  workflows: string[];
+  relationships: string[];
+}
+
+export interface GenomeGraphResponse {
+  objects: GenomeObjectResponse[];
+  workflows: GenomeWorkflowResponse[];
+  relationships: GenomeRelationshipResponse[];
+}
+
 export interface GenomeResponse {
   id: string;
   tenant_id: string;
@@ -1303,6 +1343,7 @@ export interface GenomeResponse {
   operational_cost: number;
   captured_date: string;
   genome_document: GenomeDocumentResponse;
+  genome_graph?: GenomeGraphResponse | null;
   source_signature: string;
   created_at: string;
   updated_at: string;
@@ -1318,4 +1359,71 @@ export function getGenome(
   genomeId: string,
 ): Promise<GenomeResponse> {
   return request(`/admin/${tenantId}/genomes/${genomeId}`);
+}
+
+export function getGenomeGraph(
+  tenantId: string,
+  genomeId: string,
+): Promise<{ status: string; graph: GenomeGraphResponse }> {
+  return request(`/admin/${tenantId}/genomes/${genomeId}/graph`);
+}
+
+// --- Genome Discovery ---
+
+export interface GenomeCandidateResponse {
+  id: string;
+  name: string;
+  type: string;
+  integration_id: string;
+  integration_type: string;
+  instance_url: string;
+  endpoint_name: string;
+  metadata: Record<string, unknown>;
+}
+
+export interface DiscoveryResultResponse {
+  integration_id: string;
+  integration_type: string;
+  integration_name: string;
+  instance_url: string;
+  enabled: boolean;
+  candidates: GenomeCandidateResponse[];
+  error: string;
+}
+
+export function discoverGenomeCandidates(
+  tenantId: string,
+): Promise<DiscoveryResultResponse[]> {
+  return request(`/admin/${tenantId}/genomes/discover/candidates`);
+}
+
+export interface CaptureGenomeResult {
+  status: string;
+  message?: string;
+  extraction_id?: string;
+  error?: string;
+  github?: {
+    status: string;
+    repo_url?: string;
+    commit_hash?: string;
+    files_pushed?: string[];
+    error?: string;
+  };
+}
+
+export function captureGenomeCandidate(
+  tenantId: string,
+  candidateId: string,
+  candidateName: string,
+  candidateType: string,
+): Promise<CaptureGenomeResult> {
+  return request(`/admin/${tenantId}/genomes/discover/capture`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      candidate_id: candidateId,
+      candidate_name: candidateName,
+      candidate_type: candidateType,
+    }),
+  });
 }

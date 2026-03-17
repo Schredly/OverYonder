@@ -24,7 +24,12 @@ import {
   FileJson,
   Check,
 } from "lucide-react";
-import { getGenome, type GenomeResponse } from "../services/api";
+import {
+  getGenome,
+  getGenomeGraph,
+  type GenomeResponse,
+  type GenomeGraphResponse,
+} from "../services/api";
 
 const vendorIcons: Record<string, typeof Server> = {
   ServiceNow: Server,
@@ -57,6 +62,9 @@ export default function GenomeDetailPage() {
   const [artifactCopied, setArtifactCopied] = useState(false);
   const [genome, setGenome] = useState<GenomeResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [graph, setGraph] = useState<GenomeGraphResponse | null>(null);
+  const [showGraph, setShowGraph] = useState(true);
+  const [expandedObject, setExpandedObject] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -64,6 +72,9 @@ export default function GenomeDetailPage() {
       .then(setGenome)
       .catch(() => setGenome(null))
       .finally(() => setLoading(false));
+    getGenomeGraph("acme", id)
+      .then((res) => setGraph(res.graph))
+      .catch(() => setGraph(null));
   }, [id]);
 
   if (loading) {
@@ -375,7 +386,249 @@ export default function GenomeDetailPage() {
           </div>
         </div>
 
-        {/* Section 4 - Genome Artifact */}
+        {/* Section 4 - Genome Graph (structured view) */}
+        {graph && (
+          <div className="mb-6">
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+              <button
+                onClick={() => setShowGraph(!showGraph)}
+                className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <Share2 className="w-5 h-5 text-indigo-600" />
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    Genome Graph
+                  </h2>
+                  <span className="text-xs font-mono bg-indigo-50 px-2 py-0.5 rounded text-indigo-600">
+                    {graph.objects.length} objects &middot; {graph.relationships.length} relationships &middot; {graph.workflows.length} workflows
+                  </span>
+                </div>
+                {showGraph ? (
+                  <ChevronUp className="w-5 h-5 text-gray-600" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-gray-600" />
+                )}
+              </button>
+              {showGraph && (
+                <div className="border-t border-gray-200 p-4 space-y-4">
+                  {/* Objects with fields */}
+                  <div>
+                    <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
+                      Objects &amp; Fields
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {graph.objects.map((obj) => {
+                        const isExpanded = expandedObject === obj.id;
+                        const objRels = graph.relationships.filter(
+                          (r) => obj.relationships.includes(r.id)
+                        );
+                        return (
+                          <div
+                            key={obj.id}
+                            className={`border rounded-lg transition-all ${
+                              obj.type === "virtual"
+                                ? "border-amber-200 bg-amber-50/50"
+                                : "border-gray-200 bg-white"
+                            }`}
+                          >
+                            <button
+                              onClick={() =>
+                                setExpandedObject(isExpanded ? null : obj.id)
+                              }
+                              className="w-full flex items-center justify-between p-3 text-left hover:bg-gray-50 transition-colors rounded-t-lg"
+                            >
+                              <div className="flex items-center gap-2 min-w-0">
+                                <Package className={`w-3.5 h-3.5 flex-shrink-0 ${
+                                  obj.type === "virtual" ? "text-amber-500" : "text-indigo-500"
+                                }`} />
+                                <span className="text-sm font-medium text-gray-900 truncate">
+                                  {obj.name}
+                                </span>
+                                <span className="text-[10px] font-mono text-gray-400 flex-shrink-0">
+                                  {obj.type}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
+                                {obj.fields.length > 0 && (
+                                  <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">
+                                    {obj.fields.length}f
+                                  </span>
+                                )}
+                                {obj.workflows.length > 0 && (
+                                  <span className="text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">
+                                    {obj.workflows.length}w
+                                  </span>
+                                )}
+                                {obj.relationships.length > 0 && (
+                                  <span className="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">
+                                    {obj.relationships.length}r
+                                  </span>
+                                )}
+                                {isExpanded ? (
+                                  <ChevronUp className="w-3.5 h-3.5 text-gray-400" />
+                                ) : (
+                                  <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+                                )}
+                              </div>
+                            </button>
+                            {isExpanded && (
+                              <div className="border-t border-gray-100 p-3 space-y-3">
+                                {obj.fields.length > 0 && (
+                                  <div>
+                                    <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wide mb-1.5">
+                                      Fields
+                                    </p>
+                                    <div className="space-y-1">
+                                      {obj.fields.map((f) => (
+                                        <div
+                                          key={f.id}
+                                          className="flex items-center gap-2 text-xs"
+                                        >
+                                          <Grid3x3 className="w-3 h-3 text-blue-400 flex-shrink-0" />
+                                          <span className="font-mono text-gray-700">
+                                            {f.name}
+                                          </span>
+                                          {f.type && (
+                                            <span className="text-[10px] text-gray-400">
+                                              {f.type}
+                                            </span>
+                                          )}
+                                          {f.required && (
+                                            <span className="text-[10px] text-red-500 font-medium">
+                                              req
+                                            </span>
+                                          )}
+                                          {f.reference && (
+                                            <span className="text-[10px] text-indigo-500">
+                                              &rarr; {f.reference}
+                                            </span>
+                                          )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                                {obj.workflows.length > 0 && (
+                                  <div>
+                                    <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wide mb-1.5">
+                                      Workflows
+                                    </p>
+                                    <div className="space-y-1">
+                                      {obj.workflows.map((wfId) => {
+                                        const wf = graph.workflows.find(
+                                          (w) => w.id === wfId
+                                        );
+                                        return (
+                                          <div
+                                            key={wfId}
+                                            className="flex items-center gap-2 text-xs"
+                                          >
+                                            <WorkflowIcon className="w-3 h-3 text-purple-400 flex-shrink-0" />
+                                            <span className="font-mono text-gray-700">
+                                              {wf ? wf.name : wfId}
+                                            </span>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                )}
+                                {objRels.length > 0 && (
+                                  <div>
+                                    <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wide mb-1.5">
+                                      Relationships
+                                    </p>
+                                    <div className="space-y-1">
+                                      {objRels.map((r) => (
+                                        <div
+                                          key={r.id}
+                                          className="flex items-center gap-1.5 text-xs"
+                                        >
+                                          <Share2 className="w-3 h-3 text-emerald-400 flex-shrink-0" />
+                                          <span className="font-mono text-gray-600">
+                                            {r.source_object}
+                                          </span>
+                                          <ArrowRight className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                                          <span className="font-mono text-gray-600">
+                                            {r.target_object}
+                                          </span>
+                                          <span className="text-[10px] text-gray-400">
+                                            {r.cardinality}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Relationship summary */}
+                  {graph.relationships.length > 0 && (
+                    <div>
+                      <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
+                        All Relationships
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                        {graph.relationships.map((rel) => (
+                          <div
+                            key={rel.id}
+                            className="flex items-center gap-2 p-2 bg-emerald-50 rounded-lg text-xs"
+                          >
+                            <span className="font-mono text-emerald-900 truncate">
+                              {rel.source_object}
+                            </span>
+                            <ArrowRight className="w-3 h-3 text-emerald-500 flex-shrink-0" />
+                            <span className="font-mono text-emerald-900 truncate">
+                              {rel.target_object}
+                            </span>
+                            <span className="text-[10px] text-emerald-600 bg-emerald-100 px-1.5 py-0.5 rounded flex-shrink-0">
+                              {rel.cardinality}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Workflow list */}
+                  {graph.workflows.length > 0 && (
+                    <div>
+                      <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
+                        All Workflows
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                        {graph.workflows.map((wf) => (
+                          <div
+                            key={wf.id}
+                            className="flex items-center gap-2 p-2 bg-purple-50 rounded-lg text-xs"
+                          >
+                            <WorkflowIcon className="w-3.5 h-3.5 text-purple-500 flex-shrink-0" />
+                            <span className="font-mono text-purple-900 truncate">
+                              {wf.name}
+                            </span>
+                            {wf.trigger && (
+                              <span className="text-[10px] text-purple-600 bg-purple-100 px-1.5 py-0.5 rounded flex-shrink-0">
+                                {wf.trigger}
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Section 5 - Genome Artifact */}
         {genome.artifact && (
           <div className="mb-6">
             <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">

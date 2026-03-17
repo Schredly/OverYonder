@@ -8,7 +8,12 @@ No AI/LLM calls — pure deterministic parsing.
 
 from __future__ import annotations
 
+import logging
+
 from models import GenomeDocument
+from services.genome_graph_builder import build_graph_from_document
+
+logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
@@ -37,8 +42,16 @@ def build_genome_from_extraction(payload: dict, vendor: str) -> dict:
         relationships=result["relationships"],
     )
 
+    # Build the structured graph from the flat document (non-breaking)
+    try:
+        graph = build_graph_from_document(doc)
+    except Exception:
+        logger.exception("GenomeGraph generation failed — continuing with GenomeDocument only")
+        graph = None
+
     return {
         "genome_document": doc,
+        "genome_graph": graph,
         "object_count": len(doc.objects),
         "workflow_count": len(doc.workflows),
     }

@@ -86,6 +86,7 @@ async def _process_one(extraction, app) -> None:
         # Build genome document
         result = build_genome_from_extraction(extraction.payload, extraction.vendor)
         genome_doc = result["genome_document"]
+        genome_graph = result.get("genome_graph")
         object_count = result["object_count"]
         workflow_count = result["workflow_count"]
 
@@ -103,6 +104,7 @@ async def _process_one(extraction, app) -> None:
             workflow_count=workflow_count,
             captured_date=date.today().isoformat(),
             genome_document=genome_doc,
+            genome_graph=genome_graph,
             source_signature=ext_id,
         )
         await app.state.genome_store.create(genome)

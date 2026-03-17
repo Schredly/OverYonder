@@ -867,6 +867,9 @@ class LLMUsageEvent(BaseModel):
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
+from genome_graph import GenomeGraph
+
+
 # --- Application Genomes ---
 
 
@@ -892,6 +895,7 @@ class ApplicationGenome(BaseModel):
     operational_cost: float = 0.0
     captured_date: str = ""          # ISO date string
     genome_document: GenomeDocument = Field(default_factory=GenomeDocument)
+    genome_graph: Optional[GenomeGraph] = None
     source_signature: str = ""
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
