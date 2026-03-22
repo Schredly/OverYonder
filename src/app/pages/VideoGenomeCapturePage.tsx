@@ -58,7 +58,10 @@ export default function VideoGenomeCapturePage() {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Step 2: Extract
+  // Step 2: Extract — taxonomy fields
+  const [vendor, setVendor] = useState("");
+  const [productArea, setProductArea] = useState("");
+  const [module, setModule] = useState("");
   const [userNotes, setUserNotes] = useState("");
   const [applicationName, setApplicationName] = useState("");
   const [extracting, setExtracting] = useState(false);
@@ -155,7 +158,7 @@ export default function VideoGenomeCapturePage() {
       const res = await fetch("/api/video-genome/extract", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ video_id: vid, user_notes: userNotes }),
+        body: JSON.stringify({ video_id: vid, user_notes: userNotes, vendor, product_area: productArea, module }),
       });
 
       if (!res.ok) {
@@ -251,7 +254,7 @@ export default function VideoGenomeCapturePage() {
       const res = await fetch("/api/video-genome/extract", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ video_id: videoId, user_notes: notes }),
+        body: JSON.stringify({ video_id: videoId, user_notes: notes, vendor, product_area: productArea, module }),
       });
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       const data = await res.json();
@@ -305,6 +308,9 @@ export default function VideoGenomeCapturePage() {
           video_id: videoId,
           genome: genomeResult,
           application_name: applicationName || genomeResult.application_name || "app",
+          vendor,
+          product_area: productArea,
+          module,
         }),
       });
       const data = await res.json();
@@ -321,7 +327,13 @@ export default function VideoGenomeCapturePage() {
   const buildGenomeFiles = (genome: any, appName: string, designTokens?: any, uiAnalysis?: any[]): GenomeFile[] => {
     const vendor = genome.vendor || "unknown";
     const slug = (appName || "app").toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
-    const base = `genomes/tenants/acme/vendors/${vendor}/${slug}`;
+    const vendorSlug = (vendor || genome.vendor || "unknown").toLowerCase().replace(/\s+/g, "_");
+    const paSlug = productArea ? productArea.toLowerCase().replace(/\s+/g, "_") : "";
+    const modSlug = module ? module.toLowerCase().replace(/\s+/g, "_") : "";
+    const pathParts = [`genomes/tenants/acme/vendors/${vendorSlug}`];
+    if (paSlug) pathParts.push(paSlug);
+    pathParts.push(modSlug || slug);
+    const base = pathParts.join("/");
     const files: GenomeFile[] = [];
 
     files.push({ path: `${base}/genome.yaml`, content: toYaml({
@@ -462,14 +474,34 @@ export default function VideoGenomeCapturePage() {
               </h2>
 
               <div className="space-y-3 mb-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs text-gray-600 mb-1 block">Vendor <span className="text-red-400">*</span></label>
+                    <input type="text" value={vendor} onChange={(e) => setVendor(e.target.value)}
+                      placeholder="e.g. ServiceNow"
+                      className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-300 outline-none" />
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-600 mb-1 block">Product Area <span className="text-red-400">*</span></label>
+                    <input type="text" value={productArea} onChange={(e) => setProductArea(e.target.value)}
+                      placeholder="e.g. Service Catalog"
+                      className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-300 outline-none" />
+                  </div>
+                </div>
                 <div>
-                  <label className="text-xs text-gray-600 mb-1 block">Application Name (optional)</label>
+                  <label className="text-xs text-gray-600 mb-1 block">Module <span className="text-gray-400 font-normal">(optional — depends on product)</span></label>
+                  <input type="text" value={module} onChange={(e) => setModule(e.target.value)}
+                    placeholder="e.g. Technical Catalog, HR Catalog"
+                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-300 outline-none" />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-600 mb-1 block">Application Name <span className="text-gray-400 font-normal">(optional)</span></label>
                   <input type="text" value={applicationName} onChange={(e) => setApplicationName(e.target.value)}
                     placeholder="Auto-detected from video, or enter here"
                     className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-300 outline-none" />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-600 mb-1 block">Context notes (optional)</label>
+                  <label className="text-xs text-gray-600 mb-1 block">Context notes <span className="text-gray-400 font-normal">(optional)</span></label>
                   <textarea value={userNotes} onChange={(e) => setUserNotes(e.target.value)}
                     placeholder="e.g. This is ServiceNow ITSM showing incident management workflows..."
                     className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-200 focus:border-orange-300 outline-none resize-none" rows={2} />
@@ -524,7 +556,7 @@ export default function VideoGenomeCapturePage() {
                   </div>
                 </div>
               ) : (
-                <button onClick={runExtraction} disabled={refining}
+                <button onClick={runExtraction} disabled={refining || !vendor.trim() || !productArea.trim()}
                   className="w-full py-2.5 bg-orange-500 text-white text-sm font-medium rounded-xl hover:bg-orange-600 disabled:opacity-50 transition-colors flex items-center justify-center gap-2">
                   <Brain className="w-4 h-4" /> Run Multi-Agent Extraction
                 </button>

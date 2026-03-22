@@ -115,6 +115,9 @@ async def upload_video(file: UploadFile = File(...)):
 class ExtractRequest(BaseModel):
     video_id: str
     user_notes: str = ""
+    vendor: str = ""
+    product_area: str = ""
+    module: str = ""
 
 
 def _sse_event(data: dict) -> str:
@@ -153,6 +156,9 @@ async def extract_genome(body: ExtractRequest, request: Request):
         video_id=body.video_id,
         video_filename=video_filename,
         video_size_mb=round(video_size_mb, 2),
+        vendor=body.vendor,
+        product_area=body.product_area,
+        module=body.module,
         status="processing",
     )
     await request.app.state.video_genome_store.create(extraction)
@@ -222,12 +228,13 @@ async def extract_genome(body: ExtractRequest, request: Request):
                 return
 
             # Update extraction record with results
+            # Prefer user-supplied vendor/product_area over LLM-detected
             genome = result.get("genome", {})
             await app.state.video_genome_store.update(
                 extraction_id,
                 status="completed",
                 application_name=genome.get("application_name", ""),
-                vendor=genome.get("vendor", ""),
+                vendor=body.vendor or genome.get("vendor", ""),
                 genome=genome,
                 ui_analysis=result.get("ui_analysis"),
                 audio_transcript=result.get("audio_transcript"),
@@ -290,6 +297,8 @@ async def list_extractions(
             "video_size_mb": e.video_size_mb,
             "application_name": e.application_name,
             "vendor": e.vendor,
+            "product_area": e.product_area,
+            "module": e.module,
             "status": e.status,
             "frame_count": e.frame_count,
             "unique_screens": e.unique_screens,
@@ -319,6 +328,8 @@ async def get_extraction(extraction_id: str, request: Request):
         "video_size_mb": e.video_size_mb,
         "application_name": e.application_name,
         "vendor": e.vendor,
+        "product_area": e.product_area,
+        "module": e.module,
         "status": e.status,
         "agent_progress": e.agent_progress,
         "genome": e.genome,
@@ -355,6 +366,9 @@ class CommitRequest(BaseModel):
     video_id: str
     genome: dict
     application_name: str = ""
+    vendor: str = ""
+    product_area: str = ""
+    module: str = ""
 
 
 @router.post("/commit")
@@ -362,7 +376,7 @@ async def commit_genome_to_github(body: CommitRequest, request: Request):
     """Commit the extracted genome to the configured GitHub repository."""
     genome = body.genome
     app_name = body.application_name or genome.get("application_name", "") or "unknown_app"
-    vendor = genome.get("vendor", "") or "unknown"
+    vendor = body.vendor or genome.get("vendor", "") or "unknown"
     genome_doc = genome.get("genome_document", {})
 
     try:
@@ -377,6 +391,8 @@ async def commit_genome_to_github(body: CommitRequest, request: Request):
             genome_graph=None,
             raw_vendor_payload={"source": "video", "video_id": body.video_id},
             app=request.app,
+            product_area=body.product_area,
+            module=body.module,
         )
     except Exception as exc:
         return {"status": "error", "error": f"GitHub commit failed: {exc}"}

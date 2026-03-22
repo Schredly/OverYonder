@@ -117,9 +117,15 @@ export default function VideoGenomeDetailPage() {
 
   const buildGenomeFiles = (genome: any, designTokens?: any, uiAnalysis?: any[]): GenomeFile[] => {
     const appName = genome.application_name || "app";
-    const vendor = genome.vendor || "unknown";
+    const ext = extraction || {};
+    const vendorSlug = (ext.vendor || genome.vendor || "unknown").toLowerCase().replace(/\s+/g, "_");
     const slug = appName.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
-    const base = `genomes/tenants/acme/vendors/${vendor}/${slug}`;
+    const paSlug = ext.product_area ? ext.product_area.toLowerCase().replace(/\s+/g, "_") : "";
+    const modSlug = ext.module ? ext.module.toLowerCase().replace(/\s+/g, "_") : "";
+    const pathParts = [`genomes/tenants/acme/vendors/${vendorSlug}`];
+    if (paSlug) pathParts.push(paSlug);
+    pathParts.push(modSlug || slug);
+    const base = pathParts.join("/");
     const files: GenomeFile[] = [];
 
     files.push({ path: `${base}/genome.yaml`, content: toYaml({

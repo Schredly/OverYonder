@@ -23,6 +23,8 @@ interface VideoExtraction {
   video_size_mb: number;
   application_name: string;
   vendor: string;
+  product_area: string;
+  module: string;
   status: string;
   frame_count: number;
   unique_screens: number;
@@ -164,6 +166,7 @@ export default function VideoGenomePage() {
                     </div>
                     <div className="flex items-center gap-4 text-xs text-gray-500 mb-2">
                       {ext.vendor && <span className="font-medium text-gray-600">{ext.vendor}</span>}
+                      {ext.product_area && <span className="text-gray-500">{ext.product_area}{ext.module ? ` / ${ext.module}` : ""}</span>}
                       <span>{ext.video_filename}</span>
                       <span>{ext.video_size_mb?.toFixed(1)} MB</span>
                       <span>{new Date(ext.created_at).toLocaleDateString()} {new Date(ext.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>

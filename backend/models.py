@@ -976,6 +976,8 @@ class VideoGenomeExtraction(BaseModel):
     video_size_mb: float = 0.0
     application_name: str = ""
     vendor: str = ""
+    product_area: str = ""           # e.g. "Service Catalog"
+    module: str = ""                 # e.g. "Technical Catalog" (optional)
     status: str = "pending"          # pending | processing | completed | error
     agent_progress: dict = Field(default_factory=dict)
     genome: Optional[dict] = None

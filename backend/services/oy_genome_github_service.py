@@ -9,7 +9,7 @@ This service:
   3. Commits genome.yaml, graph.yaml, structure/, config/, data/ to the repo
 
 GitHub structure:
-    genomes/tenants/{tenant}/vendors/{vendor}/{product_module}/
+    genomes/tenants/{tenant}/vendors/{vendor}/{product_area}/{module}/
         genome.yaml              — canonical normalized genome
         graph.yaml               — structured GenomeGraph
         structure/{item}.yaml    — per-item structure files
@@ -46,6 +46,8 @@ async def commit_genome(
     genome_graph: dict | None,
     raw_vendor_payload: dict | None,
     app,
+    product_area: str = "",
+    module: str = "",
 ) -> dict:
     """Commit genome artifacts to GitHub.
 
@@ -77,9 +79,20 @@ async def commit_genome(
         "Accept": "application/vnd.github+json",
     }
 
-    # Build file tree
-    app_slug = application.lower().replace(" ", "_").replace("/", "_")
-    base = f"genomes/tenants/{tenant_id}/vendors/{vendor}/{app_slug}"
+    # Build file tree — genomes/tenants/{t}/vendors/{v}/{product_area}/{module}
+    def _slug(s: str) -> str:
+        return s.lower().replace(" ", "_").replace("/", "_")
+
+    app_slug = _slug(application)
+    path_parts = [f"genomes/tenants/{tenant_id}/vendors/{_slug(vendor)}"]
+    if product_area:
+        path_parts.append(_slug(product_area))
+    # Use module if provided, otherwise fall back to application name
+    if module:
+        path_parts.append(_slug(module))
+    elif app_slug:
+        path_parts.append(app_slug)
+    base = "/".join(path_parts)
 
     files: dict[str, str] = {}
 
