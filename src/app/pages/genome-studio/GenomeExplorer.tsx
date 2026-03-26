@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronRight, FileText, Folder, FolderOpen, Search, GitBranch, Loader2 } from 'lucide-react';
+import { ChevronDown, ChevronRight, FileText, Folder, FolderOpen, Search, GitBranch, Loader2, Crosshair, Download } from 'lucide-react';
 
 interface FileNode {
   name: string;
@@ -8,26 +8,67 @@ interface FileNode {
   path: string;
 }
 
-function TreeNode({ node, level, selectedFile, onFileSelect }: {
-  node: FileNode; level: number; selectedFile: string | null; onFileSelect: (path: string) => void;
+function TreeNode({ node, level, selectedFile, targetFolder, onFileSelect, onFolderTarget }: {
+  node: FileNode; level: number; selectedFile: string | null; targetFolder: string | null; onFileSelect: (path: string) => void; onFolderTarget: (path: string) => void;
 }) {
   const [isOpen, setIsOpen] = useState(level < 3);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const isFolder = node.type === 'dir' || node.type === 'folder';
   const isSelected = selectedFile === node.path;
+  const isTarget = targetFolder === node.path;
+
+  const handleDownload = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isDownloading) return;
+    setIsDownloading(true);
+    try {
+      const url = `/api/genome-studio/download-zip?path=${encodeURIComponent(node.path)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Download failed');
+      const blob = await res.blob();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${node.name}.zip`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch (err) {
+      console.error('Download error:', err);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   return (
     <div>
       <div
-        className={`flex items-center gap-1.5 px-2 py-1 cursor-pointer hover:bg-gray-100 rounded-md transition-colors ${
-          isSelected ? 'bg-orange-50 text-orange-700' : 'text-gray-700'
+        className={`flex items-center gap-1.5 px-2 py-1 cursor-pointer rounded-md transition-colors ${
+          isTarget ? 'bg-orange-100 text-orange-800 ring-1 ring-orange-300' :
+          isSelected ? 'bg-orange-50 text-orange-700' :
+          'text-gray-700 hover:bg-gray-100'
         }`}
         style={{ paddingLeft: `${level * 12 + 8}px` }}
-        onClick={() => isFolder ? setIsOpen(!isOpen) : onFileSelect(node.path)}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onClick={() => {
+          if (isFolder) {
+            setIsOpen(!isOpen);
+            onFolderTarget(node.path);
+          } else {
+            onFileSelect(node.path);
+          }
+        }}
       >
         {isFolder ? (
           <>
             {isOpen ? <ChevronDown className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" /> : <ChevronRight className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" />}
-            {isOpen ? <FolderOpen className="w-4 h-4 text-orange-500 flex-shrink-0" /> : <Folder className="w-4 h-4 text-orange-500 flex-shrink-0" />}
+            {isTarget ? (
+              <FolderOpen className="w-4 h-4 text-orange-600 flex-shrink-0" />
+            ) : isOpen ? (
+              <FolderOpen className="w-4 h-4 text-orange-500 flex-shrink-0" />
+            ) : (
+              <Folder className="w-4 h-4 text-orange-500 flex-shrink-0" />
+            )}
           </>
         ) : (
           <>
@@ -36,9 +77,24 @@ function TreeNode({ node, level, selectedFile, onFileSelect }: {
           </>
         )}
         <span className="text-sm truncate">{node.name}</span>
+        <div className="ml-auto flex items-center gap-1 flex-shrink-0">
+          {isTarget && <Crosshair className="w-3 h-3 text-orange-600" />}
+          {isFolder && (isHovered || isDownloading) && (
+            <button
+              onClick={handleDownload}
+              title={`Download ${node.name} as zip`}
+              className="p-0.5 rounded hover:bg-orange-200 transition-colors"
+            >
+              {isDownloading
+                ? <Loader2 className="w-3 h-3 text-orange-500 animate-spin" />
+                : <Download className="w-3 h-3 text-orange-500" />
+              }
+            </button>
+          )}
+        </div>
       </div>
       {isFolder && isOpen && node.children && node.children.map((child: FileNode) => (
-        <TreeNode key={child.path} node={child} level={level + 1} selectedFile={selectedFile} onFileSelect={onFileSelect} />
+        <TreeNode key={child.path} node={child} level={level + 1} selectedFile={selectedFile} targetFolder={targetFolder} onFileSelect={onFileSelect} onFolderTarget={onFolderTarget} />
       ))}
     </div>
   );
@@ -47,6 +103,8 @@ function TreeNode({ node, level, selectedFile, onFileSelect }: {
 interface GenomeExplorerProps {
   onFileSelect: (path: string) => void;
   selectedFile: string | null;
+  targetFolder: string | null;
+  onFolderTarget: (path: string) => void;
   fileTree?: FileNode[];
   repoName?: string | null;
   isLoading?: boolean;
@@ -69,10 +127,18 @@ function filterTree(nodes: FileNode[], query: string): FileNode[] {
   return result;
 }
 
-export function GenomeExplorer({ onFileSelect, selectedFile, fileTree, repoName, isLoading }: GenomeExplorerProps) {
+export function GenomeExplorer({ onFileSelect, selectedFile, targetFolder, onFolderTarget, fileTree, repoName, isLoading }: GenomeExplorerProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const tree = fileTree && fileTree.length > 0 ? fileTree : [];
   const filteredTree = searchQuery ? filterTree(tree, searchQuery) : tree;
+
+  // Derive a friendly label from the target folder path
+  const targetLabel = targetFolder
+    ? targetFolder.split('/').filter(Boolean).slice(-1)[0] || targetFolder
+    : null;
+  const targetFullLabel = targetFolder
+    ? targetFolder.split('/').filter(Boolean).slice(-2).join(' / ')
+    : null;
 
   return (
     <div className="w-64 h-screen bg-gray-50 border-r border-gray-200 flex flex-col">
@@ -91,6 +157,19 @@ export function GenomeExplorer({ onFileSelect, selectedFile, fileTree, repoName,
           </div>
         )}
       </div>
+
+      {/* Target folder indicator */}
+      {targetFolder && (
+        <div className="px-3 py-2 bg-orange-50 border-b border-orange-200">
+          <div className="flex items-center gap-1.5">
+            <Crosshair className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+            <span className="text-[10px] font-semibold text-orange-700 uppercase tracking-wide">Transform Target</span>
+          </div>
+          <p className="text-xs text-orange-800 font-medium mt-0.5 truncate" title={targetFolder}>
+            {targetFullLabel}
+          </p>
+        </div>
+      )}
 
       <div className="p-3 border-b border-gray-200 bg-white">
         <div className="relative">
@@ -120,7 +199,7 @@ export function GenomeExplorer({ onFileSelect, selectedFile, fileTree, repoName,
             <span className="text-xs">No matches for "{searchQuery}"</span>
           </div>
         ) : filteredTree.map((node) => (
-          <TreeNode key={node.path} node={node} level={0} selectedFile={selectedFile} onFileSelect={onFileSelect} />
+          <TreeNode key={node.path} node={node} level={0} selectedFile={selectedFile} targetFolder={targetFolder} onFileSelect={onFileSelect} onFolderTarget={onFolderTarget} />
         ))}
       </div>
     </div>

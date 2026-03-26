@@ -115,6 +115,67 @@ async def genome_load(path: str, request: Request):
 
 
 # ---------------------------------------------------------------------------
+# Download folder as ZIP
+# ---------------------------------------------------------------------------
+
+@router.get("/download-zip")
+async def genome_download_zip(path: str, request: Request):
+    """Recursively fetch all files under `path` from GitHub and return as a zip."""
+    import io
+    import zipfile
+    import asyncio
+    from fastapi.responses import StreamingResponse
+
+    if not path:
+        raise HTTPException(status_code=400, detail="path is required")
+
+    # Walk the tree to collect all file paths
+    tree = await list_tree(TENANT, path, request.app, depth=20)
+
+    def _collect_file_paths(nodes: list, acc: list) -> None:
+        for node in nodes:
+            if node.get("type") in ("dir", "folder"):
+                _collect_file_paths(node.get("children", []), acc)
+            else:
+                acc.append(node["path"])
+
+    file_paths: list[str] = []
+    _collect_file_paths(tree, file_paths)
+
+    if not file_paths:
+        raise HTTPException(status_code=404, detail="No files found under that path")
+
+    # Fetch all files concurrently (cap at 20 simultaneous requests)
+    sem = asyncio.Semaphore(20)
+
+    async def fetch(fpath: str):
+        async with sem:
+            return fpath, await get_file(TENANT, fpath, request.app)
+
+    results = await asyncio.gather(*[fetch(fp) for fp in file_paths])
+
+    # Build zip in memory
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for fpath, file_data in results:
+            if not file_data:
+                continue
+            content = file_data.get("content", "")
+            # Strip the base path prefix so the zip starts at the selected folder
+            rel = fpath[len(path):].lstrip("/") if fpath.startswith(path) else fpath
+            zf.writestr(rel, content.encode("utf-8") if isinstance(content, str) else content)
+
+    buf.seek(0)
+    folder_name = path.rstrip("/").split("/")[-1] or "genome"
+
+    return StreamingResponse(
+        buf,
+        media_type="application/zip",
+        headers={"Content-Disposition": f'attachment; filename="{folder_name}.zip"'},
+    )
+
+
+# ---------------------------------------------------------------------------
 # Chat — conversational Q&A about genomes (no filesystem plan)
 # ---------------------------------------------------------------------------
 
@@ -368,9 +429,10 @@ async def genome_transform(body: TransformRequest, request: Request):
         f"Generate REAL file content based on the actual genome data you can see above."
     )
 
-    # Read tenant token limit
+    # Read tenant token limit — use a generous ceiling for transform output
     defaults = request.app.state.runtime_defaults.get(TENANT)
-    max_tokens = defaults.max_tokens_per_run if defaults else 16384
+    default_max = defaults.max_tokens_per_run if defaults else 16384
+    max_tokens = max(default_max, 32768)
 
     t0 = time.monotonic()
     try:
@@ -510,7 +572,144 @@ async def genome_action(body: ActionRequest, request: Request):
 
 
 # ---------------------------------------------------------------------------
-# Run a saved Translation recipe against genome content
+# Progressive Context Hydration — streaming endpoints
+# ---------------------------------------------------------------------------
+
+
+class TransformStreamRequest(BaseModel):
+    path: str = ""
+    content: str = ""
+    prompt: str = ""
+
+
+class RunTranslationStreamRequest(BaseModel):
+    translation_id: str
+    path: str = ""
+    content: str = ""
+
+
+def _sse_event(event_type: str, data: dict) -> str:
+    """Format a single SSE event."""
+    return f"event: {event_type}\ndata: {json.dumps(data)}\n\n"
+
+
+@router.post("/transform-stream")
+async def genome_transform_stream(body: TransformStreamRequest, request: Request):
+    """Progressive hydration transform — streams SSE events as the LLM
+    iteratively requests and processes genome files."""
+    from fastapi.responses import StreamingResponse
+    from services.genome_hydration import hydration_loop
+
+    if not body.prompt:
+        return {"status": "error", "error": "prompt is required"}
+
+    try:
+        from services.snow_to_replit import _get_llm_config
+        llm_cfg = await _get_llm_config(TENANT, request.app)
+    except Exception as exc:
+        return {"status": "error", "error": f"LLM not configured: {exc}"}
+
+    base_path = "/".join(body.path.split("/")[:-1]) if "/" in body.path else "genomes"
+    defaults = request.app.state.runtime_defaults.get(TENANT)
+    default_max = defaults.max_tokens_per_run if defaults else 16384
+    # Production output (full files) needs headroom beyond 16K
+    max_tokens = max(default_max, 32768)
+
+    extra_system = (
+        f"\n\n## USER REQUEST\n\n"
+        f"The user wants: {body.prompt}\n\n"
+        f"{_TRANSFORM_SYSTEM}\n"
+    )
+
+    initial_context = ""
+    if body.content:
+        initial_context = f"Currently selected file ({body.path}):\n{body.content[:4000]}\n"
+
+    async def generate():
+        async for event in hydration_loop(
+            llm_cfg=llm_cfg,
+            base_path=base_path,
+            app=request.app,
+            extra_system=extra_system,
+            initial_user_context=initial_context,
+            max_tokens=max_tokens,
+        ):
+            yield _sse_event(event["type"], event["data"])
+
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+@router.post("/run-translation-stream")
+async def run_translation_stream(body: RunTranslationStreamRequest, request: Request):
+    """Progressive hydration translation — streams SSE events as the LLM
+    iteratively inspects genome files and applies a translation recipe."""
+    from fastapi.responses import StreamingResponse
+    from services.genome_hydration import hydration_loop
+
+    translation = await request.app.state.translation_store.get(body.translation_id)
+    if translation is None:
+        return {"status": "error", "error": "Translation not found"}
+    if not translation.instructions:
+        return {"status": "error", "error": "Translation has no instructions configured."}
+
+    try:
+        from services.snow_to_replit import _get_llm_config
+        llm_cfg = await _get_llm_config(TENANT, request.app)
+    except Exception as exc:
+        return {"status": "error", "error": f"LLM not configured: {exc}"}
+
+    base_path = "/".join(body.path.split("/")[:-1]) if "/" in body.path else "genomes"
+    defaults = request.app.state.runtime_defaults.get(TENANT)
+    default_max = defaults.max_tokens_per_run if defaults else 16384
+    # Production output (full files) needs headroom beyond 16K
+    max_tokens = max(default_max, 32768)
+
+    # Inject translation recipe into system prompt
+    output_guidance = ""
+    if translation.output_structure:
+        output_guidance = f"\nExpected output structure: {json.dumps(translation.output_structure)}\n"
+
+    extra_system = (
+        f"\n\n=== TRANSLATION RECIPE ===\n"
+        f"Name: {translation.name}\n"
+        f"Source vendor: {translation.source_vendor}\n"
+        f"Source type: {translation.source_type}\n"
+        f"Target platform: {translation.target_platform}\n"
+        f"{output_guidance}\n"
+        f"INSTRUCTIONS:\n{translation.instructions}\n"
+        f"=== END RECIPE ===\n\n"
+        f"Apply this recipe to the genome content you retrieve.\n"
+        f"When producing output, all files go under 'transformations/' folder.\n"
+    )
+
+    initial_context = ""
+    if body.content:
+        initial_context = f"Currently selected file ({body.path}):\n{body.content[:4000]}\n"
+
+    async def generate():
+        async for event in hydration_loop(
+            llm_cfg=llm_cfg,
+            base_path=base_path,
+            app=request.app,
+            extra_system=extra_system,
+            initial_user_context=initial_context,
+            max_tokens=max_tokens,
+        ):
+            yield _sse_event(event["type"], event["data"])
+
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+# ---------------------------------------------------------------------------
+# Run a saved Translation recipe against genome content (legacy synchronous)
 # ---------------------------------------------------------------------------
 
 
@@ -593,7 +792,10 @@ async def run_translation(body: RunTranslationRequest, request: Request):
     )
 
     defaults = request.app.state.runtime_defaults.get(TENANT)
-    max_tokens = defaults.max_tokens_per_run if defaults else 16384
+    default_max = defaults.max_tokens_per_run if defaults else 16384
+    # Translation recipes (especially build specs) produce large structured output;
+    # use a higher ceiling so the LLM doesn't truncate mid-JSON.
+    max_tokens = max(default_max, 32768)
 
     t0 = time.monotonic()
     try:
