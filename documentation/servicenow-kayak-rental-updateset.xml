@@ -1,0 +1,1515 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unload unload_date="2026-03-21 14:00:00">
+<sys_remote_update_set action="INSERT_OR_UPDATE">
+<application display_value="Global">global</application>
+<application_name>Global</application_name>
+<application_scope>global</application_scope>
+<collisions/>
+<commit_date/>
+<deleted/>
+<description>Kayak Rental application — inventory and rental reservation management with left nav modules.</description>
+<installed_from/>
+<name>Kayak Rental App</name>
+<origin_sys_id>d651507c29f74cfdaea3893ed2ec0784</origin_sys_id>
+<parent/>
+<release_date/>
+<remote_base_update_set/>
+<state>loaded</state>
+<summary/>
+<sys_class_name>sys_remote_update_set</sys_class_name>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>d651507c29f74cfdaea3893ed2ec0784</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<update_set/>
+</sys_remote_update_set>
+
+<sys_app_application action="INSERT_OR_UPDATE">
+<active>true</active>
+<category/>
+<description>Kayak rental and reservation management</description>
+<device_type>browser</device_type>
+<hint>Reserve and manage kayaks</hint>
+<name>Kayak Rental</name>
+<order>100</order>
+<roles/>
+<sys_class_name>sys_app_application</sys_class_name>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>bcbec34cfc7e4e83aad7b234d181606d</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_update_name>sys_app_application_bcbec34cfc7e4e83aad7b234d181606d</sys_update_name>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<title>Kayak Rental</title>
+</sys_app_application>
+
+<sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_kayak_null</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;&quot; table=&quot;u_kayak&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;Collection&quot;&gt;collection&lt;/internal_type&gt;&lt;mandatory&gt;false&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_kayak&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 14:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;f401828c4fac46f2a39ab1b6834425ce&lt;/sys_id&gt;&lt;sys_name&gt;u_kayak&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_kayak_null&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 14:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>913629794</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>199746a8e446499c87378482cb6cfdd7</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000000101</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>77a0510024304b9a83305b68fec76bd8</update_guid>
+<update_guid_history>77a0510024304b9a83305b68fec76bd8:913629794</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_kayak__en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="" label="Kayak" language="en" table="u_kayak"><sys_documentation action="INSERT_OR_UPDATE"><element></element><help/><hint/><label>Kayak</label><language>en</language><name>u_kayak</name><plural>Kayaks</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>295ed76e8cdd4dcd9bb7bc70ec981376</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Kayak</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_kayak___en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>554166723</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>5214e60b37fb48a9a4cd27c29a33135a</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000000201</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>dcb1d1db4c7f411bb0d0317dd4bb8359</update_guid>
+<update_guid_history>dcb1d1db4c7f411bb0d0317dd4bb8359:554166723</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_db_object_f55f5173e34440f8a9d53c66e6cd1ee4</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_db_object"><sys_db_object action="INSERT_OR_UPDATE"><access>public</access><actions_access>false</actions_access><alter_access>false</alter_access><caller_access/><client_scripts_access>false</client_scripts_access><configuration_access>false</configuration_access><create_access>false</create_access><create_access_controls>true</create_access_controls><delete_access>false</delete_access><filter_extension/><is_df_table>false</is_df_table><is_extendable>false</is_extendable><label>Kayak</label><live_feed_enabled>false</live_feed_enabled><name>u_kayak</name><number_ref/><provider_class/><read_access>true</read_access><scriptable_table>false</scriptable_table><super_class/><sys_class_name>sys_db_object</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>f55f5173e34440f8a9d53c66e6cd1ee4</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Kayak</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_db_object_f55f5173e34440f8a9d53c66e6cd1ee4</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><update_access>false</update_access><user_role/><ws_access>true</ws_access></sys_db_object></record_update>]]></payload>
+<payload_hash>1376248392</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>af41079db3e44888804de12f0f99fa63</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000000301</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks</target_name>
+<type>Table</type>
+<update_domain>global</update_domain>
+<update_guid>c2d9ca038e9f4f8dbd82a6cdeb20df4a</update_guid>
+<update_guid_history>c2d9ca038e9f4f8dbd82a6cdeb20df4a:1376248392</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_security_acl_3e0802242edf4eb4b7c9f16cb6d8e580</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl"><sys_security_acl action="INSERT_OR_UPDATE"><active>true</active><admin_overrides>true</admin_overrides><advanced>false</advanced><applies_to/><condition/><controlled_by_refs/><decision_type>allow</decision_type><description>Default access control on u_kayak</description><local_or_existing>Existing</local_or_existing><name>u_kayak</name><operation display_value="create">create</operation><script/><security_attribute/><sys_class_name>sys_security_acl</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>3e0802242edf4eb4b7c9f16cb6d8e580</sys_id><sys_mod_count>0</sys_mod_count><sys_name>u_kayak</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_security_acl_3e0802242edf4eb4b7c9f16cb6d8e580</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><type display_value="record">record</type></sys_security_acl></record_update>]]></payload>
+<payload_hash>80277011</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>a5492658ad2d4cd8a3cff6a0e5cfbf92</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000000401</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>u_kayak</target_name>
+<type>Access Control</type>
+<update_domain>global</update_domain>
+<update_guid>256b66825e5a4935890ad4516f64b2e4</update_guid>
+<update_guid_history>256b66825e5a4935890ad4516f64b2e4:80277011</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_security_acl_1e60739ee96340918e27ce163d0e94af</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl"><sys_security_acl action="INSERT_OR_UPDATE"><active>true</active><admin_overrides>true</admin_overrides><advanced>false</advanced><applies_to/><condition/><controlled_by_refs/><decision_type>allow</decision_type><description>Default access control on u_kayak</description><local_or_existing>Existing</local_or_existing><name>u_kayak</name><operation display_value="read">read</operation><script/><security_attribute/><sys_class_name>sys_security_acl</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>1e60739ee96340918e27ce163d0e94af</sys_id><sys_mod_count>0</sys_mod_count><sys_name>u_kayak</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_security_acl_1e60739ee96340918e27ce163d0e94af</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><type display_value="record">record</type></sys_security_acl></record_update>]]></payload>
+<payload_hash>951889866</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>b7ae8de90a674f2a9898ac4f035b1cff</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000000501</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>u_kayak</target_name>
+<type>Access Control</type>
+<update_domain>global</update_domain>
+<update_guid>9ee8b17c324848f09d1bcbf73699ec8d</update_guid>
+<update_guid_history>9ee8b17c324848f09d1bcbf73699ec8d:951889866</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_security_acl_58647bde91904aa9a79e14e215285f78</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl"><sys_security_acl action="INSERT_OR_UPDATE"><active>true</active><admin_overrides>true</admin_overrides><advanced>false</advanced><applies_to/><condition/><controlled_by_refs/><decision_type>allow</decision_type><description>Default access control on u_kayak</description><local_or_existing>Existing</local_or_existing><name>u_kayak</name><operation display_value="write">write</operation><script/><security_attribute/><sys_class_name>sys_security_acl</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>58647bde91904aa9a79e14e215285f78</sys_id><sys_mod_count>0</sys_mod_count><sys_name>u_kayak</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_security_acl_58647bde91904aa9a79e14e215285f78</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><type display_value="record">record</type></sys_security_acl></record_update>]]></payload>
+<payload_hash>1250811392</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>7a6e0713cfda4571b4d80cf2b6f46643</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000000601</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>u_kayak</target_name>
+<type>Access Control</type>
+<update_domain>global</update_domain>
+<update_guid>c6dc7c392a0b4b7a992f8df5219bfeab</update_guid>
+<update_guid_history>c6dc7c392a0b4b7a992f8df5219bfeab:1250811392</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_kayak_u_kayak_type</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_kayak_type&quot; table=&quot;u_kayak&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;1&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Kayak Type&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;single&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_kayak_type&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;String&quot;&gt;string&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_kayak&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 14:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;8ea38210aa8247b4b5a0d3932d6a5c06&lt;/sys_id&gt;&lt;sys_name&gt;Kayak Type&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_kayak_u_kayak_type&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 14:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1139470663</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>658ef67aebf645d0a21c52293aaeb5fe</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000000701</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Kayak Type</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>96a537c7d8024e148ad556c6baeadbca</update_guid>
+<update_guid_history>96a537c7d8024e148ad556c6baeadbca:1139470663</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_kayak_u_kayak_type_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_kayak_type" label="Kayak Type" language="en" table="u_kayak"><sys_documentation action="INSERT_OR_UPDATE"><element>u_kayak_type</element><help/><hint/><label>Kayak Type</label><language>en</language><name>u_kayak</name><plural>Kayak Types</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>93ed8a1a4bda471ba8517ec018f4990d</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Kayak Type</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_kayak_u_kayak_type_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>884691764</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>a98d3c65f8c142be942659693bc4d734</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000000801</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Kayak Type</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>917c7a3956c04a97b7e2a1513691e366</update_guid>
+<update_guid_history>917c7a3956c04a97b7e2a1513691e366:884691764</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_kayak_u_color</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_color&quot; table=&quot;u_kayak&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Color&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_color&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;String&quot;&gt;string&lt;/internal_type&gt;&lt;mandatory&gt;false&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_kayak&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 14:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;b9a17c0d8d9d4517aec925110a5ab5a0&lt;/sys_id&gt;&lt;sys_name&gt;Color&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_kayak_u_color&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 14:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1596081955</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>2e8186b534b24931895c5a862616c996</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000000901</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Color</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>8411327f7529482a903784804a0bcb92</update_guid>
+<update_guid_history>8411327f7529482a903784804a0bcb92:1596081955</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_kayak_u_color_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_color" label="Color" language="en" table="u_kayak"><sys_documentation action="INSERT_OR_UPDATE"><element>u_color</element><help/><hint/><label>Color</label><language>en</language><name>u_kayak</name><plural>Colors</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>86c47abe57f64332b7dca4dbee4ff98f</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Color</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_kayak_u_color_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>224755750</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>10c2098ef09748a58351c6b4d97a204d</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000000a01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Color</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>d161bf1fcd6f41f28fa6725198df6375</update_guid>
+<update_guid_history>d161bf1fcd6f41f28fa6725198df6375:224755750</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_kayak_u_length_ft</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_length_ft&quot; table=&quot;u_kayak&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Length (ft)&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_length_ft&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;Decimal&quot;&gt;decimal&lt;/internal_type&gt;&lt;mandatory&gt;false&lt;/mandatory&gt;&lt;max_length&gt;15&lt;/max_length&gt;&lt;name&gt;u_kayak&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 14:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;a960c16c7d96438aae857ca67950c861&lt;/sys_id&gt;&lt;sys_name&gt;Length (ft)&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_kayak_u_length_ft&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 14:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1656093508</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>073d24e3bc404928bbce22a15991e0a4</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000000b01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Length (ft)</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>ac539c6d507a4ae19755d6287fce6f85</update_guid>
+<update_guid_history>ac539c6d507a4ae19755d6287fce6f85:1656093508</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_kayak_u_length_ft_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_length_ft" label="Length (ft)" language="en" table="u_kayak"><sys_documentation action="INSERT_OR_UPDATE"><element>u_length_ft</element><help/><hint/><label>Length (ft)</label><language>en</language><name>u_kayak</name><plural>Length (ft)s</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>9bc81cb0c30949e8a95a371593d4002e</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Length (ft)</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_kayak_u_length_ft_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>1058185314</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>1bcc3e381b404f59966f93f8f17cfdaf</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000000c01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Length (ft)</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>21adb9e7d2a842ed9eb5f624e63c5439</update_guid>
+<update_guid_history>21adb9e7d2a842ed9eb5f624e63c5439:1058185314</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_kayak_u_serial_number</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_serial_number&quot; table=&quot;u_kayak&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Serial Number&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_serial_number&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;String&quot;&gt;string&lt;/internal_type&gt;&lt;mandatory&gt;false&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_kayak&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 14:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;339ae69b9f9445efb65f70f57859b9e2&lt;/sys_id&gt;&lt;sys_name&gt;Serial Number&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_kayak_u_serial_number&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 14:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>951089487</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>a95d90f4dfb94428bf20828c6ffb8c58</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000000d01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Serial Number</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>8bda84b2377e4a50abfa672a5b369e6c</update_guid>
+<update_guid_history>8bda84b2377e4a50abfa672a5b369e6c:951089487</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_kayak_u_serial_number_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_serial_number" label="Serial Number" language="en" table="u_kayak"><sys_documentation action="INSERT_OR_UPDATE"><element>u_serial_number</element><help/><hint/><label>Serial Number</label><language>en</language><name>u_kayak</name><plural>Serial Numbers</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>d41eb7985b0441c3b3af8cbb366fdd35</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Serial Number</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_kayak_u_serial_number_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>815924732</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>ff792a6b293c4e73a62da6cdf8aac48a</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000000e01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Serial Number</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>3f4f46eec4d547d19f3f522335ab58b8</update_guid>
+<update_guid_history>3f4f46eec4d547d19f3f522335ab58b8:815924732</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_kayak_u_availability</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_availability&quot; table=&quot;u_kayak&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;1&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Availability&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;available&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_availability&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;String&quot;&gt;string&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_kayak&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 14:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;293efc22adbd40cfb51cc6bd496bb85c&lt;/sys_id&gt;&lt;sys_name&gt;Availability&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_kayak_u_availability&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 14:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1771325442</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>6ff416f7d80b48298974c363b30fcc8a</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000000f01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Availability</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>4a3b5baf5bdb4c059cc3b01cf2c99ae5</update_guid>
+<update_guid_history>4a3b5baf5bdb4c059cc3b01cf2c99ae5:1771325442</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_kayak_u_availability_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_availability" label="Availability" language="en" table="u_kayak"><sys_documentation action="INSERT_OR_UPDATE"><element>u_availability</element><help/><hint/><label>Availability</label><language>en</language><name>u_kayak</name><plural>Availabilitys</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>53086d6e01fc408cbe8f07efec9dd992</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Availability</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_kayak_u_availability_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>1360784521</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>ed92cf67d94b4909a954efaf7612f070</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001001</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Availability</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>e065251212f94db58a62b03a873f7b2f</update_guid>
+<update_guid_history>e065251212f94db58a62b03a873f7b2f:1360784521</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_kayak_u_kayak_type_single</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_kayak_type</element><inactive>false</inactive><label>Single</label><language>en</language><name>u_kayak</name><sequence>1</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>40c034a4e3ce41248a4f710289deb1b6</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_kayak_u_kayak_type_single</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><value>single</value></sys_choice></record_update>]]></payload>
+<payload_hash>1218636290</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>c590f2f15bb34355ab8842211385004f</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001101</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Kayak Type.Single</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>f593f368ec884e2baf87abb44a4a4687</update_guid>
+<update_guid_history>f593f368ec884e2baf87abb44a4a4687:1218636290</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_kayak_u_kayak_type_tandem</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_kayak_type</element><inactive>false</inactive><label>Tandem</label><language>en</language><name>u_kayak</name><sequence>2</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>a89d7b91274c40c09f2ec3821dfb3b63</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_kayak_u_kayak_type_tandem</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><value>tandem</value></sys_choice></record_update>]]></payload>
+<payload_hash>1854291684</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>3620775740e248edb02d1b3d92939d7f</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001201</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Kayak Type.Tandem</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>dfe0ece88d944ac5821775540660f9c5</update_guid>
+<update_guid_history>dfe0ece88d944ac5821775540660f9c5:1854291684</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_kayak_u_kayak_type_fishing</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_kayak_type</element><inactive>false</inactive><label>Fishing</label><language>en</language><name>u_kayak</name><sequence>3</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>ecc9c5573d414b67893e04d5554404d2</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_kayak_u_kayak_type_fishing</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><value>fishing</value></sys_choice></record_update>]]></payload>
+<payload_hash>1585181716</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>2a41e18e285d476b97beb83eed4c5437</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001301</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Kayak Type.Fishing</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>72d6d82a9ff442a2a5a1e237adbca388</update_guid>
+<update_guid_history>72d6d82a9ff442a2a5a1e237adbca388:1585181716</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_kayak_u_kayak_type_touring</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_kayak_type</element><inactive>false</inactive><label>Touring</label><language>en</language><name>u_kayak</name><sequence>4</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>1feb8fe2b1d84842b676341444b8b9f4</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_kayak_u_kayak_type_touring</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><value>touring</value></sys_choice></record_update>]]></payload>
+<payload_hash>1203620171</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>9936f3ba907f426287cb54971f8eba6d</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001401</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Kayak Type.Touring</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>90683682917e44ebb054d826b2b80929</update_guid>
+<update_guid_history>90683682917e44ebb054d826b2b80929:1203620171</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_kayak_u_availability_available</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_availability</element><inactive>false</inactive><label>Available</label><language>en</language><name>u_kayak</name><sequence>1</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>5827c808fc9747f081fd39bf60ad67d8</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_kayak_u_availability_available</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><value>available</value></sys_choice></record_update>]]></payload>
+<payload_hash>487464911</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>7b63ed519d8c4161b5502a9e525960b3</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001501</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Availability.Available</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>210b71e99a234459b95b007d4acd2972</update_guid>
+<update_guid_history>210b71e99a234459b95b007d4acd2972:487464911</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_kayak_u_availability_rented</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_availability</element><inactive>false</inactive><label>Rented Out</label><language>en</language><name>u_kayak</name><sequence>2</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>a442b7b808a64050ad39ca41599d9d82</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_kayak_u_availability_rented</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><value>rented</value></sys_choice></record_update>]]></payload>
+<payload_hash>455122875</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>05de684dad6c4603bd24e528af9a1f5f</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001601</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Availability.Rented Out</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>89d20a83c1354058a41c8476cedd10a5</update_guid>
+<update_guid_history>89d20a83c1354058a41c8476cedd10a5:455122875</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_kayak_u_availability_maintenance</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_availability</element><inactive>false</inactive><label>In Maintenance</label><language>en</language><name>u_kayak</name><sequence>3</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>815cd180acf04f35b14134daf419f523</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_kayak_u_availability_maintenance</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><value>maintenance</value></sys_choice></record_update>]]></payload>
+<payload_hash>919282969</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>7cd27d6b27ec45718d65b167b0d30bd3</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001701</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Availability.In Maintenance</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>c51a5d8d47f24a9ba131367212c09287</update_guid>
+<update_guid_history>c51a5d8d47f24a9ba131367212c09287:919282969</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_kayak_u_availability_retired</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_availability</element><inactive>false</inactive><label>Retired</label><language>en</language><name>u_kayak</name><sequence>4</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>baee1cbe2e634fff8a4b16c4591bdffa</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_kayak_u_availability_retired</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><value>retired</value></sys_choice></record_update>]]></payload>
+<payload_hash>330643314</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>47d7a562a6b84290ac9c5f68c22ef297</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001801</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak</table>
+<target_name>Kayaks.Availability.Retired</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>4de020b7929745f4904d271ec60f35b6</update_guid>
+<update_guid_history>4de020b7929745f4904d271ec60f35b6:330643314</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_kayak_rental_null</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;&quot; table=&quot;u_kayak_rental&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;Collection&quot;&gt;collection&lt;/internal_type&gt;&lt;mandatory&gt;false&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_kayak_rental&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 14:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;bf9b3fbd77d7479d8fa9bbe9b0fe6629&lt;/sys_id&gt;&lt;sys_name&gt;u_kayak_rental&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_kayak_rental_null&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 14:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1398142136</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>2733bf0078254c128c57125b7b997048</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001901</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>06091c7a9dff45f581fa81b85cdd5250</update_guid>
+<update_guid_history>06091c7a9dff45f581fa81b85cdd5250:1398142136</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_kayak_rental__en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="" label="Kayak Rental" language="en" table="u_kayak_rental"><sys_documentation action="INSERT_OR_UPDATE"><element></element><help/><hint/><label>Kayak Rental</label><language>en</language><name>u_kayak_rental</name><plural>Kayak Rentals</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>4f1f911da05c4ab1a2d0e45304d10741</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Kayak Rental</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_kayak_rental___en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>1840977757</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>9f8fe5f8ba5044be8a09c9bbb5682cb3</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001a01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>6778f48528fa4b2285dbab15d846d2a2</update_guid>
+<update_guid_history>6778f48528fa4b2285dbab15d846d2a2:1840977757</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_db_object_393a894548e04f558f681faebb98f002</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_db_object"><sys_db_object action="INSERT_OR_UPDATE"><access>public</access><actions_access>false</actions_access><alter_access>false</alter_access><caller_access/><client_scripts_access>false</client_scripts_access><configuration_access>false</configuration_access><create_access>false</create_access><create_access_controls>true</create_access_controls><delete_access>false</delete_access><filter_extension/><is_df_table>false</is_df_table><is_extendable>false</is_extendable><label>Kayak Rental</label><live_feed_enabled>false</live_feed_enabled><name>u_kayak_rental</name><number_ref/><provider_class/><read_access>true</read_access><scriptable_table>false</scriptable_table><super_class/><sys_class_name>sys_db_object</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>393a894548e04f558f681faebb98f002</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Kayak Rental</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_db_object_393a894548e04f558f681faebb98f002</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><update_access>false</update_access><user_role/><ws_access>true</ws_access></sys_db_object></record_update>]]></payload>
+<payload_hash>292633942</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>f9e8a1ceea024fe9ae8717f3a012ad25</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001b01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals</target_name>
+<type>Table</type>
+<update_domain>global</update_domain>
+<update_guid>39e083f9282e4f649c5835069abe4542</update_guid>
+<update_guid_history>39e083f9282e4f649c5835069abe4542:292633942</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_security_acl_6ba0372c12184e8b84e0c8b07d8e255f</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl"><sys_security_acl action="INSERT_OR_UPDATE"><active>true</active><admin_overrides>true</admin_overrides><advanced>false</advanced><applies_to/><condition/><controlled_by_refs/><decision_type>allow</decision_type><description>Default access control on u_kayak_rental</description><local_or_existing>Existing</local_or_existing><name>u_kayak_rental</name><operation display_value="create">create</operation><script/><security_attribute/><sys_class_name>sys_security_acl</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>6ba0372c12184e8b84e0c8b07d8e255f</sys_id><sys_mod_count>0</sys_mod_count><sys_name>u_kayak_rental</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_security_acl_6ba0372c12184e8b84e0c8b07d8e255f</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><type display_value="record">record</type></sys_security_acl></record_update>]]></payload>
+<payload_hash>2042473184</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>2b95828e24f74c408319edb8f19eed43</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001c01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>u_kayak_rental</target_name>
+<type>Access Control</type>
+<update_domain>global</update_domain>
+<update_guid>eeba5bd1ce49453194235633c271cb0c</update_guid>
+<update_guid_history>eeba5bd1ce49453194235633c271cb0c:2042473184</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_security_acl_b24404aa0e03424bbf1286972c31c993</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl"><sys_security_acl action="INSERT_OR_UPDATE"><active>true</active><admin_overrides>true</admin_overrides><advanced>false</advanced><applies_to/><condition/><controlled_by_refs/><decision_type>allow</decision_type><description>Default access control on u_kayak_rental</description><local_or_existing>Existing</local_or_existing><name>u_kayak_rental</name><operation display_value="read">read</operation><script/><security_attribute/><sys_class_name>sys_security_acl</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>b24404aa0e03424bbf1286972c31c993</sys_id><sys_mod_count>0</sys_mod_count><sys_name>u_kayak_rental</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_security_acl_b24404aa0e03424bbf1286972c31c993</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><type display_value="record">record</type></sys_security_acl></record_update>]]></payload>
+<payload_hash>1816754387</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>32fc753f6ba7419ba95d676c8421ce3d</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001d01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>u_kayak_rental</target_name>
+<type>Access Control</type>
+<update_domain>global</update_domain>
+<update_guid>c266b7670d2645fe823e367a382510dc</update_guid>
+<update_guid_history>c266b7670d2645fe823e367a382510dc:1816754387</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_security_acl_eb862c8d7546425e9c1705559d657c96</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl"><sys_security_acl action="INSERT_OR_UPDATE"><active>true</active><admin_overrides>true</admin_overrides><advanced>false</advanced><applies_to/><condition/><controlled_by_refs/><decision_type>allow</decision_type><description>Default access control on u_kayak_rental</description><local_or_existing>Existing</local_or_existing><name>u_kayak_rental</name><operation display_value="write">write</operation><script/><security_attribute/><sys_class_name>sys_security_acl</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>eb862c8d7546425e9c1705559d657c96</sys_id><sys_mod_count>0</sys_mod_count><sys_name>u_kayak_rental</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_security_acl_eb862c8d7546425e9c1705559d657c96</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><type display_value="record">record</type></sys_security_acl></record_update>]]></payload>
+<payload_hash>2099341695</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>f25d0b5ab21a4f5892cea99c520b819e</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001e01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>u_kayak_rental</target_name>
+<type>Access Control</type>
+<update_domain>global</update_domain>
+<update_guid>ec9feac7751b41ccad1bfd84f9577915</update_guid>
+<update_guid_history>ec9feac7751b41ccad1bfd84f9577915:2099341695</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_kayak_rental_u_requested_by</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_requested_by&quot; table=&quot;u_kayak_rental&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Requested By&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;javascript:gs.getUserID()&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;true&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_requested_by&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;Reference&quot;&gt;reference&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;32&lt;/max_length&gt;&lt;name&gt;u_kayak_rental&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference display_value=&quot;&quot; name=&quot;sys_user&quot;&gt;sys_user&lt;/reference&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 14:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;341dea7a2e834c5b9dacb53f1929b44f&lt;/sys_id&gt;&lt;sys_name&gt;Requested By&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_kayak_rental_u_requested_by&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 14:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>774806858</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>e19571ac8ddb45d6942c7a35ffef2075</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000001f01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.Requested By</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>7e9b6fe6ab984bed95845070474781b1</update_guid>
+<update_guid_history>7e9b6fe6ab984bed95845070474781b1:774806858</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_kayak_rental_u_requested_by_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_requested_by" label="Requested By" language="en" table="u_kayak_rental"><sys_documentation action="INSERT_OR_UPDATE"><element>u_requested_by</element><help/><hint/><label>Requested By</label><language>en</language><name>u_kayak_rental</name><plural>Requested Bys</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>23a58b1d9118468e9081e73a18e57415</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Requested By</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_kayak_rental_u_requested_by_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>617852728</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>34620fed75d545b2b127cc552fd26312</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002001</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.Requested By</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>ee1a5e5767e24aa98921751ff422d844</update_guid>
+<update_guid_history>ee1a5e5767e24aa98921751ff422d844:617852728</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_kayak_rental_u_kayak</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_kayak&quot; table=&quot;u_kayak_rental&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Kayak&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_kayak&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;Reference&quot;&gt;reference&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;32&lt;/max_length&gt;&lt;name&gt;u_kayak_rental&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference display_value=&quot;&quot; name=&quot;u_kayak&quot;&gt;u_kayak&lt;/reference&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 14:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;76ce9bfd97504adf9123017fed62579e&lt;/sys_id&gt;&lt;sys_name&gt;Kayak&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_kayak_rental_u_kayak&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 14:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1955615926</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>564a26cea020420080ce861bb483fd0a</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002101</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.Kayak</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>5672d576367140a5ba1bfaa4b7d609d9</update_guid>
+<update_guid_history>5672d576367140a5ba1bfaa4b7d609d9:1955615926</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_kayak_rental_u_kayak_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_kayak" label="Kayak" language="en" table="u_kayak_rental"><sys_documentation action="INSERT_OR_UPDATE"><element>u_kayak</element><help/><hint/><label>Kayak</label><language>en</language><name>u_kayak_rental</name><plural>Kayaks</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>d0a19886690a4017832cd039dae13d5d</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Kayak</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_kayak_rental_u_kayak_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>737822251</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>fb258cafad0942f3aba85e815caef762</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002201</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.Kayak</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>f9f6a63ae6724610abd9de2aa63be735</update_guid>
+<update_guid_history>f9f6a63ae6724610abd9de2aa63be735:737822251</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_kayak_rental_u_start_date</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_start_date&quot; table=&quot;u_kayak_rental&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Start Date&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_start_date&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;Glide_Date&quot;&gt;glide_date&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_kayak_rental&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 14:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;5d104dc905fb4342b9ece4059da823a7&lt;/sys_id&gt;&lt;sys_name&gt;Start Date&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_kayak_rental_u_start_date&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 14:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>368650081</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>32a13d0d583f4835a00d33b96c13e04c</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002301</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.Start Date</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>716a378ab9e447e592399fa4563aad07</update_guid>
+<update_guid_history>716a378ab9e447e592399fa4563aad07:368650081</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_kayak_rental_u_start_date_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_start_date" label="Start Date" language="en" table="u_kayak_rental"><sys_documentation action="INSERT_OR_UPDATE"><element>u_start_date</element><help/><hint/><label>Start Date</label><language>en</language><name>u_kayak_rental</name><plural>Start Dates</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>b4af7e0c30de4c5f88dda34257762eb9</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Start Date</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_kayak_rental_u_start_date_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>1735725104</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>8c5a6b5c7ffa469eb26b0a2e19e6b362</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002401</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.Start Date</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>906cea3e213147e5ae2ea2bce331b6e9</update_guid>
+<update_guid_history>906cea3e213147e5ae2ea2bce331b6e9:1735725104</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_kayak_rental_u_end_date</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_end_date&quot; table=&quot;u_kayak_rental&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;End Date&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_end_date&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;Glide_Date&quot;&gt;glide_date&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_kayak_rental&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 14:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;f73c116d08a849b082c818d920c6a824&lt;/sys_id&gt;&lt;sys_name&gt;End Date&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_kayak_rental_u_end_date&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 14:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>500044090</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>4210994247c1431ab5b937655707ec15</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002501</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.End Date</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>2b9d7462e53f4c78b7a863bdf8f96cfb</update_guid>
+<update_guid_history>2b9d7462e53f4c78b7a863bdf8f96cfb:500044090</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_kayak_rental_u_end_date_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_end_date" label="End Date" language="en" table="u_kayak_rental"><sys_documentation action="INSERT_OR_UPDATE"><element>u_end_date</element><help/><hint/><label>End Date</label><language>en</language><name>u_kayak_rental</name><plural>End Dates</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>d7671c4f0714456689bd6ff257a81e79</sys_id><sys_mod_count>0</sys_mod_count><sys_name>End Date</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_kayak_rental_u_end_date_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>624426039</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>7f39a6520fb548ce9a7d9a183e1fd41b</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002601</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.End Date</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>52627b8fef194d0c92be011f92bd27fd</update_guid>
+<update_guid_history>52627b8fef194d0c92be011f92bd27fd:624426039</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_kayak_rental_u_purpose</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_purpose&quot; table=&quot;u_kayak_rental&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Purpose&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_purpose&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;String&quot;&gt;string&lt;/internal_type&gt;&lt;mandatory&gt;false&lt;/mandatory&gt;&lt;max_length&gt;4000&lt;/max_length&gt;&lt;name&gt;u_kayak_rental&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 14:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;de4d5f3093da4157b05e2e9ba0b31486&lt;/sys_id&gt;&lt;sys_name&gt;Purpose&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_kayak_rental_u_purpose&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 14:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>779002333</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>50698bc30a4341ac916f485a4034f077</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002701</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.Purpose</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>cbcd0ad346e64bfabf9efcd1c62008a0</update_guid>
+<update_guid_history>cbcd0ad346e64bfabf9efcd1c62008a0:779002333</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_kayak_rental_u_purpose_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_purpose" label="Purpose" language="en" table="u_kayak_rental"><sys_documentation action="INSERT_OR_UPDATE"><element>u_purpose</element><help/><hint/><label>Purpose</label><language>en</language><name>u_kayak_rental</name><plural>Purposes</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>811462fb58a441c3b1f1fe7e09a0b703</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Purpose</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_kayak_rental_u_purpose_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>680017861</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>682aba0b356e473cbbb69822bf7a9436</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002801</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.Purpose</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>b25663ef6d604b5cb6096873a2189163</update_guid>
+<update_guid_history>b25663ef6d604b5cb6096873a2189163:680017861</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_kayak_rental_u_rental_status</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_rental_status&quot; table=&quot;u_kayak_rental&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;1&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Rental Status&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;requested&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_rental_status&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;String&quot;&gt;string&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_kayak_rental&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 14:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;d194d1f5cb56415aa8049e8a4e054111&lt;/sys_id&gt;&lt;sys_name&gt;Rental Status&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_kayak_rental_u_rental_status&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 14:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1473468821</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>bfe792d7884644f4ad402d3acb0e2623</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002901</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.Rental Status</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>60f22af1138c4f0db05bcb3d160eee84</update_guid>
+<update_guid_history>60f22af1138c4f0db05bcb3d160eee84:1473468821</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_kayak_rental_u_rental_status_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_rental_status" label="Rental Status" language="en" table="u_kayak_rental"><sys_documentation action="INSERT_OR_UPDATE"><element>u_rental_status</element><help/><hint/><label>Rental Status</label><language>en</language><name>u_kayak_rental</name><plural>Rental Statuss</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>749e0684827649eeb537aeba329a8bcc</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Rental Status</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_kayak_rental_u_rental_status_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>1593643380</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>6abd373946994c3e83fd82bfd6074724</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002a01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.Rental Status</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>27c6f73b739c4c53bc426a66739ce0c5</update_guid>
+<update_guid_history>27c6f73b739c4c53bc426a66739ce0c5:1593643380</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_kayak_rental_u_rental_status_requested</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_rental_status</element><inactive>false</inactive><label>Requested</label><language>en</language><name>u_kayak_rental</name><sequence>1</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>55dedad02a474ae2b3e025991b56f49b</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_kayak_rental_u_rental_status_requested</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><value>requested</value></sys_choice></record_update>]]></payload>
+<payload_hash>226681641</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>5ea5bac666974917ba01718b452230a2</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002b01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.Rental Status.Requested</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>32ff9051eb08423e8f41686b244ffff3</update_guid>
+<update_guid_history>32ff9051eb08423e8f41686b244ffff3:226681641</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_kayak_rental_u_rental_status_approved</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_rental_status</element><inactive>false</inactive><label>Approved</label><language>en</language><name>u_kayak_rental</name><sequence>2</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>18b1e9e9ca5a4f6d90ec598f2f336df9</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_kayak_rental_u_rental_status_approved</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><value>approved</value></sys_choice></record_update>]]></payload>
+<payload_hash>1542079971</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>e535d764a5c0487db0acbd3adf7857a8</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002c01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.Rental Status.Approved</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>4e00138a02e9480084a96e02906146a4</update_guid>
+<update_guid_history>4e00138a02e9480084a96e02906146a4:1542079971</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_kayak_rental_u_rental_status_active</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_rental_status</element><inactive>false</inactive><label>Active</label><language>en</language><name>u_kayak_rental</name><sequence>3</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>b57f22f1dbc64f52ad51beb94bd11a80</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_kayak_rental_u_rental_status_active</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><value>active</value></sys_choice></record_update>]]></payload>
+<payload_hash>1668025068</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>1afa674d20c94fff82e5261683898fb4</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002d01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.Rental Status.Active</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>164148afdff146bc864913c81ae8d9a9</update_guid>
+<update_guid_history>164148afdff146bc864913c81ae8d9a9:1668025068</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_kayak_rental_u_rental_status_returned</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_rental_status</element><inactive>false</inactive><label>Returned</label><language>en</language><name>u_kayak_rental</name><sequence>4</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>ba9b2d79fa8a45b388f90aba8cd6170f</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_kayak_rental_u_rental_status_returned</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><value>returned</value></sys_choice></record_update>]]></payload>
+<payload_hash>646039561</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>8a53b9edc2a54d328028810b28515f78</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002e01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.Rental Status.Returned</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>efc185de65a74ddfa6b8c51b5d91a8af</update_guid>
+<update_guid_history>efc185de65a74ddfa6b8c51b5d91a8af:646039561</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_kayak_rental_u_rental_status_cancelled</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_rental_status</element><inactive>false</inactive><label>Cancelled</label><language>en</language><name>u_kayak_rental</name><sequence>5</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>a43f4a56a8644305851e8e8edff7deaf</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_kayak_rental_u_rental_status_cancelled</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><value>cancelled</value></sys_choice></record_update>]]></payload>
+<payload_hash>597785477</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>273ca93d37904d0a8a0b78d0f185071d</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000002f01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>u_kayak_rental</table>
+<target_name>Kayak Rentals.Rental Status.Cancelled</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>c4c2df13082b4b44a2a8636b1c3b43c2</update_guid>
+<update_guid_history>c4c2df13082b4b44a2a8636b1c3b43c2:597785477</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_application_bcbec34cfc7e4e83aad7b234d181606d</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_application"><sys_app_application action="INSERT_OR_UPDATE"><active>true</active><category/><description>Kayak rental and reservation management</description><device_type>browser</device_type><hint>Reserve and manage kayaks</hint><name>Kayak Rental</name><order>100</order><roles/><sys_class_name>sys_app_application</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>bcbec34cfc7e4e83aad7b234d181606d</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_application_bcbec34cfc7e4e83aad7b234d181606d</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><title>Kayak Rental</title></sys_app_application></record_update>]]></payload>
+<payload_hash>1694917745</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>6e46a27cca584c4a8a5860c0bb549ed1</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000003001</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>sys_app_application</table>
+<target_name>Kayak Rental</target_name>
+<type>Application Menu</type>
+<update_domain>global</update_domain>
+<update_guid>60ce3e7cab654b5eb2cee4ad073cbf58</update_guid>
+<update_guid_history>60ce3e7cab654b5eb2cee4ad073cbf58:1694917745</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_705b18093f07408e9ad3086dc97f04d0</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Kayak Rental">bcbec34cfc7e4e83aad7b234d181606d</application><device_type>browser</device_type><filter></filter><hint>Create a new kayak rental</hint><link_type>NEW</link_type><name>Create Rental</name><order>100</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>705b18093f07408e9ad3086dc97f04d0</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_705b18093f07408e9ad3086dc97f04d0</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><table>u_kayak_rental</table><title>Create Rental</title></sys_app_module></record_update>]]></payload>
+<payload_hash>410509915</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>4359c174246d447297a4460246d698f9</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000003101</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>Create Rental</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>b6a94d21d5494a0c822716f44d172c11</update_guid>
+<update_guid_history>b6a94d21d5494a0c822716f44d172c11:410509915</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_3c091da0d7284f39ac7c69279cfa13c1</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Kayak Rental">bcbec34cfc7e4e83aad7b234d181606d</application><device_type>browser</device_type><filter></filter><hint>View all kayak rentals</hint><link_type>LIST</link_type><name>All Rentals</name><order>200</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>3c091da0d7284f39ac7c69279cfa13c1</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_3c091da0d7284f39ac7c69279cfa13c1</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><table>u_kayak_rental</table><title>All Rentals</title></sys_app_module></record_update>]]></payload>
+<payload_hash>1112305665</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>79e866a004324a6497b62248504f44ee</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000003201</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>All Rentals</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>045d56b1d0054e7b94ebb9fa37524d1b</update_guid>
+<update_guid_history>045d56b1d0054e7b94ebb9fa37524d1b:1112305665</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_e5c2c247489f4a03b89c5546e42a9341</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Kayak Rental">bcbec34cfc7e4e83aad7b234d181606d</application><device_type>browser</device_type><filter>u_rental_statusINrequested,approved,active</filter><hint>View active rentals</hint><link_type>LIST</link_type><name>Active Rentals</name><order>300</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>e5c2c247489f4a03b89c5546e42a9341</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_e5c2c247489f4a03b89c5546e42a9341</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><table>u_kayak_rental</table><title>Active Rentals</title></sys_app_module></record_update>]]></payload>
+<payload_hash>1666915981</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>90998d63612f46af8af185b0a53c0b99</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000003301</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>Active Rentals</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>435308d2f99243a091844e30a619f57b</update_guid>
+<update_guid_history>435308d2f99243a091844e30a619f57b:1666915981</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_6a7b846f527845cab7fe3ac7d3c3c24d</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Kayak Rental">bcbec34cfc7e4e83aad7b234d181606d</application><device_type>browser</device_type><filter>u_rental_statusINreturned,cancelled</filter><hint>View completed rentals</hint><link_type>LIST</link_type><name>Inactive Rentals</name><order>400</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>6a7b846f527845cab7fe3ac7d3c3c24d</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_6a7b846f527845cab7fe3ac7d3c3c24d</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><table>u_kayak_rental</table><title>Inactive Rentals</title></sys_app_module></record_update>]]></payload>
+<payload_hash>697868146</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>be77cb88b29f45e59a7a2ef7378106d2</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000003401</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>Inactive Rentals</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>b0422fb9455b46feb1a2a8500c3d5456</update_guid>
+<update_guid_history>b0422fb9455b46feb1a2a8500c3d5456:697868146</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_1b489eb4f58d402896e831b1704e4c50</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Kayak Rental">bcbec34cfc7e4e83aad7b234d181606d</application><device_type>browser</device_type><filter></filter><hint></hint><link_type>SEPARATOR</link_type><name>--- Kayaks ---</name><order>500</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>1b489eb4f58d402896e831b1704e4c50</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_1b489eb4f58d402896e831b1704e4c50</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><table></table><title>--- Kayaks ---</title></sys_app_module></record_update>]]></payload>
+<payload_hash>1592339432</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>c69b926c2a06466e9487c171cb625bf9</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000003501</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>--- Kayaks ---</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>0600c2e647364b35b425cda08c18e4c1</update_guid>
+<update_guid_history>0600c2e647364b35b425cda08c18e4c1:1592339432</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_28d403fee29348c0a15feb1b67de85fe</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Kayak Rental">bcbec34cfc7e4e83aad7b234d181606d</application><device_type>browser</device_type><filter></filter><hint>Add a new kayak</hint><link_type>NEW</link_type><name>Add Kayak</name><order>600</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>28d403fee29348c0a15feb1b67de85fe</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_28d403fee29348c0a15feb1b67de85fe</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><table>u_kayak</table><title>Add Kayak</title></sys_app_module></record_update>]]></payload>
+<payload_hash>1516029590</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>b49129cb6dab40a99084bf0584b4f988</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000003601</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>Add Kayak</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>62102da985884c20b24207c643533920</update_guid>
+<update_guid_history>62102da985884c20b24207c643533920:1516029590</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_918d888b22dc4711967756b0cae44d3b</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Kayak Rental">bcbec34cfc7e4e83aad7b234d181606d</application><device_type>browser</device_type><filter></filter><hint>View all kayaks</hint><link_type>LIST</link_type><name>All Kayaks</name><order>700</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>918d888b22dc4711967756b0cae44d3b</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_918d888b22dc4711967756b0cae44d3b</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><table>u_kayak</table><title>All Kayaks</title></sys_app_module></record_update>]]></payload>
+<payload_hash>2014619223</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>045164c8833845a29e12403783a37f70</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000003701</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>All Kayaks</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>d2aea395690a4b9ab09d0ccffb0a6e6b</update_guid>
+<update_guid_history>d2aea395690a4b9ab09d0ccffb0a6e6b:2014619223</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_23674241503e4e45b04d5a507a79b430</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Kayak Rental">bcbec34cfc7e4e83aad7b234d181606d</application><device_type>browser</device_type><filter>u_availability=available</filter><hint>View available kayaks</hint><link_type>LIST</link_type><name>Available Kayaks</name><order>800</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 14:00:00</sys_created_on><sys_id>23674241503e4e45b04d5a507a79b430</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_23674241503e4e45b04d5a507a79b430</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 14:00:00</sys_updated_on><table>u_kayak</table><title>Available Kayaks</title></sys_app_module></record_update>]]></payload>
+<payload_hash>1455905994</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 14:00:00</sys_created_on>
+<sys_id>90f0cbe2723d4d5fbcc0ee40ca1aeaa5</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10b000000003801</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 14:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>Available Kayaks</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>1305c4dc662443c89c2d7fa5154845a3</update_guid>
+<update_guid_history>1305c4dc662443c89c2d7fa5154845a3:1455905994</update_guid_history>
+<remote_update_set display_value="Kayak Rental App">d651507c29f74cfdaea3893ed2ec0784</remote_update_set>
+<view/>
+</sys_update_xml>
+</unload>

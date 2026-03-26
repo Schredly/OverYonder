@@ -1,0 +1,1735 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unload unload_date="2026-03-21 15:00:00">
+<sys_remote_update_set action="INSERT_OR_UPDATE">
+<application display_value="Global">global</application>
+<application_name>Global</application_name>
+<application_scope>global</application_scope>
+<collisions/>
+<commit_date/>
+<deleted/>
+<description>Airplane Loaner application — aircraft inventory and loan reservation management.</description>
+<installed_from/>
+<name>Airplane Loaner App</name>
+<origin_sys_id>a958285858f34f0592ade2a96408a7b9</origin_sys_id>
+<parent/>
+<release_date/>
+<remote_base_update_set/>
+<state>loaded</state>
+<summary/>
+<sys_class_name>sys_remote_update_set</sys_class_name>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>a958285858f34f0592ade2a96408a7b9</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<update_set/>
+</sys_remote_update_set>
+
+<sys_app_application action="INSERT_OR_UPDATE">
+<active>true</active>
+<category/>
+<description>Airplane loaner and reservation management</description>
+<device_type>browser</device_type>
+<hint>Reserve and manage loaner aircraft</hint>
+<name>Airplane Loaner</name>
+<order>100</order>
+<roles/>
+<sys_class_name>sys_app_application</sys_class_name>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>9ece48e3166247ad893b3cdbd226c291</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_update_name>sys_app_application_9ece48e3166247ad893b3cdbd226c291</sys_update_name>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<title>Airplane Loaner</title>
+</sys_app_application>
+
+<sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_null</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;&quot; table=&quot;u_airplane&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;Collection&quot;&gt;collection&lt;/internal_type&gt;&lt;mandatory&gt;false&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_airplane&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;83445b6d18c1472d82a6da079e699d33&lt;/sys_id&gt;&lt;sys_name&gt;u_airplane&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_null&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>374231514</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>2b0b8794a26f4c65a8f9f8df99acc15a</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000000101</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>Airplanes</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>3c25024856c84ec684b07c42b7ce74dd</update_guid>
+<update_guid_history>3c25024856c84ec684b07c42b7ce74dd:374231514</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane__en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="" label="Airplane" language="en" table="u_airplane"><sys_documentation action="INSERT_OR_UPDATE"><element></element><help/><hint/><label>Airplane</label><language>en</language><name>u_airplane</name><plural>Airplanes</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>e6d8a33bc9d34cd9b91e89e64e6ee33c</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Airplane</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane__en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>798912366</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>c5daed0a933f4086a6932c3f85f45ef7</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000000201</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>Airplanes</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>352732e9fc3e4ea0886e8c087684bd68</update_guid>
+<update_guid_history>352732e9fc3e4ea0886e8c087684bd68:798912366</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_db_object_0d938e776ecc498a9802ec2a3bb31784</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_db_object"><sys_db_object action="INSERT_OR_UPDATE"><access>public</access><actions_access>false</actions_access><alter_access>false</alter_access><caller_access/><client_scripts_access>false</client_scripts_access><configuration_access>false</configuration_access><create_access>false</create_access><create_access_controls>true</create_access_controls><delete_access>false</delete_access><filter_extension/><is_df_table>false</is_df_table><is_extendable>false</is_extendable><label>Airplane</label><live_feed_enabled>false</live_feed_enabled><name>u_airplane</name><number_ref/><provider_class/><read_access>true</read_access><scriptable_table>false</scriptable_table><super_class/><sys_class_name>sys_db_object</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>0d938e776ecc498a9802ec2a3bb31784</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Airplane</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_db_object_0d938e776ecc498a9802ec2a3bb31784</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><update_access>false</update_access><user_role/><ws_access>true</ws_access></sys_db_object></record_update>]]></payload>
+<payload_hash>1793734683</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>22abdecd5b504cbb9e42e7dfad78032b</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000000301</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>Airplanes</target_name>
+<type>Table</type>
+<update_domain>global</update_domain>
+<update_guid>4982389e9ae544a58dbfddd46d2d1835</update_guid>
+<update_guid_history>4982389e9ae544a58dbfddd46d2d1835:1793734683</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_security_acl_a871d88eca754521982eb7a91dea54ab</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl"><sys_security_acl action="INSERT_OR_UPDATE"><active>true</active><admin_overrides>true</admin_overrides><advanced>false</advanced><applies_to/><condition/><controlled_by_refs/><decision_type>allow</decision_type><description>Default access control on u_airplane</description><local_or_existing>Existing</local_or_existing><name>u_airplane</name><operation display_value="create">create</operation><script/><security_attribute/><sys_class_name>sys_security_acl</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>a871d88eca754521982eb7a91dea54ab</sys_id><sys_mod_count>0</sys_mod_count><sys_name>u_airplane</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_security_acl_a871d88eca754521982eb7a91dea54ab</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><type display_value="record">record</type></sys_security_acl></record_update>]]></payload>
+<payload_hash>1317307047</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>6fe03088b2fc40bf89515f52d4cb691c</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000000401</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane</target_name>
+<type>Access Control</type>
+<update_domain>global</update_domain>
+<update_guid>daccaa8f4ecc4f13a7487af213050d7a</update_guid>
+<update_guid_history>daccaa8f4ecc4f13a7487af213050d7a:1317307047</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_security_acl_cfffc77cdcd54ab791bce869a24dfd1c</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl"><sys_security_acl action="INSERT_OR_UPDATE"><active>true</active><admin_overrides>true</admin_overrides><advanced>false</advanced><applies_to/><condition/><controlled_by_refs/><decision_type>allow</decision_type><description>Default access control on u_airplane</description><local_or_existing>Existing</local_or_existing><name>u_airplane</name><operation display_value="read">read</operation><script/><security_attribute/><sys_class_name>sys_security_acl</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>cfffc77cdcd54ab791bce869a24dfd1c</sys_id><sys_mod_count>0</sys_mod_count><sys_name>u_airplane</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_security_acl_cfffc77cdcd54ab791bce869a24dfd1c</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><type display_value="record">record</type></sys_security_acl></record_update>]]></payload>
+<payload_hash>239517224</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>1421f9a15e664c60b2457c0ac22b9da1</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000000501</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane</target_name>
+<type>Access Control</type>
+<update_domain>global</update_domain>
+<update_guid>d1a5653c3d0e4fec8bcbce3abefced4f</update_guid>
+<update_guid_history>d1a5653c3d0e4fec8bcbce3abefced4f:239517224</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_security_acl_7df865aa743047f1a6ae0dc9b79f6a0c</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl"><sys_security_acl action="INSERT_OR_UPDATE"><active>true</active><admin_overrides>true</admin_overrides><advanced>false</advanced><applies_to/><condition/><controlled_by_refs/><decision_type>allow</decision_type><description>Default access control on u_airplane</description><local_or_existing>Existing</local_or_existing><name>u_airplane</name><operation display_value="write">write</operation><script/><security_attribute/><sys_class_name>sys_security_acl</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>7df865aa743047f1a6ae0dc9b79f6a0c</sys_id><sys_mod_count>0</sys_mod_count><sys_name>u_airplane</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_security_acl_7df865aa743047f1a6ae0dc9b79f6a0c</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><type display_value="record">record</type></sys_security_acl></record_update>]]></payload>
+<payload_hash>1969157045</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>8a0c87e9ee0548b6ac565e8e419b4d7e</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000000601</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane</target_name>
+<type>Access Control</type>
+<update_domain>global</update_domain>
+<update_guid>3a33357651db463f96db6fd46ff68442</update_guid>
+<update_guid_history>3a33357651db463f96db6fd46ff68442:1969157045</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_u_make</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_make&quot; table=&quot;u_airplane&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Make&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;true&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_make&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;String&quot;&gt;string&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;100&lt;/max_length&gt;&lt;name&gt;u_airplane&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;666101dd48224ba3ae83f5f24e9cbdef&lt;/sys_id&gt;&lt;sys_name&gt;Make&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_u_make&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>851960473</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>512197f2640a40d8927135143b445344</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000000701</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Make</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>509c7bb11da545c196a6ae543b003b1c</update_guid>
+<update_guid_history>509c7bb11da545c196a6ae543b003b1c:851960473</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_u_make_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_make" label="Make" language="en" table="u_airplane"><sys_documentation action="INSERT_OR_UPDATE"><element>u_make</element><help/><hint/><label>Make</label><language>en</language><name>u_airplane</name><plural>Makes</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>5487e3834cbf4775a2f67d37601b1d30</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Make</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_u_make_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>1015491982</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>d5f33776291e458f9c766361b61f9344</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000000801</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Make</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>ffaa39788158432eaed1c6c4506e6c31</update_guid>
+<update_guid_history>ffaa39788158432eaed1c6c4506e6c31:1015491982</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_u_model</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_model&quot; table=&quot;u_airplane&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Model&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_model&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;String&quot;&gt;string&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;100&lt;/max_length&gt;&lt;name&gt;u_airplane&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;94a783cd60964767a68dc68c12bff622&lt;/sys_id&gt;&lt;sys_name&gt;Model&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_u_model&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>83059790</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>7b2b4f6624eb4cc683c506f4e6468e68</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000000901</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Model</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>5e220f5a35bb40ef8cd7c55ea1354969</update_guid>
+<update_guid_history>5e220f5a35bb40ef8cd7c55ea1354969:83059790</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_u_model_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_model" label="Model" language="en" table="u_airplane"><sys_documentation action="INSERT_OR_UPDATE"><element>u_model</element><help/><hint/><label>Model</label><language>en</language><name>u_airplane</name><plural>Models</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>ce2f3b99cc174f809db3949663132631</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Model</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_u_model_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>1908585923</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>575cd4d8aa90431cb1e8f7ffbbf9f439</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000000a01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Model</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>93052f0abfd2423a9ea724394b943b5c</update_guid>
+<update_guid_history>93052f0abfd2423a9ea724394b943b5c:1908585923</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_u_year</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_year&quot; table=&quot;u_airplane&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Year&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_year&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;Integer&quot;&gt;integer&lt;/internal_type&gt;&lt;mandatory&gt;false&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_airplane&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;df4da06602624cb0af6e415a334131e3&lt;/sys_id&gt;&lt;sys_name&gt;Year&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_u_year&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1704058159</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>297a560da8cc45adbc3c0bf609237d5d</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000000b01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Year</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>4539ef2555ce4a8aad1a2dcf472e0af1</update_guid>
+<update_guid_history>4539ef2555ce4a8aad1a2dcf472e0af1:1704058159</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_u_year_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_year" label="Year" language="en" table="u_airplane"><sys_documentation action="INSERT_OR_UPDATE"><element>u_year</element><help/><hint/><label>Year</label><language>en</language><name>u_airplane</name><plural>Years</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>730b82cafbaa4049bf47b7714c1c53f7</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Year</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_u_year_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>1679153449</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>e6c44db0734a42d98c67380605fe2c45</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000000c01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Year</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>2ef5b32e350144ef84cd865861097295</update_guid>
+<update_guid_history>2ef5b32e350144ef84cd865861097295:1679153449</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_u_tail_number</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_tail_number&quot; table=&quot;u_airplane&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Tail Number&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_tail_number&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;String&quot;&gt;string&lt;/internal_type&gt;&lt;mandatory&gt;false&lt;/mandatory&gt;&lt;max_length&gt;20&lt;/max_length&gt;&lt;name&gt;u_airplane&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;564ceaeae5724f18bee90f2235154e38&lt;/sys_id&gt;&lt;sys_name&gt;Tail Number&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_u_tail_number&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>128705824</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>31440c65677e4903971a84a2792ee519</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000000d01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Tail Number</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>5f67c9dbd29341f48b6f2ba020ec6b42</update_guid>
+<update_guid_history>5f67c9dbd29341f48b6f2ba020ec6b42:128705824</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_u_tail_number_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_tail_number" label="Tail Number" language="en" table="u_airplane"><sys_documentation action="INSERT_OR_UPDATE"><element>u_tail_number</element><help/><hint/><label>Tail Number</label><language>en</language><name>u_airplane</name><plural>Tail Numbers</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>4bcdcd3f36294ee899a802f62b4b4928</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Tail Number</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_u_tail_number_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>1720088359</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>57bfdaae9bb94c6d8e1c6b11c7fc0ce7</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000000e01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Tail Number</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>7925dd12246f490ca402a72fe4c96a86</update_guid>
+<update_guid_history>7925dd12246f490ca402a72fe4c96a86:1720088359</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_u_aircraft_type</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_aircraft_type&quot; table=&quot;u_airplane&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;1&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Aircraft Type&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;single_engine&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_aircraft_type&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;String&quot;&gt;string&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_airplane&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;b334f2dd231f417084339306c9709247&lt;/sys_id&gt;&lt;sys_name&gt;Aircraft Type&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_u_aircraft_type&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1977644324</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>61d30b62ae304c09846b60dab92332a5</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000000f01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Aircraft Type</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>231d89e0c542403c8d896d0013635a89</update_guid>
+<update_guid_history>231d89e0c542403c8d896d0013635a89:1977644324</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_u_aircraft_type_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_aircraft_type" label="Aircraft Type" language="en" table="u_airplane"><sys_documentation action="INSERT_OR_UPDATE"><element>u_aircraft_type</element><help/><hint/><label>Aircraft Type</label><language>en</language><name>u_airplane</name><plural>Aircraft Types</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>546ae74e6fc246a79dc6652d6c86943d</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Aircraft Type</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_u_aircraft_type_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>218425388</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>e8b12182f7bf452495eca50765cc2e0e</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001001</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Aircraft Type</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>4f87a9bc39bc420eba968dbc8f3b3b20</update_guid>
+<update_guid_history>4f87a9bc39bc420eba968dbc8f3b3b20:218425388</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_airplane_u_aircraft_type_single_engine</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_aircraft_type</element><inactive>false</inactive><label>Single Engine</label><language>en</language><name>u_airplane</name><sequence>1</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>63b743143eb24414b072d9a71602fd26</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_airplane_u_aircraft_type_single_engine</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><value>single_engine</value></sys_choice></record_update>]]></payload>
+<payload_hash>1978696271</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>5fc4db743d3648519f9f5f60d0cd7348</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001101</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.u_aircraft_type.Single Engine</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>5a592e9dc86d443182ce94266a0c1b1c</update_guid>
+<update_guid_history>5a592e9dc86d443182ce94266a0c1b1c:1978696271</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_airplane_u_aircraft_type_multi_engine</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_aircraft_type</element><inactive>false</inactive><label>Multi Engine</label><language>en</language><name>u_airplane</name><sequence>2</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>b40b6d02d18c42c0a35406cd0d6f94d2</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_airplane_u_aircraft_type_multi_engine</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><value>multi_engine</value></sys_choice></record_update>]]></payload>
+<payload_hash>2139847149</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>4db019db011e4e6e8d3edd1adc02968a</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001201</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.u_aircraft_type.Multi Engine</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>d8e5252ea2064b60a31f1f772b833bb9</update_guid>
+<update_guid_history>d8e5252ea2064b60a31f1f772b833bb9:2139847149</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_airplane_u_aircraft_type_jet</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_aircraft_type</element><inactive>false</inactive><label>Jet</label><language>en</language><name>u_airplane</name><sequence>3</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>c3f69ff656cc4decbcbc905c0663ea00</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_airplane_u_aircraft_type_jet</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><value>jet</value></sys_choice></record_update>]]></payload>
+<payload_hash>1547543918</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>073dd8c28a944fb1b84554dfa5676604</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001301</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.u_aircraft_type.Jet</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>3a50be21ec0d49f8adcc18ae434d56c9</update_guid>
+<update_guid_history>3a50be21ec0d49f8adcc18ae434d56c9:1547543918</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_airplane_u_aircraft_type_helicopter</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_aircraft_type</element><inactive>false</inactive><label>Helicopter</label><language>en</language><name>u_airplane</name><sequence>4</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>b2ccab48fe194d76be9585d1cf0b2fc9</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_airplane_u_aircraft_type_helicopter</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><value>helicopter</value></sys_choice></record_update>]]></payload>
+<payload_hash>210631163</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>d5726d5cc269457589c705f500b30d02</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001401</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.u_aircraft_type.Helicopter</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>a381e345129641e2998083741011e0e9</update_guid>
+<update_guid_history>a381e345129641e2998083741011e0e9:210631163</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_airplane_u_aircraft_type_glider</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_aircraft_type</element><inactive>false</inactive><label>Glider</label><language>en</language><name>u_airplane</name><sequence>5</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>fff009a511584a9a87b44057c4174df8</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_airplane_u_aircraft_type_glider</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><value>glider</value></sys_choice></record_update>]]></payload>
+<payload_hash>412301971</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>abcf16bc868b4a8a9d45e2e27fea7aff</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001501</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.u_aircraft_type.Glider</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>07bc93da63594b459fbb3cebc7b855bc</update_guid>
+<update_guid_history>07bc93da63594b459fbb3cebc7b855bc:412301971</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_u_seats</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_seats&quot; table=&quot;u_airplane&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Seats&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;4&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_seats&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;Integer&quot;&gt;integer&lt;/internal_type&gt;&lt;mandatory&gt;false&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_airplane&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;97e65e76aa19451c88ec3329d3623389&lt;/sys_id&gt;&lt;sys_name&gt;Seats&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_u_seats&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1123444641</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>09e8ea5c31df408aafc3bd25035b3698</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001601</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Seats</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>9c1bff4d4aeb4c9b84fe8ceb37d33984</update_guid>
+<update_guid_history>9c1bff4d4aeb4c9b84fe8ceb37d33984:1123444641</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_u_seats_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_seats" label="Seats" language="en" table="u_airplane"><sys_documentation action="INSERT_OR_UPDATE"><element>u_seats</element><help/><hint/><label>Seats</label><language>en</language><name>u_airplane</name><plural>Seatss</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>12670180548d4a00b1fca19820acce30</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Seats</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_u_seats_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>413713276</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>eb0b93fee7864b43a7fc9b76c8d8ed74</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001701</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Seats</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>d23b24f46b0d4b5caaad47781edcd1e5</update_guid>
+<update_guid_history>d23b24f46b0d4b5caaad47781edcd1e5:413713276</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_u_home_airport</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_home_airport&quot; table=&quot;u_airplane&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Home Airport&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_home_airport&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;String&quot;&gt;string&lt;/internal_type&gt;&lt;mandatory&gt;false&lt;/mandatory&gt;&lt;max_length&gt;10&lt;/max_length&gt;&lt;name&gt;u_airplane&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;aa82e57ab9294db59a675b453fa7590b&lt;/sys_id&gt;&lt;sys_name&gt;Home Airport&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_u_home_airport&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1425578020</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>1d8df1ce5045459c9608f7cad1561c4b</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001801</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Home Airport</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>efd3b74e610e4ecf8347df8f427e5d61</update_guid>
+<update_guid_history>efd3b74e610e4ecf8347df8f427e5d61:1425578020</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_u_home_airport_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_home_airport" label="Home Airport" language="en" table="u_airplane"><sys_documentation action="INSERT_OR_UPDATE"><element>u_home_airport</element><help/><hint/><label>Home Airport</label><language>en</language><name>u_airplane</name><plural>Home Airports</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>4249e345be2b4f7cba57a80be4fceec1</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Home Airport</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_u_home_airport_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>1996716279</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>d0393e46cd494248879c7b52539e5bbe</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001901</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Home Airport</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>5ce419dc7feb4774a1d16cf2d36011dc</update_guid>
+<update_guid_history>5ce419dc7feb4774a1d16cf2d36011dc:1996716279</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_u_availability</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_availability&quot; table=&quot;u_airplane&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;1&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Availability&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;available&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_availability&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;String&quot;&gt;string&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_airplane&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;4e0b3aa1fb3b431da377b58687a86304&lt;/sys_id&gt;&lt;sys_name&gt;Availability&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_u_availability&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>2072461890</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>f4de5d75fee44885abd665052dc104b7</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001a01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Availability</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>e7b87cffa1ca43c4b050b6255aaa692d</update_guid>
+<update_guid_history>e7b87cffa1ca43c4b050b6255aaa692d:2072461890</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_u_availability_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_availability" label="Availability" language="en" table="u_airplane"><sys_documentation action="INSERT_OR_UPDATE"><element>u_availability</element><help/><hint/><label>Availability</label><language>en</language><name>u_airplane</name><plural>Availabilitys</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>ecb8974b3d82448585a5735c95ea371b</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Availability</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_u_availability_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>780421760</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>464f37544da144348d5d115961939310</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001b01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.Availability</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>ade1baef6000455e8092d04e6e1333c8</update_guid>
+<update_guid_history>ade1baef6000455e8092d04e6e1333c8:780421760</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_airplane_u_availability_available</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_availability</element><inactive>false</inactive><label>Available</label><language>en</language><name>u_airplane</name><sequence>1</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>c01a511859c046b8a93c727fd481bde5</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_airplane_u_availability_available</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><value>available</value></sys_choice></record_update>]]></payload>
+<payload_hash>1549748765</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>657de6eb16fd4175bf6989e555957f46</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001c01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.u_availability.Available</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>d0cf02332e8242eabf6d8e0430213e97</update_guid>
+<update_guid_history>d0cf02332e8242eabf6d8e0430213e97:1549748765</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_airplane_u_availability_on_loan</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_availability</element><inactive>false</inactive><label>On Loan</label><language>en</language><name>u_airplane</name><sequence>2</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>94dbb5da744c47e1bf114af901ac9c8a</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_airplane_u_availability_on_loan</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><value>on_loan</value></sys_choice></record_update>]]></payload>
+<payload_hash>348618176</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>e50d71673a794d428daa053da7be10dc</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001d01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.u_availability.On Loan</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>4ae32fd3fd1643b4b38105897bb9a9ef</update_guid>
+<update_guid_history>4ae32fd3fd1643b4b38105897bb9a9ef:348618176</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_airplane_u_availability_maintenance</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_availability</element><inactive>false</inactive><label>In Maintenance</label><language>en</language><name>u_airplane</name><sequence>3</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>9d46d037a1d04aadbdb5a3e1f207f4cc</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_airplane_u_availability_maintenance</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><value>maintenance</value></sys_choice></record_update>]]></payload>
+<payload_hash>292139333</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>8296503a25cd44c8a71b4bee9465f1be</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001e01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.u_availability.In Maintenance</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>bd9195dbc391424cbb90a7fa12465ee2</update_guid>
+<update_guid_history>bd9195dbc391424cbb90a7fa12465ee2:292139333</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_airplane_u_availability_retired</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_availability</element><inactive>false</inactive><label>Retired</label><language>en</language><name>u_airplane</name><sequence>4</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>b8b286a245934d70a1fc97d12e031082</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_airplane_u_availability_retired</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><value>retired</value></sys_choice></record_update>]]></payload>
+<payload_hash>471785765</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>dda210c21b2a414380caff002cac09da</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000001f01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane</table>
+<target_name>u_airplane.u_availability.Retired</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>65c1848b281f4142b4a3c0b89527e5ef</update_guid>
+<update_guid_history>65c1848b281f4142b4a3c0b89527e5ef:471785765</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_loan_null</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;&quot; table=&quot;u_airplane_loan&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;Collection&quot;&gt;collection&lt;/internal_type&gt;&lt;mandatory&gt;false&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_airplane_loan&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;5af37c04ed0048a8baef90bcd01f600f&lt;/sys_id&gt;&lt;sys_name&gt;u_airplane_loan&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_loan_null&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>812347073</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>75a8cf04b19f4dec9da6664df2a82c9f</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002001</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>Airplane Loans</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>3b236289c2c64f42bbee32a34899873b</update_guid>
+<update_guid_history>3b236289c2c64f42bbee32a34899873b:812347073</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_loan__en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="" label="Airplane Loan" language="en" table="u_airplane_loan"><sys_documentation action="INSERT_OR_UPDATE"><element></element><help/><hint/><label>Airplane Loan</label><language>en</language><name>u_airplane_loan</name><plural>Airplane Loans</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>f59c0b08444a464eb627dc360749c1eb</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Airplane Loan</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_loan__en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>741509915</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>b868c20a32e148879368de4bb4ebcdd2</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002101</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>Airplane Loans</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>d00f795e0cb14f4fae1b772fc3301699</update_guid>
+<update_guid_history>d00f795e0cb14f4fae1b772fc3301699:741509915</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_db_object_da6e9e79129b4161b7b1a7cf95faf34a</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_db_object"><sys_db_object action="INSERT_OR_UPDATE"><access>public</access><actions_access>false</actions_access><alter_access>false</alter_access><caller_access/><client_scripts_access>false</client_scripts_access><configuration_access>false</configuration_access><create_access>false</create_access><create_access_controls>true</create_access_controls><delete_access>false</delete_access><filter_extension/><is_df_table>false</is_df_table><is_extendable>false</is_extendable><label>Airplane Loan</label><live_feed_enabled>false</live_feed_enabled><name>u_airplane_loan</name><number_ref/><provider_class/><read_access>true</read_access><scriptable_table>false</scriptable_table><super_class/><sys_class_name>sys_db_object</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>da6e9e79129b4161b7b1a7cf95faf34a</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Airplane Loan</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_db_object_da6e9e79129b4161b7b1a7cf95faf34a</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><update_access>false</update_access><user_role/><ws_access>true</ws_access></sys_db_object></record_update>]]></payload>
+<payload_hash>2069022872</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>70125b2865dc46388b96dd6537168186</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002201</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>Airplane Loans</target_name>
+<type>Table</type>
+<update_domain>global</update_domain>
+<update_guid>60941c11529145bcaf77d16196c285ac</update_guid>
+<update_guid_history>60941c11529145bcaf77d16196c285ac:2069022872</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_security_acl_6cd0d9432648417f807ff5518a0ec80c</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl"><sys_security_acl action="INSERT_OR_UPDATE"><active>true</active><admin_overrides>true</admin_overrides><advanced>false</advanced><applies_to/><condition/><controlled_by_refs/><decision_type>allow</decision_type><description>Default access control on u_airplane_loan</description><local_or_existing>Existing</local_or_existing><name>u_airplane_loan</name><operation display_value="create">create</operation><script/><security_attribute/><sys_class_name>sys_security_acl</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>6cd0d9432648417f807ff5518a0ec80c</sys_id><sys_mod_count>0</sys_mod_count><sys_name>u_airplane_loan</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_security_acl_6cd0d9432648417f807ff5518a0ec80c</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><type display_value="record">record</type></sys_security_acl></record_update>]]></payload>
+<payload_hash>663730461</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>6eb40e67005a45f3a21d502b3f5cd7a2</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002301</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan</target_name>
+<type>Access Control</type>
+<update_domain>global</update_domain>
+<update_guid>62663c34f0d44a4798191e2b15a35533</update_guid>
+<update_guid_history>62663c34f0d44a4798191e2b15a35533:663730461</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_security_acl_9be64e7d19f7497baf846765db23cf66</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl"><sys_security_acl action="INSERT_OR_UPDATE"><active>true</active><admin_overrides>true</admin_overrides><advanced>false</advanced><applies_to/><condition/><controlled_by_refs/><decision_type>allow</decision_type><description>Default access control on u_airplane_loan</description><local_or_existing>Existing</local_or_existing><name>u_airplane_loan</name><operation display_value="read">read</operation><script/><security_attribute/><sys_class_name>sys_security_acl</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>9be64e7d19f7497baf846765db23cf66</sys_id><sys_mod_count>0</sys_mod_count><sys_name>u_airplane_loan</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_security_acl_9be64e7d19f7497baf846765db23cf66</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><type display_value="record">record</type></sys_security_acl></record_update>]]></payload>
+<payload_hash>1727624923</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>7de0c9b5b6cd4de9b0deb20e28121502</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002401</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan</target_name>
+<type>Access Control</type>
+<update_domain>global</update_domain>
+<update_guid>63c715fd77d6408181832c3481f9b93c</update_guid>
+<update_guid_history>63c715fd77d6408181832c3481f9b93c:1727624923</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_security_acl_a492996faf95490686f1900915a09b09</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl"><sys_security_acl action="INSERT_OR_UPDATE"><active>true</active><admin_overrides>true</admin_overrides><advanced>false</advanced><applies_to/><condition/><controlled_by_refs/><decision_type>allow</decision_type><description>Default access control on u_airplane_loan</description><local_or_existing>Existing</local_or_existing><name>u_airplane_loan</name><operation display_value="write">write</operation><script/><security_attribute/><sys_class_name>sys_security_acl</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>a492996faf95490686f1900915a09b09</sys_id><sys_mod_count>0</sys_mod_count><sys_name>u_airplane_loan</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_security_acl_a492996faf95490686f1900915a09b09</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><type display_value="record">record</type></sys_security_acl></record_update>]]></payload>
+<payload_hash>1415598310</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>847f19a9b6414f988219405c6ef7af96</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002501</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan</target_name>
+<type>Access Control</type>
+<update_domain>global</update_domain>
+<update_guid>e9f87e9b3bc949558c758cced92fe80e</update_guid>
+<update_guid_history>e9f87e9b3bc949558c758cced92fe80e:1415598310</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_loan_u_requested_by</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_requested_by&quot; table=&quot;u_airplane_loan&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Requested By&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;javascript:gs.getUserID()&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;true&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_requested_by&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;Reference&quot;&gt;reference&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_airplane_loan&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference display_value=&quot;&quot; name=&quot;sys_user&quot;&gt;sys_user&lt;/reference&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;e6a2769bcf4247449a13ac8f5debe50e&lt;/sys_id&gt;&lt;sys_name&gt;Requested By&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_loan_u_requested_by&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1659693237</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>682a4e1239444de19301276da359a8db</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002601</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.Requested By</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>31e6282b659b48c0b869c8a3b9498fb3</update_guid>
+<update_guid_history>31e6282b659b48c0b869c8a3b9498fb3:1659693237</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_loan_u_requested_by_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_requested_by" label="Requested By" language="en" table="u_airplane_loan"><sys_documentation action="INSERT_OR_UPDATE"><element>u_requested_by</element><help/><hint/><label>Requested By</label><language>en</language><name>u_airplane_loan</name><plural>Requested Bys</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>767f0b74ef3342389d958af32cbf28fe</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Requested By</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_loan_u_requested_by_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>195589204</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>cc26c1ee11c34cb6b0bd49cf62586fd6</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002701</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.Requested By</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>b2807862a74f46d6aacdbde5c9f6aeba</update_guid>
+<update_guid_history>b2807862a74f46d6aacdbde5c9f6aeba:195589204</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_loan_u_airplane</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_airplane&quot; table=&quot;u_airplane_loan&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Airplane&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_airplane&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;Reference&quot;&gt;reference&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_airplane_loan&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference display_value=&quot;&quot; name=&quot;u_airplane&quot;&gt;u_airplane&lt;/reference&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;006a5a484a874cd3ada339d2bec17fba&lt;/sys_id&gt;&lt;sys_name&gt;Airplane&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_loan_u_airplane&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1891116445</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>9135b081abaa4633ba691fbd2f3ee581</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002801</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.Airplane</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>718de35cc8004da78f4e574d57e9c631</update_guid>
+<update_guid_history>718de35cc8004da78f4e574d57e9c631:1891116445</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_loan_u_airplane_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_airplane" label="Airplane" language="en" table="u_airplane_loan"><sys_documentation action="INSERT_OR_UPDATE"><element>u_airplane</element><help/><hint/><label>Airplane</label><language>en</language><name>u_airplane_loan</name><plural>Airplanes</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>fcdab7f3d8c64f38ba3ec30d179fba14</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Airplane</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_loan_u_airplane_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>251225104</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>2d61a5a6a9cd4da88b995112ff8577be</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002901</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.Airplane</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>03a95a88e3f249578672de73cd8cae9d</update_guid>
+<update_guid_history>03a95a88e3f249578672de73cd8cae9d:251225104</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_loan_u_start_date</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_start_date&quot; table=&quot;u_airplane_loan&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Start Date&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_start_date&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;Date&quot;&gt;glide_date&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_airplane_loan&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;6b74455ade714569a39943089331ec33&lt;/sys_id&gt;&lt;sys_name&gt;Start Date&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_loan_u_start_date&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>558169524</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>ee14520a655748eabf8def3eb012f552</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002a01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.Start Date</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>cff876929da9430bb711748e490fec2d</update_guid>
+<update_guid_history>cff876929da9430bb711748e490fec2d:558169524</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_loan_u_start_date_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_start_date" label="Start Date" language="en" table="u_airplane_loan"><sys_documentation action="INSERT_OR_UPDATE"><element>u_start_date</element><help/><hint/><label>Start Date</label><language>en</language><name>u_airplane_loan</name><plural>Start Dates</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>df213c6deb334375bf2673d17ad8f98b</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Start Date</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_loan_u_start_date_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>1657727320</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>606ca5da1458472881c5a19738cf712a</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002b01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.Start Date</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>7fc2861d2f164d17be4451afc056f62e</update_guid>
+<update_guid_history>7fc2861d2f164d17be4451afc056f62e:1657727320</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_loan_u_end_date</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_end_date&quot; table=&quot;u_airplane_loan&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;End Date&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_end_date&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;Date&quot;&gt;glide_date&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_airplane_loan&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;8b4921cd49a240e5b1c4e67baab90da8&lt;/sys_id&gt;&lt;sys_name&gt;End Date&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_loan_u_end_date&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>357396496</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>f27373027b80474f98a39362c176fb27</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002c01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.End Date</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>c468bb3d58c2485fad926cf9cc5e98d9</update_guid>
+<update_guid_history>c468bb3d58c2485fad926cf9cc5e98d9:357396496</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_loan_u_end_date_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_end_date" label="End Date" language="en" table="u_airplane_loan"><sys_documentation action="INSERT_OR_UPDATE"><element>u_end_date</element><help/><hint/><label>End Date</label><language>en</language><name>u_airplane_loan</name><plural>End Dates</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>159fa0969edd40b6801f8c467e77240f</sys_id><sys_mod_count>0</sys_mod_count><sys_name>End Date</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_loan_u_end_date_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>843977763</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>b54a7a30a9f246bd8bf0d1b84052dbdb</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002d01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.End Date</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>1dec02a2bb7140a28df10bca07f3f87e</update_guid>
+<update_guid_history>1dec02a2bb7140a28df10bca07f3f87e:843977763</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_loan_u_destination</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_destination&quot; table=&quot;u_airplane_loan&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Destination&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_destination&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;String&quot;&gt;string&lt;/internal_type&gt;&lt;mandatory&gt;false&lt;/mandatory&gt;&lt;max_length&gt;200&lt;/max_length&gt;&lt;name&gt;u_airplane_loan&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;26f4c004f37b407b976aef79170176bf&lt;/sys_id&gt;&lt;sys_name&gt;Destination&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_loan_u_destination&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1476882480</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>81d07f9863204c21badd1cd873118985</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002e01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.Destination</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>3b5750507c894972b54d1e9ed5f79f96</update_guid>
+<update_guid_history>3b5750507c894972b54d1e9ed5f79f96:1476882480</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_loan_u_destination_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_destination" label="Destination" language="en" table="u_airplane_loan"><sys_documentation action="INSERT_OR_UPDATE"><element>u_destination</element><help/><hint/><label>Destination</label><language>en</language><name>u_airplane_loan</name><plural>Destinations</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>a10b8eceb72a4a02b6b58b476fd2dc2f</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Destination</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_loan_u_destination_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>493444860</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>2bfcb0f7455447feb9d02baf6258bc56</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000002f01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.Destination</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>5947fa891ea5435bbb438b0f357ab6db</update_guid>
+<update_guid_history>5947fa891ea5435bbb438b0f357ab6db:493444860</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_loan_u_purpose</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_purpose&quot; table=&quot;u_airplane_loan&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Purpose&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_purpose&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;String&quot;&gt;string&lt;/internal_type&gt;&lt;mandatory&gt;false&lt;/mandatory&gt;&lt;max_length&gt;4000&lt;/max_length&gt;&lt;name&gt;u_airplane_loan&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;60f0c355574d423781b763cf13e7f5cb&lt;/sys_id&gt;&lt;sys_name&gt;Purpose&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_loan_u_purpose&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1150156458</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>643da492a6ca4789895dd6b461b2c891</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000003001</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.Purpose</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>74647108f5e04dd5a9e4d7a424c31766</update_guid>
+<update_guid_history>74647108f5e04dd5a9e4d7a424c31766:1150156458</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_loan_u_purpose_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_purpose" label="Purpose" language="en" table="u_airplane_loan"><sys_documentation action="INSERT_OR_UPDATE"><element>u_purpose</element><help/><hint/><label>Purpose</label><language>en</language><name>u_airplane_loan</name><plural>Purposes</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>c3367a7851f0410c878928440481155a</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Purpose</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_loan_u_purpose_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>301955297</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>8c71b053c9c847848845b75682cdca52</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000003101</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.Purpose</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>bcb020254a4546e69d55528928abc1cc</update_guid>
+<update_guid_history>bcb020254a4546e69d55528928abc1cc:301955297</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_dictionary_u_airplane_loan_u_loan_status</name>
+<payload>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;record_update&gt;&lt;sys_dictionary action=&quot;INSERT_OR_UPDATE&quot; element=&quot;u_loan_status&quot; table=&quot;u_airplane_loan&quot;&gt;&lt;active&gt;true&lt;/active&gt;&lt;array&gt;false&lt;/array&gt;&lt;attributes/&gt;&lt;audit&gt;false&lt;/audit&gt;&lt;calculation&gt;&lt;![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]&gt;&lt;/calculation&gt;&lt;choice&gt;1&lt;/choice&gt;&lt;choice_field/&gt;&lt;choice_table/&gt;&lt;column_label&gt;Loan Status&lt;/column_label&gt;&lt;comments/&gt;&lt;create_roles/&gt;&lt;default_value&gt;requested&lt;/default_value&gt;&lt;defaultsort/&gt;&lt;delete_roles/&gt;&lt;dependent/&gt;&lt;dependent_on_field/&gt;&lt;display&gt;false&lt;/display&gt;&lt;dynamic_creation&gt;false&lt;/dynamic_creation&gt;&lt;dynamic_creation_script/&gt;&lt;dynamic_default_value/&gt;&lt;dynamic_ref_qual/&gt;&lt;element&gt;u_loan_status&lt;/element&gt;&lt;element_reference&gt;false&lt;/element_reference&gt;&lt;foreign_database/&gt;&lt;formula/&gt;&lt;function_definition/&gt;&lt;function_field&gt;false&lt;/function_field&gt;&lt;internal_type display_value=&quot;String&quot;&gt;string&lt;/internal_type&gt;&lt;mandatory&gt;true&lt;/mandatory&gt;&lt;max_length&gt;40&lt;/max_length&gt;&lt;name&gt;u_airplane_loan&lt;/name&gt;&lt;next_element/&gt;&lt;primary&gt;false&lt;/primary&gt;&lt;read_only&gt;false&lt;/read_only&gt;&lt;read_roles/&gt;&lt;reference/&gt;&lt;reference_cascade_rule/&gt;&lt;reference_floats&gt;false&lt;/reference_floats&gt;&lt;reference_key/&gt;&lt;reference_qual/&gt;&lt;reference_qual_condition/&gt;&lt;reference_type/&gt;&lt;spell_check&gt;false&lt;/spell_check&gt;&lt;staged&gt;false&lt;/staged&gt;&lt;sys_class_name&gt;sys_dictionary&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2026-03-21 15:00:00&lt;/sys_created_on&gt;&lt;sys_id&gt;fa4aeb931f9f4fc5818f59e146730600&lt;/sys_id&gt;&lt;sys_name&gt;Loan Status&lt;/sys_name&gt;&lt;sys_package display_value=&quot;Global&quot; source=&quot;global&quot;&gt;global&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value=&quot;Global&quot;&gt;global&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_dictionary_u_airplane_loan_u_loan_status&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2026-03-21 15:00:00&lt;/sys_updated_on&gt;&lt;table_reference&gt;false&lt;/table_reference&gt;&lt;text_index&gt;false&lt;/text_index&gt;&lt;unique&gt;false&lt;/unique&gt;&lt;use_dependent_field&gt;false&lt;/use_dependent_field&gt;&lt;use_dynamic_default&gt;false&lt;/use_dynamic_default&gt;&lt;use_reference_qualifier&gt;simple&lt;/use_reference_qualifier&gt;&lt;virtual&gt;false&lt;/virtual&gt;&lt;virtual_type&gt;script&lt;/virtual_type&gt;&lt;widget/&gt;&lt;write_roles/&gt;&lt;xml_view&gt;false&lt;/xml_view&gt;&lt;/sys_dictionary&gt;&lt;/record_update&gt;</payload>
+<payload_hash>1764421378</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>6bcb72d60fbb4430b84f970ed57b9a14</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000003201</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.Loan Status</target_name>
+<type>Dictionary</type>
+<update_domain>global</update_domain>
+<update_guid>e125e49e7f6f47f39a67e2b97bcfa01a</update_guid>
+<update_guid_history>e125e49e7f6f47f39a67e2b97bcfa01a:1764421378</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_documentation_u_airplane_loan_u_loan_status_en</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_documentation element="u_loan_status" label="Loan Status" language="en" table="u_airplane_loan"><sys_documentation action="INSERT_OR_UPDATE"><element>u_loan_status</element><help/><hint/><label>Loan Status</label><language>en</language><name>u_airplane_loan</name><plural>Loan Statuss</plural><sys_class_name>sys_documentation</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>751b1764ff314b4ab1064b5efc05eba5</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Loan Status</sys_name><sys_package display_value="Global" source="global">global</sys_package><sys_policy/><sys_scope display_value="Global">global</sys_scope><sys_update_name>sys_documentation_u_airplane_loan_u_loan_status_en</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><url/><url_target/></sys_documentation></sys_documentation></record_update>]]></payload>
+<payload_hash>885078276</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>e5455e9cfa094139bfa390bcfc264832</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000003301</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.Loan Status</target_name>
+<type>Field Label</type>
+<update_domain>global</update_domain>
+<update_guid>de1185babca647b082a1941700a653ea</update_guid>
+<update_guid_history>de1185babca647b082a1941700a653ea:885078276</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_airplane_loan_u_loan_status_requested</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_loan_status</element><inactive>false</inactive><label>Requested</label><language>en</language><name>u_airplane_loan</name><sequence>1</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>1af675c4f2df4294af81b5b95a5b8880</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_airplane_loan_u_loan_status_requested</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><value>requested</value></sys_choice></record_update>]]></payload>
+<payload_hash>1043875409</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>df0403d65cf04048a8f09a463ebfb165</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000003401</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.u_loan_status.Requested</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>d31cf9a0e843486d86bb2e430a7b7e49</update_guid>
+<update_guid_history>d31cf9a0e843486d86bb2e430a7b7e49:1043875409</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_airplane_loan_u_loan_status_approved</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_loan_status</element><inactive>false</inactive><label>Approved</label><language>en</language><name>u_airplane_loan</name><sequence>2</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>c52e5a0a09394d12be7bf8092a39fdd5</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_airplane_loan_u_loan_status_approved</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><value>approved</value></sys_choice></record_update>]]></payload>
+<payload_hash>1585555479</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>77dbf47193dd4b2bbb64faceb8205f38</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000003501</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.u_loan_status.Approved</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>b49d85bd5a2e4e2b87945098f7f8a019</update_guid>
+<update_guid_history>b49d85bd5a2e4e2b87945098f7f8a019:1585555479</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_airplane_loan_u_loan_status_active</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_loan_status</element><inactive>false</inactive><label>Active</label><language>en</language><name>u_airplane_loan</name><sequence>3</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>417d6d4e844c4dc9ad49cdd3f58445cd</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_airplane_loan_u_loan_status_active</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><value>active</value></sys_choice></record_update>]]></payload>
+<payload_hash>1607103512</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>61e526c292e840248a6feadf7b905505</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000003601</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.u_loan_status.Active</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>329110de603e40ba976c82666f0dc584</update_guid>
+<update_guid_history>329110de603e40ba976c82666f0dc584:1607103512</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_airplane_loan_u_loan_status_returned</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_loan_status</element><inactive>false</inactive><label>Returned</label><language>en</language><name>u_airplane_loan</name><sequence>4</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>abadec270e964f9eb7971ace1b775cbc</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_airplane_loan_u_loan_status_returned</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><value>returned</value></sys_choice></record_update>]]></payload>
+<payload_hash>470745754</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>47d9ed1aa05248548b917f35d4221e8a</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000003701</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.u_loan_status.Returned</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>1d2280b784164f8191b2fa863c33a4e3</update_guid>
+<update_guid_history>1d2280b784164f8191b2fa863c33a4e3:470745754</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_choice_u_airplane_loan_u_loan_status_cancelled</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update><sys_choice action="INSERT_OR_UPDATE"><element>u_loan_status</element><inactive>false</inactive><label>Cancelled</label><language>en</language><name>u_airplane_loan</name><sequence>5</sequence><sys_class_name>sys_choice</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>8dd064c2b6b14088ac57f1d706280e4a</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_choice_u_airplane_loan_u_loan_status_cancelled</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><value>cancelled</value></sys_choice></record_update>]]></payload>
+<payload_hash>1978052124</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>dfdf025cd05349458cfd4ab182ba743d</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000003801</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>u_airplane_loan</table>
+<target_name>u_airplane_loan.u_loan_status.Cancelled</target_name>
+<type>Choice</type>
+<update_domain>global</update_domain>
+<update_guid>339a86fbdc554babbdb4b806f65b1aee</update_guid>
+<update_guid_history>339a86fbdc554babbdb4b806f65b1aee:1978052124</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><!-- sys_app_application handled by direct insert above --><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_3d45a7dbc76b4c588a5803e0ace45c3d</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Airplane Loaner">9ece48e3166247ad893b3cdbd226c291</application><device_type>browser</device_type><filter></filter><hint>Request a loaner airplane</hint><link_type>NEW</link_type><name>Request Airplane</name><order>100</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>3d45a7dbc76b4c588a5803e0ace45c3d</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_3d45a7dbc76b4c588a5803e0ace45c3d</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><table>u_airplane_loan</table><title>Request Airplane</title></sys_app_module></record_update>]]></payload>
+<payload_hash>1522927304</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>423598f448e142fb9956696233393326</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000003a01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>Request Airplane</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>99fe7c71fc4f4699a68bc733fc1d65dd</update_guid>
+<update_guid_history>99fe7c71fc4f4699a68bc733fc1d65dd:1522927304</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_d898536daeff484080bb3b680229d23c</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Airplane Loaner">9ece48e3166247ad893b3cdbd226c291</application><device_type>browser</device_type><filter></filter><hint>View all airplane loans</hint><link_type>LIST</link_type><name>All Loans</name><order>200</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>d898536daeff484080bb3b680229d23c</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_d898536daeff484080bb3b680229d23c</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><table>u_airplane_loan</table><title>All Loans</title></sys_app_module></record_update>]]></payload>
+<payload_hash>760467208</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>e08e291e08b24c88beb984664c71b996</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000003b01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>All Loans</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>439e276ea7774485985fe43e90dee685</update_guid>
+<update_guid_history>439e276ea7774485985fe43e90dee685:760467208</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_0ecb9063aeb8429891d9fcf90ce69e74</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Airplane Loaner">9ece48e3166247ad893b3cdbd226c291</application><device_type>browser</device_type><filter>u_loan_statusINrequested,approved,active</filter><hint>View active loans</hint><link_type>LIST</link_type><name>Active Loans</name><order>300</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>0ecb9063aeb8429891d9fcf90ce69e74</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_0ecb9063aeb8429891d9fcf90ce69e74</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><table>u_airplane_loan</table><title>Active Loans</title></sys_app_module></record_update>]]></payload>
+<payload_hash>1458431446</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>2ffc851d8fc44017bd491c7afa91a7b5</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000003c01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>Active Loans</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>94d92abc00ff460793890caa85a4bfda</update_guid>
+<update_guid_history>94d92abc00ff460793890caa85a4bfda:1458431446</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_aae16b571e7e4c199a97fc4f19d202bd</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Airplane Loaner">9ece48e3166247ad893b3cdbd226c291</application><device_type>browser</device_type><filter>u_loan_statusINreturned,cancelled</filter><hint>View completed loans</hint><link_type>LIST</link_type><name>Returned / Cancelled</name><order>400</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>aae16b571e7e4c199a97fc4f19d202bd</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_aae16b571e7e4c199a97fc4f19d202bd</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><table>u_airplane_loan</table><title>Returned / Cancelled</title></sys_app_module></record_update>]]></payload>
+<payload_hash>1824785457</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>6b8a23d2d8e340fe9944f1b7a26f7733</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000003d01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>Returned / Cancelled</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>539fc836636c4dbb8120f60c7fa012d6</update_guid>
+<update_guid_history>539fc836636c4dbb8120f60c7fa012d6:1824785457</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_266bcba3e404404fa8e64f5af9c01ca5</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Airplane Loaner">9ece48e3166247ad893b3cdbd226c291</application><device_type>browser</device_type><filter></filter><hint></hint><link_type>SEPARATOR</link_type><name>--- Aircraft ---</name><order>500</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>266bcba3e404404fa8e64f5af9c01ca5</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_266bcba3e404404fa8e64f5af9c01ca5</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><table></table><title>--- Aircraft ---</title></sys_app_module></record_update>]]></payload>
+<payload_hash>304705467</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>3f8f0baa97ed40f08c38da0d8df94ea3</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000003e01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>--- Aircraft ---</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>957869f40b47491b97e4acc12d917ec7</update_guid>
+<update_guid_history>957869f40b47491b97e4acc12d917ec7:304705467</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_2921325c88904f528cd0c5a9a81ca822</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Airplane Loaner">9ece48e3166247ad893b3cdbd226c291</application><device_type>browser</device_type><filter></filter><hint>Add a new airplane to the fleet</hint><link_type>NEW</link_type><name>Add Aircraft</name><order>600</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>2921325c88904f528cd0c5a9a81ca822</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_2921325c88904f528cd0c5a9a81ca822</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><table>u_airplane</table><title>Add Aircraft</title></sys_app_module></record_update>]]></payload>
+<payload_hash>164316451</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>6dec890a3c4f4fabbf064e6ed4a1dc2f</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000003f01</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>Add Aircraft</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>15d34bdc9f0b473fae51ac352aafd898</update_guid>
+<update_guid_history>15d34bdc9f0b473fae51ac352aafd898:164316451</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_052996e4d7314abe8f91f08a91da7ade</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Airplane Loaner">9ece48e3166247ad893b3cdbd226c291</application><device_type>browser</device_type><filter></filter><hint>View all aircraft</hint><link_type>LIST</link_type><name>All Aircraft</name><order>700</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>052996e4d7314abe8f91f08a91da7ade</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_052996e4d7314abe8f91f08a91da7ade</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><table>u_airplane</table><title>All Aircraft</title></sys_app_module></record_update>]]></payload>
+<payload_hash>742973144</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>a16d70d2ae914a58aca9e6b9529cbf6f</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000004001</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>All Aircraft</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>56f4da7a51ad4aecbec194c4862109aa</update_guid>
+<update_guid_history>56f4da7a51ad4aecbec194c4862109aa:742973144</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml><sys_update_xml action="INSERT_OR_UPDATE">
+<action>INSERT_OR_UPDATE</action>
+<application display_value="Global">global</application>
+<category>customer</category>
+<comments/>
+<name>sys_app_module_959ffbf136b74814bc0c5ebf63416d26</name>
+<payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module"><sys_app_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="Airplane Loaner">9ece48e3166247ad893b3cdbd226c291</application><device_type>browser</device_type><filter>u_availability=available</filter><hint>View available aircraft</hint><link_type>LIST</link_type><name>Available Aircraft</name><order>800</order><override_menu_roles>false</override_menu_roles><roles/><sys_class_name>sys_app_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-03-21 15:00:00</sys_created_on><sys_id>959ffbf136b74814bc0c5ebf63416d26</sys_id><sys_mod_count>0</sys_mod_count><sys_update_name>sys_app_module_959ffbf136b74814bc0c5ebf63416d26</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-03-21 15:00:00</sys_updated_on><table>u_airplane</table><title>Available Aircraft</title></sys_app_module></record_update>]]></payload>
+<payload_hash>480067952</payload_hash>
+<remote_update_set display_value=""/>
+<replace_on_upgrade>false</replace_on_upgrade>
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2026-03-21 15:00:00</sys_created_on>
+<sys_id>2c3e0880f33c4517a3995c63c821a465</sys_id>
+<sys_mod_count>0</sys_mod_count>
+<sys_recorded_at>19d10c000000004101</sys_recorded_at>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2026-03-21 15:00:00</sys_updated_on>
+<table>sys_app_module</table>
+<target_name>Available Aircraft</target_name>
+<type>Application Module</type>
+<update_domain>global</update_domain>
+<update_guid>2ad391d37950449395e0b02a229e4981</update_guid>
+<update_guid_history>2ad391d37950449395e0b02a229e4981:480067952</update_guid_history>
+<remote_update_set display_value="Airplane Loaner App">a958285858f34f0592ade2a96408a7b9</remote_update_set>
+<view/>
+</sys_update_xml>
+</unload>

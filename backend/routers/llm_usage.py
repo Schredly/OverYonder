@@ -10,7 +10,7 @@ router = APIRouter(prefix="/api/admin/{tenant_id}/llm-usage", tags=["llm-usage"]
 
 def _parse_time_filter(time_filter: str) -> Optional[datetime]:
     """Convert a time filter string to a cutoff datetime."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now()
     if time_filter == "1h":
         return now - timedelta(hours=1)
     elif time_filter == "24h":

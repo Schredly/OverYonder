@@ -14,11 +14,11 @@ This invention relates to enterprise software migration, application portability
 
 ## 2. Background and Prior Art Gaps
 
-Enterprise application migration between platforms (e.g., ServiceNow to Salesforce, Jira to Azure DevOps) currently requires extensive manual effort. Existing approaches include:
+Enterprise application migration between platforms (e.g., Platform A to Platform B) currently requires extensive manual effort. Existing approaches include:
 
 - **Manual mapping**: Consultants manually document application objects, fields, workflows, and relationships — a process that takes weeks to months per application.
-- **Platform-specific export tools**: Vendor tools (e.g., ServiceNow Update Sets, Salesforce Metadata API) export raw configurations but do not normalize them into a vendor-agnostic format usable for cross-platform migration.
-- **Code analysis tools**: Static analysis tools examine source code but do not capture configuration-driven applications (e.g., ServiceNow catalog items configured via UI, not code).
+- **Platform-specific export tools**: Vendor tools (e.g., platform configuration exports, vendor metadata APIs) export raw configurations but do not normalize them into a vendor-agnostic format usable for cross-platform migration.
+- **Code analysis tools**: Static analysis tools examine source code but do not capture configuration-driven applications (e.g., platform catalog items configured via UI, not code).
 - **Documentation-based approaches**: Migration teams rely on written documentation which is often incomplete, outdated, or inconsistent with the actual deployed application.
 
 **Gaps in prior art:**
@@ -35,7 +35,7 @@ Enterprise application migration between platforms (e.g., ServiceNow to Salesfor
 
 The present invention provides an automated pipeline that:
 
-1. **Connects** to source enterprise platforms (ServiceNow, Salesforce, Jira, Zendesk, Workday, etc.) via configured integrations
+1. **Connects** to source enterprise platforms via configured integrations
 2. **Discovers** available applications, catalogs, and modules through live API queries
 3. **Deploys** a context-aware extractor at the source platform that extracts application objects at a negotiated scan depth
 4. **Normalizes** the vendor-specific payload into a vendor-agnostic intermediate representation (tables, fields, workflows, relationships)
@@ -64,7 +64,7 @@ The system comprises six cooperating services:
 ### 4.2 Data Flow
 
 ```
-Source Platform (ServiceNow, Salesforce, etc.)
+Source Enterprise Platform
        ↓ API calls
 [OYExtractorRegistryService]
   • Deploy extractor with context (tenant, vendor, application, scan_depth)
@@ -157,19 +157,20 @@ The GenomeGraphBuilder employs a heuristic prefix-matching algorithm to bind fie
 
 ### 4.5 Vendor-Specific Parser Registry
 
-The GenomeBuilder maintains a parser registry supporting multiple vendors:
+The GenomeBuilder maintains a pluggable parser registry supporting multiple vendors. The following illustrates the registry pattern with example vendor identifiers:
 
 ```python
+# Illustrative examples of supported platform parsers
 _VENDOR_PARSERS = {
-    "servicenow": _parse_servicenow,
-    "salesforce": _parse_salesforce,
-    "jira": _parse_jira,
-    "zendesk": _parse_zendesk,
-    "workday": _parse_workday,
+    "vendor_a": _parse_vendor_a,
+    "vendor_b": _parse_vendor_b,
+    "vendor_c": _parse_vendor_c,
+    "vendor_d": _parse_vendor_d,
+    "vendor_e": _parse_vendor_e,
 }
 ```
 
-Each parser handles vendor-specific payload formats while producing the same GenomeDocument output. Parsers accept multiple alternate key names for the same concept (e.g., `["flows", "workflows", "business_rules"]` for ServiceNow workflows) to handle payload format variations from the same vendor.
+Each parser handles vendor-specific payload formats while producing the same GenomeDocument output. Parsers accept multiple alternate key names for the same concept (e.g., `["flows", "workflows", "business_rules"]` for vendor workflow representations) to handle payload format variations from the same vendor.
 
 ### 4.6 Taxonomized GitHub Storage
 
@@ -180,7 +181,7 @@ genomes/
   tenants/
     {tenant_id}/                    ← multi-tenant isolation
       vendors/
-        {vendor}/                   ← vendor grouping (servicenow, salesforce, etc.)
+        {vendor}/                   ← vendor grouping
           {product_area}/           ← product area (service_catalog, itsm, etc.)
             {module}/               ← specific module (technical_catalog, hr_catalog)
               genome.yaml           ← canonical normalized genome
@@ -207,7 +208,7 @@ The extractor negotiates scan depth with the source platform:
 
 - **Deploy phase**: Registers an extractor at the vendor with a unique key derived from the target name
 - **Extract phase**: Passes context parameters (tenant, vendor, application, scope, scan_depth) that influence the shape and depth of the extracted payload
-- **Fallback chain**: If the primary self-deploy extractor is unavailable, the system falls back to alternative endpoints (e.g., Catalog By Title for ServiceNow)
+- **Fallback chain**: If the primary self-deploy extractor is unavailable, the system falls back to vendor-specific alternative endpoints
 
 ### 4.8 Idempotency and Deduplication
 

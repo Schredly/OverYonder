@@ -177,37 +177,37 @@ The `run-translation` endpoint applies a stored recipe to a new genome:
 
 The system ships with two production-ready recipes:
 
-**Recipe 1: ServiceNow Catalog → Replit App**
+**Recipe 1: Vendor Catalog → Web Application**
 ```
-Instructions: "You are translating a ServiceNow service catalog genome into a
-Replit application. Given the genome YAML content, produce:
-1. A master_prompt.md — comprehensive prompt for Replit Agent to build the app
+Instructions: "You are translating a vendor service catalog genome into a
+web application. Given the genome YAML content, produce:
+1. A master_prompt.md — comprehensive prompt for building the app
 2. A catalog_summary.json — structured JSON summary of the catalog item
-3. A .replit config — Replit project configuration
+3. A config file — project configuration
 
 The master prompt should describe the UI, API routes, data models, and workflows
-that replicate the ServiceNow catalog item as a standalone web application.
+that replicate the vendor catalog item as a standalone web application.
 Include all fields, validation rules, and approval workflows from the genome."
 
 Output structure: {
-  folders: ["transformations/replit-app"],
-  files: ["master_prompt.md", "catalog_summary.json", ".replit"]
+  folders: ["transformations/web-app"],
+  files: ["master_prompt.md", "catalog_summary.json", "config"]
 }
 ```
 
-**Recipe 2: ServiceNow Catalog → GitHub Repository**
+**Recipe 2: Vendor Catalog → Repository Structure**
 ```
-Instructions: "You are translating a ServiceNow service catalog genome into a
-GitHub repository structure. Given the genome YAML content, produce:
+Instructions: "You are translating a vendor service catalog genome into a
+repository structure. Given the genome YAML content, produce:
 1. A README.md — project overview, setup instructions, architecture notes
 2. A schema.json — data model schema derived from genome objects and fields
 3. A migration_plan.md — step-by-step migration guide
 
-The README should explain what the original ServiceNow application does,
+The README should explain what the original vendor application does,
 its key workflows, and how the migrated version preserves functionality."
 
 Output structure: {
-  folders: ["transformations/github-repo"],
+  folders: ["transformations/repo-structure"],
   files: ["README.md", "schema.json", "migration_plan.md"]
 }
 ```
@@ -217,7 +217,7 @@ Output structure: {
 All transformation outputs are stored in a `transformations/` subfolder:
 
 ```
-genomes/tenants/acme/vendors/servicenow/service_catalog/technical_catalog/
+genomes/tenants/{tenant}/vendors/{vendor}/{product_area}/{module}/
   genome.yaml                    ← ORIGINAL (never modified)
   graph.yaml                     ← ORIGINAL
   structure/                     ← ORIGINAL
@@ -254,7 +254,7 @@ A typical transformation requires 3-8 iterative LLM calls as the user refines th
 | Chat Q&A (2 questions) | ~6,000 | ~2,000 | 8,000 |
 | **Total per application** | | | **~67,000** |
 
-For a portfolio of N similar applications (e.g., 10 ServiceNow catalogs → Replit):
+For a portfolio of N similar applications (e.g., 10 vendor catalogs migrated to a target platform):
 - **Without recipes**: N × 67,000 = **670,000 tokens**
 
 **Recipe Approach:**
@@ -331,7 +331,7 @@ The recipe-based approach reduces electricity consumption by **75%** and greenho
 
 **Claim 10.** The method of Claim 1 wherein the interactive transformation session produces a filesystem plan comprising: branch name, base path, folder list, and file list with content.
 
-**Claim 11.** The system of Claim 2 further comprising seeded recipe templates for common migration paths (e.g., ServiceNow to Replit, ServiceNow to GitHub).
+**Claim 11.** The system of Claim 2 further comprising seeded recipe templates for common migration paths (e.g., vendor platform to web application, vendor platform to repository structure).
 
 **Claim 12.** The method of Claim 1 wherein recipe generation uses a specialized LLM system prompt that instructs the model to produce vendor-specific but instance-agnostic instructions.
 
@@ -405,18 +405,18 @@ The recipe-based approach reduces electricity consumption by **75%** and greenho
 
 ---
 
-## Appendix A: Seeded Translation Recipes
+## Appendix A: Seeded Translation Recipes (Illustrative Examples)
 
-### Recipe 1: ServiceNow Catalog → Replit App
-- Source vendor: ServiceNow
+### Recipe 1: Vendor Catalog → Web Application
+- Source vendor: (enterprise platform)
 - Source type: service_catalog
-- Target platform: Replit
-- Output: master_prompt.md, catalog_summary.json, .replit
+- Target platform: web application
+- Output: master_prompt.md, catalog_summary.json, config
 
-### Recipe 2: ServiceNow Catalog → GitHub Repository
-- Source vendor: ServiceNow
+### Recipe 2: Vendor Catalog → Repository Structure
+- Source vendor: (enterprise platform)
 - Source type: service_catalog
-- Target platform: GitHub
+- Target platform: repository
 - Output: README.md, schema.json, migration_plan.md
 
 ---
