@@ -23,7 +23,7 @@ function TreeNode({ node, level, selectedFile, targetFolder, onFileSelect, onFol
     if (isDownloading) return;
     setIsDownloading(true);
     try {
-      const url = `/api/genome-studio/download-zip?path=${encodeURIComponent(node.path)}`;
+      const url = `/api/genome/download-zip?path=${encodeURIComponent(node.path)}`;
       const res = await fetch(url);
       if (!res.ok) throw new Error('Download failed');
       const blob = await res.blob();
