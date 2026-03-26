@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, GitBranch, CheckCircle2, Loader2, Folder, FileText, X, Trash2, Languages, Play, BookmarkPlus, Search, ChevronDown, ChevronRight } from 'lucide-react';
+import { Save, GitBranch, CheckCircle2, Loader2, Folder, FileText, X, Trash2, Languages, Play, BookmarkPlus, Search, ChevronDown, ChevronRight, Download } from 'lucide-react';
 import type { FilesystemPlan, TranslationRecord } from '../../store/useGenomeStore';
 
 type Tab = 'source' | 'transformed' | 'plan' | 'diff' | 'preview' | 'translations';
@@ -21,9 +21,10 @@ interface GenomeWorkspaceProps {
   onSaveAsTranslation?: () => void;
   isTransforming?: boolean;
   repoConnected?: boolean;
+  targetFolder?: string | null;
 }
 
-export function GenomeWorkspace({ originalContent, selectedPath, filesystemPlan, onSave, onRemoveFile, onClearPlan, isSaving, savedBranch, expanded, translations, translationsLoading, onFetchTranslations, onRunTranslation, onSaveAsTranslation, isTransforming, repoConnected }: GenomeWorkspaceProps) {
+export function GenomeWorkspace({ originalContent, selectedPath, filesystemPlan, onSave, onRemoveFile, onClearPlan, isSaving, savedBranch, expanded, translations, translationsLoading, onFetchTranslations, onRunTranslation, onSaveAsTranslation, isTransforming, repoConnected, targetFolder }: GenomeWorkspaceProps) {
   const [activeTab, setActiveTab] = useState<Tab>('source');
   const [selectedTransformFile, setSelectedTransformFile] = useState<number | null>(null);
   const [selectedTranslationId, setSelectedTranslationId] = useState<string | null>(null);
@@ -131,7 +132,7 @@ export function GenomeWorkspace({ originalContent, selectedPath, filesystemPlan,
               <button onClick={onSave} disabled={isSaving}
                 className="px-3 py-1.5 text-xs bg-orange-400 text-white rounded-lg hover:bg-orange-700 flex items-center gap-1.5 disabled:opacity-50">
                 {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-                {isSaving ? 'Committing...' : 'Commit Changes'}
+                {isSaving ? 'Committing...' : 'Commit / Download'}
               </button>
             </div>
           ) : null}

@@ -1,6 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Loader2, Folder, FileText, Mic, Square, Paperclip } from 'lucide-react';
+import { Send, Loader2, Folder, FileText, Mic, Square, Paperclip, CheckCircle2, FileSearch } from 'lucide-react';
 import type { ChatMessage, FilesystemPlan } from '../../store/useGenomeStore';
+
+interface HydrationProgress {
+  phase: string;
+  message: string;
+  filesFetched: string[];
+  round: number;
+}
 
 interface ChatInterfaceProps {
   activeContext: string;
@@ -9,9 +16,10 @@ interface ChatInterfaceProps {
   isThinking: boolean;
   expanded?: boolean;
   onToggleExpand?: () => void;
+  hydrationProgress?: HydrationProgress | null;
 }
 
-export function ChatInterface({ activeContext, messages, onSend, isThinking, expanded, onToggleExpand }: ChatInterfaceProps) {
+export function ChatInterface({ activeContext, messages, onSend, isThinking, expanded, onToggleExpand, hydrationProgress }: ChatInterfaceProps) {
   const [input, setInput] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [recognition, setRecognition] = useState<any>(null);
@@ -182,10 +190,45 @@ export function ChatInterface({ activeContext, messages, onSend, isThinking, exp
               <div className="w-7 h-7 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0">
                 <span className="text-white text-[10px] font-bold">OY</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-500">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span className="text-sm">Thinking...</span>
-              </div>
+              {hydrationProgress ? (
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-orange-500" />
+                    <span className="text-xs font-medium text-gray-700">
+                      {hydrationProgress.phase === "indexing" && "Building genome index..."}
+                      {hydrationProgress.phase === "indexed" && "Index ready"}
+                      {hydrationProgress.phase === "querying" && `Round ${hydrationProgress.round}: Analyzing...`}
+                      {hydrationProgress.phase === "retrieving" && `Round ${hydrationProgress.round}: Fetching files...`}
+                      {hydrationProgress.phase === "reasoning" && `Round ${hydrationProgress.round}: Reasoning...`}
+                      {hydrationProgress.phase === "complete" && "Generating output..."}
+                      {!["indexing","indexed","querying","retrieving","reasoning","complete"].includes(hydrationProgress.phase) && hydrationProgress.message}
+                    </span>
+                  </div>
+                  {hydrationProgress.message && (
+                    <p className="text-[11px] text-gray-500 mb-1.5 truncate">{hydrationProgress.message}</p>
+                  )}
+                  {hydrationProgress.filesFetched.length > 0 && (
+                    <div className="space-y-0.5 ml-0.5">
+                      {hydrationProgress.filesFetched.slice(-6).map((f, i) => (
+                        <div key={i} className="flex items-center gap-1.5 text-[10px] text-gray-500">
+                          <CheckCircle2 className="w-3 h-3 text-green-500 flex-shrink-0" />
+                          <span className="truncate font-mono">{f.split('/').slice(-2).join('/')}</span>
+                        </div>
+                      ))}
+                      {hydrationProgress.filesFetched.length > 6 && (
+                        <span className="text-[10px] text-gray-400 ml-4">
+                          +{hydrationProgress.filesFetched.length - 6} more
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-gray-500">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="text-sm">Thinking...</span>
+                </div>
+              )}
             </div>
           )}
           <div ref={endRef} />

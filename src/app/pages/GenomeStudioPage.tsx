@@ -4,6 +4,7 @@ import { ChatInterface } from "./genome-studio/ChatInterface";
 import { GenomeWorkspace } from "./genome-studio/GenomeWorkspace";
 import { IntegrationsSidebar } from "./genome-studio/IntegrationsSidebar";
 import { SaveTranslationModal } from "./genome-studio/SaveTranslationModal";
+import { CommitDialog } from "./genome-studio/CommitDialog";
 import { useGenomeStore } from "../store/useGenomeStore";
 
 export default function GenomeStudioPage() {
@@ -13,6 +14,7 @@ export default function GenomeStudioPage() {
   const [workspaceExpanded, setWorkspaceExpanded] = useState(false);
   const [chatHeight, setChatHeight] = useState(60); // percentage
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showCommitDialog, setShowCommitDialog] = useState(false);
   const isDragging = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -75,15 +77,12 @@ export default function GenomeStudioPage() {
   };
 
   const handleRunTranslation = async (translationId: string) => {
-    // Find the translation name for the chat message
     const translation = store.translations.find((t) => t.id === translationId);
     const name = translation?.name || translationId;
 
-    // Add a user message to chat so the user sees the action
     store.addUserMessage(`Run translation: ${name}`);
 
-    // Run the translation
-    return await store.runTranslation(translationId);
+    return await store.runTranslation(translationId, name);
   };
 
   const handleSaveAsTranslation = () => {
@@ -118,7 +117,30 @@ export default function GenomeStudioPage() {
   };
 
   const handleSave = async () => {
-    return await store.saveFilesystemPlan();
+    setShowCommitDialog(true);
+  };
+
+  // Build a suggested branch name from context
+  const getSuggestedBranchName = () => {
+    const folderSlug = store.targetFolder
+      ? store.targetFolder.split('/').filter(Boolean).slice(-1)[0] || 'genome'
+      : 'genome';
+    const recipeSlug = store.lastTranslationName
+      ? store.lastTranslationName
+          .replace(/[^a-zA-Z0-9]+/g, '-')
+          .replace(/^-|-$/g, '')
+          .toLowerCase()
+          .slice(0, 30)
+      : 'transform';
+    return `${folderSlug}-${recipeSlug}-v1.0`;
+  };
+
+  const handleCommitConfirm = async (branchName: string) => {
+    const result = await store.saveWithBranchName(branchName);
+    if (result?.status === 'ok') {
+      setShowCommitDialog(false);
+    }
+    return result;
   };
 
   return (
@@ -127,6 +149,8 @@ export default function GenomeStudioPage() {
         <GenomeExplorer
           onFileSelect={handleFileSelect}
           selectedFile={store.selectedGenomePath}
+          targetFolder={store.targetFolder}
+          onFolderTarget={store.setTargetFolder}
           fileTree={store.fileTree}
           repoName={connectedRepo}
           isLoading={repoLoading}
@@ -145,6 +169,7 @@ export default function GenomeStudioPage() {
               if (!workspaceExpanded) setChatHeight(35);
               else setChatHeight(60);
             }}
+            hydrationProgress={store.hydrationProgress}
           />
         </div>
         {/* Drag handle */}
@@ -170,6 +195,7 @@ export default function GenomeStudioPage() {
             onSaveAsTranslation={handleSaveAsTranslation}
             isTransforming={store.loadingState === "transforming"}
             repoConnected={!!connectedRepo}
+            targetFolder={store.targetFolder}
           />
         </div>
       </div>
@@ -193,6 +219,20 @@ export default function GenomeStudioPage() {
           onSave={store.saveAsTranslation}
           onClose={() => setShowSaveModal(false)}
           hasOutputFiles={!!store.filesystemPlan?.files?.length}
+        />
+      )}
+
+      {/* Commit Dialog */}
+      {showCommitDialog && store.filesystemPlan && (
+        <CommitDialog
+          suggestedBranchName={getSuggestedBranchName()}
+          targetFolder={store.targetFolder}
+          translationName={store.lastTranslationName}
+          fileCount={store.filesystemPlan.files.length}
+          files={store.filesystemPlan.files}
+          onCommit={handleCommitConfirm}
+          onCancel={() => setShowCommitDialog(false)}
+          isCommitting={store.loadingState === "saving"}
         />
       )}
     </div>

@@ -1,4 +1,6 @@
 import { useState, useCallback } from "react";
+import { streamGenomeTransform, streamGenomeTranslation } from "../services/genomeHydrationStream";
+import type { HydrationPhase, FileFetched, LLMReasoning } from "../services/genomeHydrationStream";
 
 const API = "/api/genome";
 
@@ -54,6 +56,14 @@ export function useGenomeStore() {
   const [savedBranch, setSavedBranch] = useState<string | null>(null);
   const [translations, setTranslations] = useState<TranslationRecord[]>([]);
   const [translationsLoading, setTranslationsLoading] = useState(false);
+  const [targetFolder, setTargetFolder] = useState<string | null>(null);
+  const [lastTranslationName, setLastTranslationName] = useState<string | null>(null);
+  const [hydrationProgress, setHydrationProgress] = useState<{
+    phase: string;
+    message: string;
+    filesFetched: string[];
+    round: number;
+  } | null>(null);
 
   const listGenomes = useCallback(async () => {
     setLoadingState("loading");
@@ -128,84 +138,97 @@ export function useGenomeStore() {
   const transformGenome = useCallback(async (prompt: string, attachments?: string[]) => {
     setLoadingState("transforming");
     setSavedBranch(null);
+    setHydrationProgress(null);
 
-    // Build the full prompt with attachments
     let fullPrompt = prompt;
     if (attachments && attachments.length > 0) {
       fullPrompt += "\n\n--- ATTACHED FILES ---\n" + attachments.join("\n\n");
     }
 
+    const fetchedFiles: string[] = [];
+
     try {
-      const res = await fetch(`${API}/transform`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          path: selectedGenomePath || "genomes",
-          content: modifiedContent || originalContent || "",
-          prompt: fullPrompt,
-        }),
-      });
-      const data = await res.json();
+      await streamGenomeTransform(
+        selectedGenomePath || "genomes",
+        modifiedContent || originalContent || "",
+        fullPrompt,
+        {
+          onPhase: (data) => {
+            setHydrationProgress((prev) => ({
+              phase: data.phase,
+              message: data.message,
+              filesFetched: prev?.filesFetched || [],
+              round: prev?.round || 0,
+            }));
+          },
+          onFileFetched: (data) => {
+            fetchedFiles.push(data.path);
+            setHydrationProgress((prev) => ({
+              phase: prev?.phase || "retrieving",
+              message: `Fetched: ${data.path}`,
+              filesFetched: [...fetchedFiles],
+              round: data.round,
+            }));
+          },
+          onReasoning: (data) => {
+            setHydrationProgress((prev) => ({
+              phase: "reasoning",
+              message: data.message,
+              filesFetched: prev?.filesFetched || [],
+              round: data.round,
+            }));
+          },
+          onHydrationComplete: (data) => {
+            setHydrationProgress((prev) => ({
+              phase: "complete",
+              message: `Done: ${data.rounds} round(s), ${data.files_fetched} file(s) fetched`,
+              filesFetched: prev?.filesFetched || [],
+              round: data.rounds,
+            }));
+          },
+          onResult: (data) => {
+            const newPlan = data.filesystem_plan as FilesystemPlan | undefined;
+            setFilesystemPlan((prev) => {
+              if (!newPlan || !newPlan.files || newPlan.files.length === 0) return prev;
+              if (!prev) return newPlan;
+              const existingPaths = new Set(prev.files.map((f) => f.path));
+              return {
+                ...prev,
+                files: [...prev.files, ...newPlan.files.filter((f) => !existingPaths.has(f.path))],
+                folders: [...new Set([...prev.folders, ...(newPlan.folders || [])])],
+                branch_name: newPlan.branch_name || prev.branch_name,
+              };
+            });
 
-      if (data.status === "error") {
-        const errMsg: ChatMessage = {
-          id: Date.now().toString(),
-          type: "assistant",
-          content: data.error || "Transform failed",
-          timestamp: new Date(),
-        };
-        setChatHistory((prev) => [...prev, errMsg]);
-        setLoadingState("error");
-        return data;
-      }
+            const fileCount = newPlan?.files?.length || 0;
+            const explanation = data.explanation || "Transformation complete.";
+            const summary = fileCount > 0
+              ? `${explanation}\n\n${fileCount} file(s) ready to commit to branch: ${newPlan?.branch_name || ""}`
+              : explanation;
 
-      const newPlan = data.filesystem_plan as FilesystemPlan | undefined;
-      // Merge new files into existing plan instead of replacing
-      setFilesystemPlan((prev) => {
-        if (!newPlan || !newPlan.files || newPlan.files.length === 0) return prev;
-        if (!prev) return newPlan;
-        // Merge: keep existing files, add new ones (skip duplicates by path)
-        const existingPaths = new Set(prev.files.map((f) => f.path));
-        const mergedFiles = [
-          ...prev.files,
-          ...newPlan.files.filter((f) => !existingPaths.has(f.path)),
-        ];
-        const mergedFolders = [...new Set([...prev.folders, ...(newPlan.folders || [])])];
-        return {
-          ...prev,
-          files: mergedFiles,
-          folders: mergedFolders,
-          branch_name: newPlan.branch_name || prev.branch_name,
-        };
-      });
-      console.log("[GenomeStore] Transform result:", { newPlan, reasoning: data.reasoning, explanation: data.explanation });
-
-      const fileCount = newPlan?.files?.length || 0;
-      const branchName = newPlan?.branch_name || "";
-      const explanation = data.explanation || data.message || "Transformation plan generated.";
-      const summary = fileCount > 0
-        ? `${explanation}\n\n${fileCount} file(s) ready to commit to branch: ${branchName}`
-        : explanation;
-
-      const assistantMsg: ChatMessage = {
-        id: Date.now().toString(),
-        type: "assistant",
-        content: summary,
-        timestamp: new Date(),
-        showDiff: true,
-        filesystemPlan: newPlan,
-        diff: data.diff || "",
-        preview: data.preview || "",
-        reasoning: data.reasoning || undefined,
-      };
-
-      setChatHistory((prev) => [...prev, assistantMsg]);
-      setLoadingState("idle");
-      return data;
+            setChatHistory((prev) => [...prev, {
+              id: Date.now().toString(), type: "assistant", content: summary, timestamp: new Date(),
+              showDiff: true, filesystemPlan: newPlan, diff: data.diff || "", preview: data.preview || "",
+              reasoning: data.reasoning || undefined,
+            }]);
+            setLoadingState("idle");
+            setHydrationProgress(null);
+          },
+          onError: (data) => {
+            let errText = `Transform failed: ${data.message}`;
+            if (data.raw_response) errText += `\n\nLLM response:\n${data.raw_response.slice(0, 500)}`;
+            setChatHistory((prev) => [...prev, {
+              id: Date.now().toString(), type: "assistant", content: errText, timestamp: new Date(),
+            }]);
+            setLoadingState("idle");
+            setHydrationProgress(null);
+          },
+        },
+      );
     } catch {
       setLoadingState("error");
+      setHydrationProgress(null);
       setError("Transform failed");
-      return null;
     }
   }, [selectedGenomePath, modifiedContent, originalContent]);
 
@@ -232,6 +255,37 @@ export function useGenomeStore() {
         setChatHistory((prev) => [...prev, saveMsg]);
       }
 
+      setLoadingState("idle");
+      return data;
+    } catch {
+      setLoadingState("error");
+      setError("Save failed");
+      return null;
+    }
+  }, [filesystemPlan]);
+
+  const saveWithBranchName = useCallback(async (branchName: string) => {
+    if (!filesystemPlan) return null;
+    const updatedPlan = { ...filesystemPlan, branch_name: branchName };
+    setFilesystemPlan(updatedPlan);
+    setLoadingState("saving");
+    try {
+      const res = await fetch(`${API}/save`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filesystem_plan: updatedPlan }),
+      });
+      const data = await res.json();
+      if (data.status === "ok") {
+        setSavedBranch(data.branch || branchName);
+        const saveMsg: ChatMessage = {
+          id: Date.now().toString(),
+          type: "assistant",
+          content: `Saved ${data.file_count || 0} file(s) to branch: ${data.branch}\nOutput: Genome Transformations/${branchName}/`,
+          timestamp: new Date(),
+        };
+        setChatHistory((prev) => [...prev, saveMsg]);
+      }
       setLoadingState("idle");
       return data;
     } catch {
@@ -290,82 +344,102 @@ export function useGenomeStore() {
     setTranslationsLoading(false);
   }, []);
 
-  const runTranslation = useCallback(async (translationId: string) => {
+  const runTranslation = useCallback(async (translationId: string, translationLabel?: string) => {
     setLoadingState("transforming");
     setSavedBranch(null);
     setError(null);
+    setHydrationProgress(null);
+    if (translationLabel) setLastTranslationName(translationLabel);
+
+    const fetchedFiles: string[] = [];
+
     try {
-      const res = await fetch(`${API}/run-translation`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          translation_id: translationId,
-          content: modifiedContent || originalContent || "",
-          path: selectedGenomePath || "genomes",
-        }),
-      });
-      const data = await res.json();
+      await streamGenomeTranslation(
+        translationId,
+        selectedGenomePath || "genomes",
+        modifiedContent || originalContent || "",
+        {
+          onPhase: (data) => {
+            setHydrationProgress((prev) => ({
+              phase: data.phase,
+              message: data.message,
+              filesFetched: prev?.filesFetched || [],
+              round: prev?.round || 0,
+            }));
+          },
+          onFileFetched: (data) => {
+            fetchedFiles.push(data.path);
+            setHydrationProgress((prev) => ({
+              phase: prev?.phase || "retrieving",
+              message: `Fetched: ${data.path}`,
+              filesFetched: [...fetchedFiles],
+              round: data.round,
+            }));
+          },
+          onReasoning: (data) => {
+            setHydrationProgress((prev) => ({
+              phase: "reasoning",
+              message: data.message,
+              filesFetched: prev?.filesFetched || [],
+              round: data.round,
+            }));
+          },
+          onHydrationComplete: (data) => {
+            setHydrationProgress((prev) => ({
+              phase: "complete",
+              message: `Done: ${data.rounds} round(s), ${data.files_fetched} file(s) fetched`,
+              filesFetched: prev?.filesFetched || [],
+              round: data.rounds,
+            }));
+          },
+          onResult: (data) => {
+            const newPlan = data.filesystem_plan as FilesystemPlan | undefined;
+            setFilesystemPlan((prev) => {
+              if (!newPlan || !newPlan.files || newPlan.files.length === 0) return prev;
+              if (!prev) return newPlan;
+              const existingPaths = new Set(prev.files.map((f) => f.path));
+              return {
+                ...prev,
+                files: [...prev.files, ...newPlan.files.filter((f) => !existingPaths.has(f.path))],
+                folders: [...new Set([...prev.folders, ...(newPlan.folders || [])])],
+                branch_name: newPlan.branch_name || prev.branch_name,
+              };
+            });
 
-      if (data.status === "error") {
-        let errText = `Translation failed: ${data.error || "Unknown error"}`;
-        if (data.raw_response) {
-          errText += `\n\nLLM response (first 500 chars):\n${data.raw_response.slice(0, 500)}`;
-        }
-        const errMsg: ChatMessage = {
-          id: Date.now().toString(),
-          type: "assistant",
-          content: errText,
-          timestamp: new Date(),
-        };
-        setChatHistory((prev) => [...prev, errMsg]);
-        setLoadingState("idle");
-        return data;
-      }
+            const fileCount = newPlan?.files?.length || 0;
+            const explanation = data.explanation || "Translation applied.";
+            const summary = fileCount > 0
+              ? `${explanation}\n\n${fileCount} file(s) ready to commit to branch: ${newPlan?.branch_name || ""}`
+              : explanation;
 
-      const newPlan = data.filesystem_plan as FilesystemPlan | undefined;
-      setFilesystemPlan((prev) => {
-        if (!newPlan || !newPlan.files || newPlan.files.length === 0) return prev;
-        if (!prev) return newPlan;
-        const existingPaths = new Set(prev.files.map((f) => f.path));
-        const mergedFiles = [
-          ...prev.files,
-          ...newPlan.files.filter((f) => !existingPaths.has(f.path)),
-        ];
-        const mergedFolders = [...new Set([...prev.folders, ...(newPlan.folders || [])])];
-        return { ...prev, files: mergedFiles, folders: mergedFolders, branch_name: newPlan.branch_name || prev.branch_name };
-      });
-
-      const fileCount = newPlan?.files?.length || 0;
-      const explanation = data.explanation || data.message || "Translation applied.";
-      const summary = fileCount > 0
-        ? `${explanation}\n\n${fileCount} file(s) ready to commit to branch: ${newPlan?.branch_name || ""}`
-        : explanation;
-
-      const assistantMsg: ChatMessage = {
-        id: Date.now().toString(),
-        type: "assistant",
-        content: summary,
-        timestamp: new Date(),
-        showDiff: true,
-        filesystemPlan: newPlan,
-        diff: data.diff || "",
-        preview: data.preview || "",
-        reasoning: data.reasoning || undefined,
-      };
-      setChatHistory((prev) => [...prev, assistantMsg]);
-      setLoadingState("idle");
-      return data;
+            setChatHistory((prev) => [...prev, {
+              id: Date.now().toString(), type: "assistant", content: summary, timestamp: new Date(),
+              showDiff: true, filesystemPlan: newPlan, diff: data.diff || "", preview: data.preview || "",
+              reasoning: data.reasoning || undefined,
+            }]);
+            setLoadingState("idle");
+            setHydrationProgress(null);
+          },
+          onError: (data) => {
+            let errText = `Translation failed: ${data.message}`;
+            if (data.raw_response) errText += `\n\nLLM response:\n${data.raw_response.slice(0, 500)}`;
+            setChatHistory((prev) => [...prev, {
+              id: Date.now().toString(), type: "assistant", content: errText, timestamp: new Date(),
+            }]);
+            setLoadingState("idle");
+            setHydrationProgress(null);
+          },
+        },
+      );
     } catch (e) {
-      const errMsg: ChatMessage = {
-        id: Date.now().toString(),
-        type: "assistant",
+      setChatHistory((prev) => [...prev, {
+        id: Date.now().toString(), type: "assistant",
         content: `Translation failed: ${e instanceof Error ? e.message : "Network error"}`,
         timestamp: new Date(),
-      };
-      setChatHistory((prev) => [...prev, errMsg]);
+      }]);
       setLoadingState("idle");
+      setHydrationProgress(null);
       setError("Translation failed");
-      return null;
     }
   }, [selectedGenomePath, modifiedContent, originalContent]);
 
@@ -494,5 +568,10 @@ export function useGenomeStore() {
     extractVideoGenome,
     generateTranslationRecipe,
     saveAsTranslation,
+    targetFolder,
+    setTargetFolder,
+    lastTranslationName,
+    saveWithBranchName,
+    hydrationProgress,
   };
 }
