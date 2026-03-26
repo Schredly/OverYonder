@@ -153,6 +153,15 @@ async def commit_genome(
     if raw_vendor_payload:
         files[f"{base}/data/raw_vendor_payload.json"] = json.dumps(raw_vendor_payload, indent=2)
 
+    # genome.index.json — lightweight entity index
+    if normalized_genome:
+        try:
+            from services.genome_index import build_genome_index
+            index = build_genome_index(normalized_genome, base, application, vendor)
+            files[f"{base}/genome.index.json"] = json.dumps(index, indent=2)
+        except Exception as _idx_err:
+            logger.warning("[oy_github] genome.index.json skipped: %s", _idx_err)
+
     # Scrub secrets from all files
     files = {path: _scrub_secrets(content) for path, content in files.items()}
 

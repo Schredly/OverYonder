@@ -573,6 +573,8 @@ TOOL_CATALOG = [
     {"tool_id": "jira.get_issue", "integration_type": "jira", "name": "Get Issue", "description": "Get details for a specific Jira issue", "input_schema": {"issue_key": "string"}, "output_schema": {"issue": "object"}},
     # Replit
     {"tool_id": "replit.build_application", "integration_type": "replit", "name": "Build Application", "description": "Build and deploy an application on Replit", "input_schema": {"app_name": "string", "description": "string", "tech_stack": "string"}, "output_schema": {"project_id": "string", "repl_url": "string"}},
+    # Genome — iterative context retrieval
+    {"tool_id": "genome.hydrate_context", "integration_type": "genome", "name": "Hydrate Context", "description": "Iterative retrieval loop: fetches genome.index.json then requests specific files until the LLM signals READY_TO_BUILD. Runs before any synthesis step.", "input_schema": {"genome_path": "string", "user_request": "string", "extra_system": "string (optional)"}, "output_schema": {"ready": "bool", "files_loaded": "int", "total_chars": "int", "accumulated_plan": "list[str]", "hydration_context": "HydrationContext"}},
 ]
 
 TOOL_CATALOG_BY_ID = {t["tool_id"]: t for t in TOOL_CATALOG}

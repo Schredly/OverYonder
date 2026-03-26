@@ -399,6 +399,14 @@ async def commit_to_github(body: CommitRequest, request: Request):
     if genome.get("validation"):
         files[f"{base}/validation/report.json"] = json.dumps(genome["validation"], indent=2)
 
+    # genome.index.json — lightweight entity index
+    try:
+        from services.genome_index import build_genome_index
+        index = build_genome_index(genome, base, app_name, vendor)
+        files[f"{base}/genome.index.json"] = json.dumps(index, indent=2)
+    except Exception as _idx_err:
+        logger.warning("[sn_genome] genome.index.json skipped: %s", _idx_err)
+
     files = {path: _scrub_secrets(content) for path, content in files.items()}
 
     if not files:

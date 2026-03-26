@@ -142,9 +142,9 @@ async def extract_sn_genome(
 
     from services.claude_client import call_llm
 
-    # Build user message with XML content
-    # Limit to ~80k chars to stay within token limits
-    xml_content = combined_xml[:80000]
+    # XML is already bounded by XMLHydrationLoop (MAX_TOTAL_CHARS).
+    # No truncation needed — the loop ensures we're within token budget.
+    xml_content = combined_xml
 
     file_summary = ", ".join(f"{us['name']} ({us['records']} records)" for us in update_sets)
 

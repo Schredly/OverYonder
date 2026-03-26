@@ -44,13 +44,43 @@ async def run_sn_extraction_pipeline(
     if not combined_xml.strip():
         return {"status": "error", "error": "No content found in the uploaded XML files"}
 
+    # ── Stage 1b: XML Hydration (selective context for large update sets) ──
+    records_by_type = parse_result.get("records_by_type", {})
+    type_summary = parse_result.get("type_summary", {})
+    total_records = parse_result.get("total_records", 0)
+
+    from services.xml_hydration import XMLHydrationLoop, LOOP_THRESHOLD
+
+    xml_loop = XMLHydrationLoop()
+    hydration_result = await xml_loop.run(
+        records_by_type=records_by_type,
+        type_summary=type_summary,
+        total_records=total_records,
+        llm_cfg=llm_config,
+        user_notes=user_notes,
+        product_area=product_area,
+        module=module,
+        on_progress=on_progress,
+    )
+
+    # Use focused XML for extraction — falls back to combined_xml if loop produced nothing
+    extraction_xml = hydration_result.focused_xml or combined_xml
+
+    if hydration_result.used_loop:
+        logger.info(
+            "[sn_orchestrator] Hydration loop: %d/%d types, %d chars (was %d), %d rounds",
+            len(hydration_result.types_included),
+            hydration_result.types_available,
+            hydration_result.total_chars,
+            len(combined_xml),
+            hydration_result.iterations,
+        )
+
     # ── Stage 2: Genome Extraction (LLM) ──
-    # For multiple files, we still send all XML together for the first extraction
-    # since the LLM can see relationships across update sets
     from services.sn_agents.genome_extraction import extract_sn_genome
 
     extract_result = await extract_sn_genome(
-        combined_xml=combined_xml,
+        combined_xml=extraction_xml,
         update_sets=update_sets,
         product_area=product_area,
         module=module,

@@ -425,6 +425,14 @@ async def commit_genome_to_github(body: CommitRequest, request: Request):
     # data/ — source metadata
     files[f"{base}/data/source.json"] = json.dumps({"source": "documentation", "doc_id": body.doc_id}, indent=2)
 
+    # genome.index.json — lightweight entity index
+    try:
+        from services.genome_index import build_genome_index
+        index = build_genome_index(genome, base, app_name, vendor)
+        files[f"{base}/genome.index.json"] = json.dumps(index, indent=2)
+    except Exception as _idx_err:
+        logger.warning("[doc_genome] genome.index.json skipped: %s", _idx_err)
+
     # Scrub secrets
     files = {path: _scrub_secrets(content) for path, content in files.items()}
 
