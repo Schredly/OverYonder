@@ -8,6 +8,14 @@ import { CommitDialog } from "./genome-studio/CommitDialog";
 import { useGenomeStore } from "../store/useGenomeStore";
 import type { SavedTransformation } from "../store/useGenomeStore";
 
+function findFileInTree(nodes: any[], targetPath: string): boolean {
+  for (const node of nodes) {
+    if (node.path === targetPath) return true;
+    if (node.children && findFileInTree(node.children, targetPath)) return true;
+  }
+  return false;
+}
+
 export default function GenomeStudioPage() {
   const store = useGenomeStore();
   const [connectedRepo, setConnectedRepo] = useState<string | null>(null);
@@ -72,6 +80,18 @@ export default function GenomeStudioPage() {
   const handleFileSelect = (path: string) => {
     store.setSelectedGenomePath(path);
     store.loadGenome(path);
+  };
+
+  const handleFolderTarget = (folderPath: string) => {
+    store.setTargetFolder(folderPath);
+    // Auto-load the genome.yaml in this folder so transforms target the correct content
+    const genomePath = folderPath + "/genome.yaml";
+    // Check if this folder likely contains a genome by looking in the file tree
+    const hasGenome = findFileInTree(store.fileTree, genomePath);
+    if (hasGenome) {
+      store.setSelectedGenomePath(genomePath);
+      store.loadGenome(genomePath);
+    }
   };
 
   const handleFetchTranslations = () => {
@@ -197,24 +217,39 @@ export default function GenomeStudioPage() {
     URL.revokeObjectURL(a.href);
   };
 
-  const handleSelectTransformation = (transformation: SavedTransformation) => {
-    // Load the transformation's files back into the workspace by restoring the plan
+  const handleSelectTransformation = async (transformation: SavedTransformation) => {
+    // Load the transformation's files back into the workspace
     store.restoreFilesystemPlan({
       branch_name: transformation.branchName,
       base_path: transformation.targetFolder || "",
       folders: [],
       files: transformation.files,
     });
+
+    // Also load the underlying genome so transforms/translations target the correct content
+    if (transformation.targetFolder) {
+      const genomePath = transformation.targetFolder + "/genome.yaml";
+      store.setTargetFolder(transformation.targetFolder);
+      store.setSelectedGenomePath(genomePath);
+      await store.loadGenome(genomePath);
+    }
   };
 
   const handleViewTransformationFile = (_path: string, content: string) => {
-    // Show the file content in the Source tab by setting it as the original content
+    // Show the file content in the Source tab
     store.setSelectedGenomePath(null);
     store.loadContentDirect(content);
   };
 
-  const handleRunTranslationOnBranch = (branchName: string) => {
-    // Set context to this branch and prompt user
+  const handleRunTranslationOnBranch = async (branchName: string) => {
+    // Find the transformation to get its target folder and load the correct genome
+    const transformation = store.savedTransformations.find((t) => t.branchName === branchName);
+    if (transformation?.targetFolder) {
+      const genomePath = transformation.targetFolder + "/genome.yaml";
+      store.setTargetFolder(transformation.targetFolder);
+      store.setSelectedGenomePath(genomePath);
+      await store.loadGenome(genomePath);
+    }
     store.addUserMessage(`Run a new translation on branch: ${branchName}`);
   };
 
@@ -233,7 +268,7 @@ export default function GenomeStudioPage() {
           onFileSelect={handleFileSelect}
           selectedFile={store.selectedGenomePath}
           targetFolder={store.targetFolder}
-          onFolderTarget={store.setTargetFolder}
+          onFolderTarget={handleFolderTarget}
           fileTree={store.fileTree}
           repoName={connectedRepo}
           isLoading={repoLoading}
