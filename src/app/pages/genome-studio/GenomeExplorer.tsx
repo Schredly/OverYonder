@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronRight, FileText, Folder, FolderOpen, Search, GitBranch, Loader2, Crosshair, Download } from 'lucide-react';
+import { ChevronDown, ChevronRight, FileText, Folder, FolderOpen, Search, GitBranch, Loader2, Crosshair, Download, Play, Package, ChevronUp, ArrowLeft } from 'lucide-react';
+import type { SavedTransformation, FileEntry } from '../../store/useGenomeStore';
 
 interface FileNode {
   name: string;
@@ -100,6 +101,183 @@ function TreeNode({ node, level, selectedFile, targetFolder, onFileSelect, onFol
   );
 }
 
+function TransformationItem({ transformation, isActive, onSelect, onRunTranslation, onDownload }: {
+  transformation: SavedTransformation;
+  isActive?: boolean;
+  onSelect?: (t: SavedTransformation) => void;
+  onRunTranslation?: (branchName: string) => void;
+  onDownload?: (t: SavedTransformation) => void;
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownload = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isDownloading || !onDownload) return;
+    setIsDownloading(true);
+    try {
+      onDownload(transformation);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const timeAgo = (date: Date) => {
+    const mins = Math.floor((Date.now() - new Date(date).getTime()) / 60000);
+    if (mins < 1) return "just now";
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    return `${Math.floor(hrs / 24)}d ago`;
+  };
+
+  return (
+    <div
+      className={`px-3 py-2 cursor-pointer border-b border-gray-50 transition-colors ${
+        isActive ? 'bg-orange-50 ring-1 ring-orange-200' : 'hover:bg-gray-50'
+      }`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={() => onSelect?.(transformation)}
+    >
+      <div className="flex items-start gap-2">
+        <GitBranch className={`w-3.5 h-3.5 mt-0.5 flex-shrink-0 ${isActive ? 'text-orange-600' : 'text-orange-500'}`} />
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-medium text-gray-800 truncate" title={transformation.branchName}>
+            {transformation.branchName}
+          </p>
+          <p className="text-[10px] text-gray-500 mt-0.5">
+            {transformation.fileCount} file{transformation.fileCount !== 1 ? 's' : ''}
+            {transformation.translationName && (
+              <span className="text-orange-600"> · {transformation.translationName}</span>
+            )}
+          </p>
+          <p className="text-[10px] text-gray-400">{timeAgo(transformation.savedAt)}</p>
+        </div>
+        {isHovered && (
+          <div className="flex items-center gap-0.5 flex-shrink-0">
+            {onRunTranslation && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onRunTranslation(transformation.branchName); }}
+                title="Run translation on this branch"
+                className="p-1 rounded hover:bg-orange-100 transition-colors"
+              >
+                <Play className="w-3 h-3 text-orange-600" />
+              </button>
+            )}
+            {onDownload && (
+              <button
+                onClick={handleDownload}
+                title="Download as zip"
+                className="p-1 rounded hover:bg-orange-100 transition-colors"
+              >
+                {isDownloading
+                  ? <Loader2 className="w-3 h-3 text-orange-500 animate-spin" />
+                  : <Download className="w-3 h-3 text-orange-500" />
+                }
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** Renders a transformation's files as a browsable file tree */
+function TransformationFileTree({ files, selectedFile, onFileSelect }: {
+  files: FileEntry[];
+  selectedFile: string | null;
+  onFileSelect: (path: string, content: string) => void;
+}) {
+  // Build a tree structure from flat file paths
+  interface TreeEntry {
+    name: string;
+    path: string;
+    content?: string;
+    children: TreeEntry[];
+  }
+
+  const root: TreeEntry[] = [];
+
+  for (const file of files) {
+    const parts = file.path.split('/');
+    let current = root;
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      const isFile = i === parts.length - 1;
+      let existing = current.find((c) => c.name === part);
+      if (!existing) {
+        existing = {
+          name: part,
+          path: parts.slice(0, i + 1).join('/'),
+          content: isFile ? file.content : undefined,
+          children: [],
+        };
+        current.push(existing);
+      }
+      current = existing.children;
+    }
+  }
+
+  return (
+    <div className="p-2">
+      {root.map((entry) => (
+        <TransformationTreeNode key={entry.path} entry={entry} level={0} selectedFile={selectedFile} onFileSelect={onFileSelect} />
+      ))}
+    </div>
+  );
+}
+
+function TransformationTreeNode({ entry, level, selectedFile, onFileSelect }: {
+  entry: { name: string; path: string; content?: string; children: any[] };
+  level: number;
+  selectedFile: string | null;
+  onFileSelect: (path: string, content: string) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(true);
+  const isFolder = entry.children.length > 0 && entry.content === undefined;
+  const isSelected = selectedFile === `transformation://${entry.path}`;
+
+  return (
+    <div>
+      <div
+        className={`flex items-center gap-1.5 px-2 py-1 cursor-pointer rounded-md transition-colors ${
+          isSelected ? 'bg-orange-50 text-orange-700' : 'text-gray-700 hover:bg-gray-100'
+        }`}
+        style={{ paddingLeft: `${level * 12 + 8}px` }}
+        onClick={() => {
+          if (isFolder) {
+            setIsOpen(!isOpen);
+          } else if (entry.content !== undefined) {
+            onFileSelect(`transformation://${entry.path}`, entry.content);
+          }
+        }}
+      >
+        {isFolder ? (
+          <>
+            {isOpen ? <ChevronDown className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" /> : <ChevronRight className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" />}
+            {isOpen ? (
+              <FolderOpen className="w-4 h-4 text-orange-500 flex-shrink-0" />
+            ) : (
+              <Folder className="w-4 h-4 text-orange-500 flex-shrink-0" />
+            )}
+          </>
+        ) : (
+          <>
+            <div className="w-3.5" />
+            <FileText className="w-4 h-4 text-orange-400 flex-shrink-0" />
+          </>
+        )}
+        <span className="text-sm truncate">{entry.name}</span>
+      </div>
+      {isFolder && isOpen && entry.children.map((child: any) => (
+        <TransformationTreeNode key={child.path} entry={child} level={level + 1} selectedFile={selectedFile} onFileSelect={onFileSelect} />
+      ))}
+    </div>
+  );
+}
+
 interface GenomeExplorerProps {
   onFileSelect: (path: string) => void;
   selectedFile: string | null;
@@ -108,6 +286,11 @@ interface GenomeExplorerProps {
   fileTree?: FileNode[];
   repoName?: string | null;
   isLoading?: boolean;
+  savedTransformations?: SavedTransformation[];
+  onRunTranslationOnBranch?: (branchName: string) => void;
+  onDownloadTransformation?: (transformation: SavedTransformation) => void;
+  onSelectTransformation?: (transformation: SavedTransformation) => void;
+  onViewTransformationFile?: (path: string, content: string) => void;
 }
 
 function filterTree(nodes: FileNode[], query: string): FileNode[] {
@@ -127,19 +310,130 @@ function filterTree(nodes: FileNode[], query: string): FileNode[] {
   return result;
 }
 
-export function GenomeExplorer({ onFileSelect, selectedFile, targetFolder, onFolderTarget, fileTree, repoName, isLoading }: GenomeExplorerProps) {
+export function GenomeExplorer({ onFileSelect, selectedFile, targetFolder, onFolderTarget, fileTree, repoName, isLoading, savedTransformations, onRunTranslationOnBranch, onDownloadTransformation, onSelectTransformation, onViewTransformationFile }: GenomeExplorerProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [expandedTransformation, setExpandedTransformation] = useState<SavedTransformation | null>(null);
+  const [selectedTransformFile, setSelectedTransformFile] = useState<string | null>(null);
   const tree = fileTree && fileTree.length > 0 ? fileTree : [];
   const filteredTree = searchQuery ? filterTree(tree, searchQuery) : tree;
 
-  // Derive a friendly label from the target folder path
-  const targetLabel = targetFolder
-    ? targetFolder.split('/').filter(Boolean).slice(-1)[0] || targetFolder
-    : null;
   const targetFullLabel = targetFolder
     ? targetFolder.split('/').filter(Boolean).slice(-2).join(' / ')
     : null;
 
+  const handleTransformationClick = (t: SavedTransformation) => {
+    if (expandedTransformation?.id === t.id) {
+      // Already expanded — collapse
+      setExpandedTransformation(null);
+      setSelectedTransformFile(null);
+    } else {
+      // Expand this transformation
+      setExpandedTransformation(t);
+      setSelectedTransformFile(null);
+      onSelectTransformation?.(t);
+    }
+  };
+
+  const handleCollapseTransformations = () => {
+    setExpandedTransformation(null);
+    setSelectedTransformFile(null);
+  };
+
+  const handleTransformFileSelect = (path: string, content: string) => {
+    setSelectedTransformFile(path);
+    onViewTransformationFile?.(path, content);
+  };
+
+  const hasTransformations = savedTransformations && savedTransformations.length > 0;
+
+  // When a transformation is expanded, show the expanded view instead of genomes
+  if (expandedTransformation) {
+    return (
+      <div className="w-64 h-screen bg-gray-50 border-r border-gray-200 flex flex-col">
+        {/* Header — click to collapse */}
+        <div
+          className="p-3 border-b border-orange-200 bg-orange-50 cursor-pointer hover:bg-orange-100 transition-colors"
+          onClick={handleCollapseTransformations}
+        >
+          <div className="flex items-center gap-2">
+            <ArrowLeft className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+            <span className="text-xs font-semibold text-orange-700 uppercase tracking-wide">Back to Genomes</span>
+          </div>
+        </div>
+
+        {/* Active transformation info */}
+        <div className="px-3 py-2.5 border-b border-gray-200 bg-white">
+          <div className="flex items-center gap-2 mb-1">
+            <GitBranch className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+            <span className="text-xs font-semibold text-gray-900 truncate" title={expandedTransformation.branchName}>
+              {expandedTransformation.branchName}
+            </span>
+          </div>
+          {expandedTransformation.translationName && (
+            <p className="text-[10px] text-orange-600 ml-5.5 truncate">
+              {expandedTransformation.translationName}
+            </p>
+          )}
+          <p className="text-[10px] text-gray-500 ml-5.5">
+            {expandedTransformation.fileCount} file{expandedTransformation.fileCount !== 1 ? 's' : ''}
+          </p>
+
+          {/* Action buttons */}
+          <div className="flex items-center gap-1.5 mt-2 ml-5">
+            {onRunTranslationOnBranch && (
+              <button
+                onClick={() => onRunTranslationOnBranch(expandedTransformation.branchName)}
+                className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium text-orange-700 bg-orange-50 border border-orange-200 rounded hover:bg-orange-100 transition-colors"
+              >
+                <Play className="w-3 h-3" />
+                Run Translation
+              </button>
+            )}
+            {onDownloadTransformation && (
+              <button
+                onClick={() => onDownloadTransformation(expandedTransformation)}
+                className="flex items-center gap-1 px-2 py-1 text-[10px] font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded hover:bg-gray-100 transition-colors"
+              >
+                <Download className="w-3 h-3" />
+                Download
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* File tree for this transformation */}
+        <div className="flex-1 overflow-y-auto">
+          <TransformationFileTree
+            files={expandedTransformation.files}
+            selectedFile={selectedTransformFile}
+            onFileSelect={handleTransformFileSelect}
+          />
+        </div>
+
+        {/* Other transformations at the bottom if more than one */}
+        {savedTransformations && savedTransformations.length > 1 && (
+          <div className="border-t border-gray-200">
+            <div className="px-3 py-1.5 bg-gray-50">
+              <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Other Transformations</span>
+            </div>
+            <div className="max-h-32 overflow-y-auto">
+              {savedTransformations.filter((t) => t.id !== expandedTransformation.id).map((t) => (
+                <TransformationItem
+                  key={t.id}
+                  transformation={t}
+                  onSelect={handleTransformationClick}
+                  onRunTranslation={onRunTranslationOnBranch}
+                  onDownload={onDownloadTransformation}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Default view: genome file tree with transformations footer
   return (
     <div className="w-64 h-screen bg-gray-50 border-r border-gray-200 flex flex-col">
       <div className="p-4 border-b border-gray-200 bg-white">
@@ -202,6 +496,36 @@ export function GenomeExplorer({ onFileSelect, selectedFile, targetFolder, onFol
           <TreeNode key={node.path} node={node} level={0} selectedFile={selectedFile} targetFolder={targetFolder} onFileSelect={onFileSelect} onFolderTarget={onFolderTarget} />
         ))}
       </div>
+
+      {/* Transformations Section — click header to expand */}
+      {hasTransformations && (
+        <div className="border-t border-gray-200 bg-white">
+          <div
+            className="px-4 py-2.5 border-b border-gray-100 cursor-pointer hover:bg-orange-50 transition-colors"
+            onClick={() => handleTransformationClick(savedTransformations![0])}
+          >
+            <div className="flex items-center gap-1.5">
+              <Package className="w-3.5 h-3.5 text-orange-600" />
+              <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">Transformations</span>
+              <span className="ml-auto flex items-center gap-1">
+                <span className="text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded-full">{savedTransformations!.length}</span>
+                <ChevronUp className="w-3 h-3 text-gray-400" />
+              </span>
+            </div>
+          </div>
+          <div className="max-h-48 overflow-y-auto">
+            {savedTransformations!.map((t) => (
+              <TransformationItem
+                key={t.id}
+                transformation={t}
+                onSelect={handleTransformationClick}
+                onRunTranslation={onRunTranslationOnBranch}
+                onDownload={onDownloadTransformation}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

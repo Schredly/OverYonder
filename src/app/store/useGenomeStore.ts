@@ -3,6 +3,26 @@ import { streamGenomeTransform, streamGenomeTranslation } from "../services/geno
 import type { HydrationPhase, FileFetched, LLMReasoning } from "../services/genomeHydrationStream";
 
 const API = "/api/genome";
+const TRANSFORMATIONS_STORAGE_KEY = "oy_transformations_";
+
+function loadStoredTransformations(repoName: string): SavedTransformation[] {
+  try {
+    const raw = localStorage.getItem(TRANSFORMATIONS_STORAGE_KEY + repoName);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return parsed.map((t: any) => ({ ...t, savedAt: new Date(t.savedAt) }));
+  } catch {
+    return [];
+  }
+}
+
+function persistTransformations(repoName: string, transformations: SavedTransformation[]) {
+  try {
+    localStorage.setItem(TRANSFORMATIONS_STORAGE_KEY + repoName, JSON.stringify(transformations));
+  } catch {
+    // localStorage full or unavailable — silently ignore
+  }
+}
 
 export interface DiffLine {
   type: "added" | "removed" | "context";
@@ -44,6 +64,16 @@ export interface TranslationRecord {
   status: string;
 }
 
+export interface SavedTransformation {
+  id: string;
+  branchName: string;
+  targetFolder: string | null;
+  translationName: string | null;
+  fileCount: number;
+  files: FileEntry[];
+  savedAt: Date;
+}
+
 export function useGenomeStore() {
   const [selectedGenomePath, setSelectedGenomePath] = useState<string | null>(null);
   const [originalContent, setOriginalContent] = useState("");
@@ -64,6 +94,17 @@ export function useGenomeStore() {
     filesFetched: string[];
     round: number;
   } | null>(null);
+  const [savedTransformations, setSavedTransformations] = useState<SavedTransformation[]>([]);
+  const [connectedRepo, setConnectedRepo] = useState<string | null>(null);
+
+  const setRepoAndLoadTransformations = useCallback((repoName: string | null) => {
+    setConnectedRepo(repoName);
+    if (repoName) {
+      setSavedTransformations(loadStoredTransformations(repoName));
+    } else {
+      setSavedTransformations([]);
+    }
+  }, []);
 
   const listGenomes = useCallback(async () => {
     setLoadingState("loading");
@@ -278,6 +319,21 @@ export function useGenomeStore() {
       const data = await res.json();
       if (data.status === "ok") {
         setSavedBranch(data.branch || branchName);
+        // Record this transformation for the left nav and persist
+        const newTransformation: SavedTransformation = {
+          id: Date.now().toString(),
+          branchName: data.branch || branchName,
+          targetFolder,
+          translationName: lastTranslationName,
+          fileCount: updatedPlan.files.length,
+          files: updatedPlan.files,
+          savedAt: new Date(),
+        };
+        setSavedTransformations((prev) => {
+          const updated = [newTransformation, ...prev];
+          if (connectedRepo) persistTransformations(connectedRepo, updated);
+          return updated;
+        });
         const saveMsg: ChatMessage = {
           id: Date.now().toString(),
           type: "assistant",
@@ -293,7 +349,7 @@ export function useGenomeStore() {
       setError("Save failed");
       return null;
     }
-  }, [filesystemPlan]);
+  }, [filesystemPlan, targetFolder, lastTranslationName, connectedRepo]);
 
   const removeFileFromPlan = useCallback((index: number) => {
     setFilesystemPlan((prev) => {
@@ -307,6 +363,16 @@ export function useGenomeStore() {
   const clearPlan = useCallback(() => {
     setFilesystemPlan(null);
     setSavedBranch(null);
+  }, []);
+
+  const restoreFilesystemPlan = useCallback((plan: FilesystemPlan) => {
+    setFilesystemPlan(plan);
+    setSavedBranch(plan.branch_name);
+  }, []);
+
+  const loadContentDirect = useCallback((content: string) => {
+    setOriginalContent(content);
+    setModifiedContent(content);
   }, []);
 
   const addUserMessage = useCallback((content: string) => {
@@ -573,5 +639,9 @@ export function useGenomeStore() {
     lastTranslationName,
     saveWithBranchName,
     hydrationProgress,
+    savedTransformations,
+    restoreFilesystemPlan,
+    loadContentDirect,
+    setRepoAndLoadTransformations,
   };
 }

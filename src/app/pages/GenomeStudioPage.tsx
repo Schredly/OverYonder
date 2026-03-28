@@ -6,6 +6,7 @@ import { IntegrationsSidebar } from "./genome-studio/IntegrationsSidebar";
 import { SaveTranslationModal } from "./genome-studio/SaveTranslationModal";
 import { CommitDialog } from "./genome-studio/CommitDialog";
 import { useGenomeStore } from "../store/useGenomeStore";
+import type { SavedTransformation } from "../store/useGenomeStore";
 
 export default function GenomeStudioPage() {
   const store = useGenomeStore();
@@ -47,6 +48,7 @@ export default function GenomeStudioPage() {
   const handleConnectRepo = async (repoName: string) => {
     setRepoLoading(true);
     setConnectedRepo(repoName);
+    store.setRepoAndLoadTransformations(repoName);
     await store.listGenomes();
     setRepoLoading(false);
   };
@@ -135,6 +137,87 @@ export default function GenomeStudioPage() {
     return `${folderSlug}-${recipeSlug}-v1.0`;
   };
 
+  const handleDownloadTransformation = (transformation: SavedTransformation) => {
+    const files = transformation.files;
+    if (!files.length) return;
+
+    // Build a zip (same minimal format as CommitDialog)
+    const encoder = new TextEncoder();
+    const localParts: Uint8Array[] = [];
+    const centralParts: Uint8Array[] = [];
+    const offsets: number[] = [];
+    let offset = 0;
+
+    for (const file of files) {
+      const nameBytes = encoder.encode(file.path);
+      const dataBytes = encoder.encode(file.content);
+      const local = new ArrayBuffer(30 + nameBytes.length + dataBytes.length);
+      const lv = new DataView(local);
+      lv.setUint32(0, 0x04034b50, true);
+      lv.setUint16(4, 20, true);
+      lv.setUint16(8, 0, true);
+      lv.setUint32(18, dataBytes.length, true);
+      lv.setUint32(22, dataBytes.length, true);
+      lv.setUint16(26, nameBytes.length, true);
+      const localArr = new Uint8Array(local);
+      localArr.set(nameBytes, 30);
+      localArr.set(dataBytes, 30 + nameBytes.length);
+      offsets.push(offset);
+      localParts.push(localArr);
+      offset += localArr.length;
+
+      const central = new ArrayBuffer(46 + nameBytes.length);
+      const cv = new DataView(central);
+      cv.setUint32(0, 0x02014b50, true);
+      cv.setUint16(4, 20, true);
+      cv.setUint16(6, 20, true);
+      cv.setUint32(20, dataBytes.length, true);
+      cv.setUint32(24, dataBytes.length, true);
+      cv.setUint16(28, nameBytes.length, true);
+      cv.setUint32(42, offsets[offsets.length - 1], true);
+      const centralArr = new Uint8Array(central);
+      centralArr.set(nameBytes, 46);
+      centralParts.push(centralArr);
+    }
+
+    const centralSize = centralParts.reduce((s, c) => s + c.length, 0);
+    const eocd = new ArrayBuffer(22);
+    const ev = new DataView(eocd);
+    ev.setUint32(0, 0x06054b50, true);
+    ev.setUint16(8, files.length, true);
+    ev.setUint16(10, files.length, true);
+    ev.setUint32(12, centralSize, true);
+    ev.setUint32(16, offset, true);
+
+    const blob = new Blob([...localParts, ...centralParts, new Uint8Array(eocd)], { type: 'application/zip' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${transformation.branchName}.zip`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  const handleSelectTransformation = (transformation: SavedTransformation) => {
+    // Load the transformation's files back into the workspace by restoring the plan
+    store.restoreFilesystemPlan({
+      branch_name: transformation.branchName,
+      base_path: transformation.targetFolder || "",
+      folders: [],
+      files: transformation.files,
+    });
+  };
+
+  const handleViewTransformationFile = (_path: string, content: string) => {
+    // Show the file content in the Source tab by setting it as the original content
+    store.setSelectedGenomePath(null);
+    store.loadContentDirect(content);
+  };
+
+  const handleRunTranslationOnBranch = (branchName: string) => {
+    // Set context to this branch and prompt user
+    store.addUserMessage(`Run a new translation on branch: ${branchName}`);
+  };
+
   const handleCommitConfirm = async (branchName: string) => {
     const result = await store.saveWithBranchName(branchName);
     if (result?.status === 'ok') {
@@ -154,6 +237,11 @@ export default function GenomeStudioPage() {
           fileTree={store.fileTree}
           repoName={connectedRepo}
           isLoading={repoLoading}
+          savedTransformations={store.savedTransformations}
+          onRunTranslationOnBranch={handleRunTranslationOnBranch}
+          onDownloadTransformation={handleDownloadTransformation}
+          onSelectTransformation={handleSelectTransformation}
+          onViewTransformationFile={handleViewTransformationFile}
         />
       )}
       <div ref={containerRef} className="flex-1 flex flex-col min-w-0">
@@ -206,7 +294,7 @@ export default function GenomeStudioPage() {
           isSaving={store.loadingState === "saving"}
           savedBranch={store.savedBranch}
           onConnectRepo={handleConnectRepo}
-          onDisconnectRepo={() => setConnectedRepo(null)}
+          onDisconnectRepo={() => { setConnectedRepo(null); store.setRepoAndLoadTransformations(null); }}
           connectedRepo={connectedRepo}
         />
       )}
